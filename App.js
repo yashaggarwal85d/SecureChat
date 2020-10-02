@@ -5,6 +5,7 @@ import ChatsNavigator from './navigation/chatsNavigation';
 import {createStore,combineReducers} from 'redux';
 import ChatListReducer from './store/reducers/chatlist';
 import GroupListReducer from './store/reducers/grouplist';
+import ThemeReducer from './store/reducers/CurrentTheme';
 import {Provider} from 'react-redux';
 
 const fetchFonts = () => {
@@ -18,6 +19,7 @@ const fetchFonts = () => {
 const rootReducer = combineReducers({
   ChatList: ChatListReducer,
   GroupList: GroupListReducer,
+  CurrentTheme: ThemeReducer,
 });
 const store = createStore(rootReducer);
 

@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import * as colors from './constants/colors';
 
-export default StyleSheet.create({
+export const LightTheme= StyleSheet.create({
   //Common Style
   appTitle: {
     textTransform: 'capitalize',
@@ -148,5 +148,13 @@ export default StyleSheet.create({
   Bubble: {
     backgroundColor:colors.dodgerblue,
   },
+  TrippleToggle:{
+    left: 144,
+    bottom: 20,
+  }
   
 });
+
+export const MediumTheme= StyleSheet.create({});
+
+export const DarkTheme = StyleSheet.create({});

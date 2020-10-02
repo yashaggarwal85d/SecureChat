@@ -14,34 +14,69 @@ import {
   TabHeading,
   Badge, Left
 } from 'native-base';
+
 import * as colors from '../constants/colors';
 import ChatsScreen from './ChatList';
 import GroupScreen from './Groups';
-import { StatusBar,Image,SafeAreaView } from 'react-native';
-import appStyles from '../appStyles';
-import { Feather,Ionicons } from '@expo/vector-icons';
+import { StatusBar,Image,SafeAreaView,Animated,View,StyleSheet } from 'react-native';
+import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
+import { Feather,Ionicons,FontAwesome,MaterialIcons,MaterialCommunityIcons } from '@expo/vector-icons';
+import TrippleToggleSwitch from '../components/TripleToggle';
+import { useSelector,useDispatch,connect } from 'react-redux';
+import { SwitchTheme } from '../store/actions/ThemeChangeActions'
+import { lightTheme,darkTheme,mediumTheme } from '../constants/colors'
+import styled,{ThemeProvider} from 'styled-components'
 
-export default class MainApp extends Component {
+const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+
+class MainApp extends Component {
   
+  constructor(props) {
+    super(props)
+    if(this.props.theme.mode == 'light')
+    this.appStyles = LightTheme;
+    else
+    if(this.props.theme.mode == 'dark')
+    this.appStyles = DarkTheme;
+    else
+    if(this.props.theme.mode == 'medium')
+    this.appStyles = MediumTheme;
+  }
+
   componentDidMount() {
     setTimeout(() => {
-      StatusBar.setBackgroundColor(colors.dodgerblue);
+      StatusBar.setBackgroundColor(this.props.theme.BACKGROUND_COLOR);
     });
   }
 
+  SwitchThemeFunction(currentTheme){
+    this.props.ThemeSwitching(currentTheme);
+    console.log(currentTheme);
+    if(currentTheme.mode == 'light')
+    this.appStyles = LightTheme;
+    else
+    if(currentTheme.mode == 'dark')
+    this.appStyles = DarkTheme;
+    else
+    if(currentTheme.mode == 'medium')
+    this.appStyles = MediumTheme;
+  }
+
   render() {
+  
     return (
       <Container>
-        <Header style={appStyles.headerBackgroundColor}>
+      <ThemeProvider theme={this.appStyles}>
+        <Header style={this.appStyles.headerBackgroundColor}>
         <Left>
         <Image
           source={require("../assets/omega.jpg")}
           resizeMode="stretch"
-          style={appStyles.image}
+          style={this.appStyles.image}
         ></Image>
         </Left>
           <Body>
-            <Title style={appStyles.appTitle}> Hi, Yash</Title>
+            <Title style={this.appStyles.appTitle}> Hi, Yash</Title>
           </Body>
           <Right>
             <Button icon transparent>
@@ -59,16 +94,16 @@ export default class MainApp extends Component {
             elevation: 0,
           }}
           renderTabBar={() => <ScrollableTab />}
-          tabBarUnderlineStyle={appStyles.tabBarUnderLine}
+          tabBarUnderlineStyle={this.appStyles.tabBarUnderLine}
           tabBarActiveTextColor="blue"
           initialPage={3}
           tabBarBackgroundColor={colors.ghostwhite}>
           <Tab
             heading={
               <TabHeading style={{backgroundColor: colors.ghostwhite}}>
-                <Text style={appStyles.tabsText}>CHATS</Text>
-                <Badge style={appStyles.badge}>
-                  <Text style={appStyles.badgeText}>2</Text>
+                <Text style={this.appStyles.tabsText}>CHATS</Text>
+                <Badge style={this.appStyles.badge}>
+                  <Text style={this.appStyles.badgeText}>2</Text>
                 </Badge>
               </TabHeading>
             }>
@@ -77,13 +112,38 @@ export default class MainApp extends Component {
           <Tab
             heading={
               <TabHeading style={{backgroundColor: colors.ghostwhite}}>
-                <Text style={appStyles.tabsText}>GROUPS</Text>
+                <Text style={this.appStyles.tabsText}>GROUPS</Text>
               </TabHeading>
             }>
             <GroupScreen navigation={this.props.navigation}/>
           </Tab>
         </Tabs>
+        <View style={this.appStyles.TrippleToggle}>
+	        <TrippleToggleSwitch
+            onLeftState={()=> this.SwitchThemeFunction(lightTheme) }
+            onMiddleState={()=> this.SwitchThemeFunction(mediumTheme)}
+            onRightState={()=> this.SwitchThemeFunction(darkTheme)}
+            AnimatedIcon={AnimatedIcon}
+        />
+      </View>
+      </ThemeProvider> 
       </Container>
+
     );
   }
 }
+
+function mapStateToProps(state){
+  return{
+    theme: state.CurrentTheme.theme
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return{
+    ThemeSwitching: (theme) => dispatch({type: 'SWITCH_THEME',theme:theme}),
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(MainApp);
+

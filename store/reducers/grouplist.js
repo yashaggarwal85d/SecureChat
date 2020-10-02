@@ -1,10 +1,10 @@
-import { GROUPLIST } from '../../data/GroupList'
+import { GROUPLIST } from '../../data/GroupList';
 
-const initialState ={
+const GroupInitialState ={
     chats: GROUPLIST,
 };
 
-const GroupListReducer = (state = initialState, action) => {
+const GroupListReducer = (state = GroupInitialState, action) => {
     return state;
 }
 

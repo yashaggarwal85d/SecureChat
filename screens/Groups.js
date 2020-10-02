@@ -8,13 +8,14 @@ import {
   Text,
   Badge,
 } from 'native-base';
-import appStyles from '../appStyles';
+import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
 import { FlatList } from 'react-native'
 import {useSelector} from 'react-redux';
 
 class GroupScreenComponent extends Component {
 
   renderGridItem = (itemData) => {
+    const appStyles = LightTheme;
     return (
       <ListItem avatar onPress={() => {
         this.props.navigation.navigate({
@@ -61,7 +62,7 @@ class GroupScreenComponent extends Component {
 }
 
 const GroupScreen = props => {
-  const GroupList = useSelector(state => state.GroupList.chats ); 
+  const GroupList = useSelector(state => state.GroupList.chats );
   return(
     <GroupScreenComponent
       {...props}

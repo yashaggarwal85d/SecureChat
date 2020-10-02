@@ -26,13 +26,18 @@
     "react-native-popup-menu": "^0.15.9",
     "react-native-pose": "^0.9.1",
     "react-native-reanimated": "~1.9.0",
+    "react-native-redash": "^15.5.2",
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
+    "react-native-triple-state-switch": "^1.0.0",
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.4.0",
     "react-navigation-stack": "^2.8.2",
     "react-redux": "^7.2.1",
-    "redux": "^4.0.5"
+    "react-triple-toggle-switch": "^1.0.3",
+    "redux": "^4.0.5",
+    "rn-slider-switch": "0.0.3",
+    "styled-components": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

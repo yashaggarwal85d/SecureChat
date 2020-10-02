@@ -9,13 +9,14 @@ import {
 } from 'native-base';
 
 import { Image } from 'react-native';
-import appStyles from '../appStyles';
+import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
 import { AntDesign,Entypo } from '@expo/vector-icons';
 import * as color from '../constants/colors';
 
 export default class ChatHeader extends Component {
   
   render() {
+    const appStyles = LightTheme;
     return (
       <Header style={appStyles.headerBackgroundColor}>
         <Left>

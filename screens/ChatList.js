@@ -9,14 +9,15 @@ import {
   Badge,
 } from 'native-base';
 
-import * as colors from '../constants/colors';
 import { FlatList } from 'react-native';
-import appStyles from '../appStyles';
 import {useSelector} from 'react-redux';
+import { LightTheme, DarkTheme, MediumTheme } from '../appStyles';
 
 class ChatScreenComponent extends Component {
   
   renderGridItem = (itemData) => {
+
+    const appStyles = LightTheme;
     const ProfilePicUrl = 'https://s3.amazonaws.com/uifaces/faces/twitter/mauriolg/128.jpg'
     return (
       <ListItem avatar onPress={() => {

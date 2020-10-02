@@ -1,10 +1,10 @@
-import { CHATLIST } from '../../data/ChatList'
+import { CHATLIST } from '../../data/ChatList';
 
-const initialState ={
+const ChatInitialState ={
     chats: CHATLIST,
 };
 
-const ChatListReducer = (state = initialState, action) => {
+const ChatListReducer = (state = ChatInitialState, action) => {
     return state;
 }
 

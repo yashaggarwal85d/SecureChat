@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bubble } from 'react-native-gifted-chat';
 import posed, { Transition } from 'react-native-pose';
-import * as styles from '../../appStyles';
+import { LightTheme,DarkTheme, MediumTheme } from '../../appStyles';
 
 const TransitionBubble = posed.View({
   enter: { opacity: 1, x: 0 },
@@ -11,17 +11,17 @@ const TransitionBubble = posed.View({
 const CustomBubble = bubbleProps => {
   
   const { user: { _id: authorId }, currentMessage: { user: { _id: currentId } } } = bubbleProps;
-
   const offset = authorId === currentId ? 20 : -20;
+  const appStyles = LightTheme;
 
   return (
     <Transition offset={offset} animateOnMount>
-      <TransitionBubble key='message-bubble' style={styles.CustomBubblercontainer}>
+      <TransitionBubble key='message-bubble' style={appStyles.CustomBubblercontainer}>
         <Bubble
           {...bubbleProps}
           // @ts-ignore
-          style = {styles.Bubble}
-          wrapperStyle={{ right: styles.CustomBubblerright }}
+          style = {appStyles.Bubble}
+          wrapperStyle={{ right: appStyles.CustomBubblerright }}
         />
       </TransitionBubble>
     </Transition>

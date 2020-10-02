@@ -2,12 +2,13 @@ import React from 'react';
 import { Send } from 'react-native-gifted-chat';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as colors from '../../constants/colors';
-import * as styles from '../../appStyles';
+import { LightTheme,DarkTheme, MediumTheme } from '../../appStyles';
 
+const appStyles = LightTheme;
 const CustomSend = sendProps => (
   <Send
     {...sendProps}
-    containerStyle={styles.CustomSendcontainer}
+    containerStyle={appStyles.CustomSendcontainer}
     >
     <MaterialIcons
       name='send'

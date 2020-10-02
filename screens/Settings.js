@@ -12,7 +12,7 @@ import {
   Button,
   Separator,
 } from 'native-base';
-import appStyles from '../appStyles';
+import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
 import {View} from 'react-native';
 
 export default class SettingsScreen extends Component {

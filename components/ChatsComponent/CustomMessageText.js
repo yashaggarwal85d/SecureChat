@@ -1,13 +1,14 @@
 import React from 'react';
 import { MessageText } from 'react-native-gifted-chat';
-import * as styles from '../../appStyles';
+import { LightTheme,DarkTheme, MediumTheme } from '../../appStyles';
 
+const appStyles = LightTheme;
 const CustomMessageText = messageTextProps => (
   <MessageText
     {...messageTextProps}
     textStyle={{
-      left: styles.CustomMessageTextleft,
-      right: styles.CustomMessageTextright
+      left: appStyles.CustomMessageTextleft,
+      right: appStyles.CustomMessageTextright
     }}
   />
 );
