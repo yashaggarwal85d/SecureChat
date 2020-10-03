@@ -11,13 +11,11 @@ import {
 
 import { FlatList } from 'react-native';
 import {useSelector} from 'react-redux';
-import { LightTheme, DarkTheme, MediumTheme } from '../appStyles';
 
 class ChatScreenComponent extends Component {
   
   renderGridItem = (itemData) => {
 
-    const appStyles = LightTheme;
     const ProfilePicUrl = 'https://s3.amazonaws.com/uifaces/faces/twitter/mauriolg/128.jpg'
     return (
       <ListItem avatar onPress={() => {
@@ -28,7 +26,7 @@ class ChatScreenComponent extends Component {
             userId: '1',
             activeChatname: itemData.item.name,
             ProfilePicUrl: ProfilePicUrl,
-            }
+          }
           });
         }}>
         <Left>
@@ -36,15 +34,15 @@ class ChatScreenComponent extends Component {
             source={{ uri: ProfilePicUrl}}/>
         </Left>
         <Body>
-          <Text style={appStyles.chatListName}>{itemData.item.name}</Text>
+          <Text style={this.props.appStyles.chatListName}>{itemData.item.name}</Text>
           <Text note>{itemData.item.lastMessage}</Text>
         </Body>
         <Right>
-          <Text note style={appStyles.lastmessagetime}>
+          <Text note style={this.props.appStyles.lastmessagetime}>
           {itemData.item.lastTime}
           </Text>
-          <Badge style={appStyles.badgeChats}>
-            <Text style={appStyles.badgeTextChats}>1</Text>
+          <Badge style={this.props.appStyles.badgeChats}>
+            <Text style={this.props.appStyles.badgeTextChats}>1</Text>
           </Badge>
         </Right>
       </ListItem>

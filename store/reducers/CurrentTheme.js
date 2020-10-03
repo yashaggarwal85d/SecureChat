@@ -1,8 +1,7 @@
-import {SWITCH_THEME} from '../actions/ThemeChangeActions';
-import { lightTheme,darkTheme,mediumTheme } from '../../constants/colors'
+import {SWITCH_THEME} from '../actions';
 
 const CurrentTheme ={
-    theme: lightTheme,
+    theme: 'light',
 };
 
 const ThemeReducer = (state = CurrentTheme, action) => {

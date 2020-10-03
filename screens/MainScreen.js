@@ -5,7 +5,6 @@ import {
   Button,
   Right,
   Body,
-  Icon,
   Container,
   Text,
   Tabs,
@@ -18,14 +17,11 @@ import {
 import * as colors from '../constants/colors';
 import ChatsScreen from './ChatList';
 import GroupScreen from './Groups';
-import { StatusBar,Image,SafeAreaView,Animated,View,StyleSheet } from 'react-native';
+import { StatusBar,Image,Animated,View } from 'react-native';
 import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
-import { Feather,Ionicons,FontAwesome,MaterialIcons,MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather,Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 import TrippleToggleSwitch from '../components/TripleToggle';
-import { useSelector,useDispatch,connect } from 'react-redux';
-import { SwitchTheme } from '../store/actions/ThemeChangeActions'
-import { lightTheme,darkTheme,mediumTheme } from '../constants/colors'
-import styled,{ThemeProvider} from 'styled-components'
+import { connect } from 'react-redux';
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
@@ -33,14 +29,23 @@ class MainApp extends Component {
   
   constructor(props) {
     super(props)
-    if(this.props.theme.mode == 'light')
-    this.appStyles = LightTheme;
+    if(this.props.theme == 'light')
+    {
+      this.appStyles = LightTheme;
+      this.defaultActiveIndex = 0;
+    }
     else
-    if(this.props.theme.mode == 'dark')
-    this.appStyles = DarkTheme;
+    if(this.props.theme == 'dark')
+    {
+      this.appStyles = DarkTheme;
+      this.defaultActiveIndex = 2;
+    }
     else
-    if(this.props.theme.mode == 'medium')
-    this.appStyles = MediumTheme;
+    if(this.props.theme == 'medium')
+    {
+      this.appStyles = MediumTheme;
+      this.defaultActiveIndex = 1;
+    }
   }
 
   componentDidMount() {
@@ -51,41 +56,48 @@ class MainApp extends Component {
 
   SwitchThemeFunction(currentTheme){
     this.props.ThemeSwitching(currentTheme);
-    console.log(currentTheme);
-    if(currentTheme.mode == 'light')
-    this.appStyles = LightTheme;
+    
+    if(currentTheme == 'light')
+    {
+      this.appStyles = LightTheme;
+    }
     else
-    if(currentTheme.mode == 'dark')
-    this.appStyles = DarkTheme;
+    if(currentTheme == 'dark')
+    {
+      this.appStyles = DarkTheme;
+    }
     else
-    if(currentTheme.mode == 'medium')
-    this.appStyles = MediumTheme;
+    if(currentTheme == 'medium')
+    {
+      this.appStyles = MediumTheme;
+    }
   }
 
   render() {
   
     return (
       <Container>
-      <ThemeProvider theme={this.appStyles}>
         <Header style={this.appStyles.headerBackgroundColor}>
         <Left>
+        <View style={this.appStyles.Headercontainer}>
         <Image
           source={require("../assets/omega.jpg")}
           resizeMode="stretch"
           style={this.appStyles.image}
         ></Image>
+        </View>
         </Left>
           <Body>
             <Title style={this.appStyles.appTitle}> Hi, Yash</Title>
           </Body>
           <Right>
             <Button icon transparent>
-            <Feather name='search' size={25} color={colors.dodgerblue} />
+            <Feather name='search' style={this.appStyles.HeaderIcon} />
             </Button>
             <Button icon transparent onPress={() => {
               this.props.navigation.navigate({routeName: 'Settings'});
             }}>
-              <Ionicons name="ios-settings" size={25} color={colors.dodgerblue} />
+              <Ionicons name="ios-settings" style={this.appStyles.HeaderIcon} />
             </Button>
           </Right>
         </Header>
@@ -107,7 +119,7 @@ class MainApp extends Component {
                 </Badge>
               </TabHeading>
             }>
-            <ChatsScreen navigation={this.props.navigation} />
+            <ChatsScreen navigation={this.props.navigation} appStyles={this.appStyles} />
           </Tab>
           <Tab
             heading={
@@ -115,18 +127,17 @@ class MainApp extends Component {
                 <Text style={this.appStyles.tabsText}>GROUPS</Text>
               </TabHeading>
             }>
-            <GroupScreen navigation={this.props.navigation}/>
+            <GroupScreen navigation={this.props.navigation} appStyles={this.appStyles}/>
           </Tab>
         </Tabs>
         <View style={this.appStyles.TrippleToggle}>
 	        <TrippleToggleSwitch
-            onLeftState={()=> this.SwitchThemeFunction(lightTheme) }
-            onMiddleState={()=> this.SwitchThemeFunction(mediumTheme)}
-            onRightState={()=> this.SwitchThemeFunction(darkTheme)}
+            onLeftState={()=> this.SwitchThemeFunction('light') }
+            onMiddleState={()=> this.SwitchThemeFunction('medium')}
+            onRightState={()=> this.SwitchThemeFunction('dark')}
             AnimatedIcon={AnimatedIcon}
         />
       </View>
-      </ThemeProvider> 
       </Container>
 
     );
@@ -146,4 +157,3 @@ function mapDispatchToProps(dispatch){
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(MainApp);
-

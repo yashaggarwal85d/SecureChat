@@ -8,14 +8,12 @@ import {
   Text,
   Badge,
 } from 'native-base';
-import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
 import { FlatList } from 'react-native'
 import {useSelector} from 'react-redux';
 
 class GroupScreenComponent extends Component {
 
   renderGridItem = (itemData) => {
-    const appStyles = LightTheme;
     return (
       <ListItem avatar onPress={() => {
         this.props.navigation.navigate({
@@ -36,15 +34,15 @@ class GroupScreenComponent extends Component {
               />
             </Left>
             <Body>
-              <Text style={appStyles.chatListName}>{itemData.item.name}</Text>
+              <Text style={this.props.appStyles.chatListName}>{itemData.item.name}</Text>
               <Text note>{itemData.item.lastMessage}</Text>
             </Body>
             <Right>
-              <Text note style={appStyles.lastmessagetime}>
+              <Text note style={this.props.appStyles.lastmessagetime}>
               {itemData.item.lastTime}
               </Text>
-              <Badge style={appStyles.badgeChats}>
-                <Text style={appStyles.badgeTextChats}>1</Text>
+              <Badge style={this.props.appStyles.badgeChats}>
+                <Text style={this.props.appStyles.badgeTextChats}>1</Text>
               </Badge>
             </Right>
           </ListItem>
