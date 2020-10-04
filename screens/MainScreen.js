@@ -6,22 +6,16 @@ import {
   Right,
   Body,
   Container,
-  Text,
-  Tabs,
-  Tab,
-  ScrollableTab,
-  TabHeading,
-  Badge, Left
+  Left
 } from 'native-base';
 
 import * as colors from '../constants/colors';
-import ChatsScreen from './ChatList';
-import GroupScreen from './Groups';
 import { StatusBar,Image,Animated,View } from 'react-native';
 import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
 import { Feather,Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 import TrippleToggleSwitch from '../components/TripleToggle';
 import { connect } from 'react-redux';
+import MainTabScreen from './Tabs';
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
@@ -33,50 +27,60 @@ class MainApp extends Component {
     {
       this.appStyles = LightTheme;
       this.defaultActiveIndex = 0;
+      this.SecondaryColor = colors.ghostwhite;
+      this.DefaultTheme = 'light';
     }
     else
     if(this.props.theme == 'dark')
     {
       this.appStyles = DarkTheme;
       this.defaultActiveIndex = 2;
+      this.SecondaryColor = colors.black;
+      this.DefaultTheme = 'dark';
     }
     else
     if(this.props.theme == 'medium')
     {
       this.appStyles = MediumTheme;
       this.defaultActiveIndex = 1;
+      this.SecondaryColor = colors.grey;
+      this.DefaultTheme = 'medium';
     }
   }
 
   componentDidMount() {
     setTimeout(() => {
-      StatusBar.setBackgroundColor(this.props.theme.BACKGROUND_COLOR);
+      StatusBar.setBackgroundColor(this.SecondaryColor);
     });
   }
 
   SwitchThemeFunction(currentTheme){
     this.props.ThemeSwitching(currentTheme);
-    
+    this.DefaultTheme=currentTheme;
     if(currentTheme == 'light')
     {
       this.appStyles = LightTheme;
+      this.SecondaryColor = colors.ghostwhite;
     }
     else
     if(currentTheme == 'dark')
     {
       this.appStyles = DarkTheme;
+      this.SecondaryColor = colors.black;
     }
     else
     if(currentTheme == 'medium')
     {
       this.appStyles = MediumTheme;
+      this.SecondaryColor = colors.grey;
     }
+    this.componentDidMount();
   }
 
   render() {
   
     return (
-      <Container>
+      <Container style={this.appStyles.MainScreenContainer}>
         <Header style={this.appStyles.headerBackgroundColor}>
         <Left>
         <View style={this.appStyles.Headercontainer}>
@@ -101,42 +105,21 @@ class MainApp extends Component {
             </Button>
           </Right>
         </Header>
-        <Tabs
-          tabContainerStyle={{
-            elevation: 0,
-          }}
-          renderTabBar={() => <ScrollableTab />}
-          tabBarUnderlineStyle={this.appStyles.tabBarUnderLine}
-          tabBarActiveTextColor="blue"
-          initialPage={3}
-          tabBarBackgroundColor={colors.ghostwhite}>
-          <Tab
-            heading={
-              <TabHeading style={{backgroundColor: colors.ghostwhite}}>
-                <Text style={this.appStyles.tabsText}>CHATS</Text>
-                <Badge style={this.appStyles.badge}>
-                  <Text style={this.appStyles.badgeText}>2</Text>
-                </Badge>
-              </TabHeading>
-            }>
-            <ChatsScreen navigation={this.props.navigation} appStyles={this.appStyles} />
-          </Tab>
-          <Tab
-            heading={
-              <TabHeading style={{backgroundColor: colors.ghostwhite}}>
-                <Text style={this.appStyles.tabsText}>GROUPS</Text>
-              </TabHeading>
-            }>
-            <GroupScreen navigation={this.props.navigation} appStyles={this.appStyles}/>
-          </Tab>
-        </Tabs>
+        <MainTabScreen 
+          navigation={this.props.navigation}
+          SecondaryColor={this.SecondaryColor}
+          appStyles={this.appStyles}
+          DefaultTheme={this.DefaultTheme}
+          defaultActiveIndex={this.defaultActiveIndex}
+        />
         <View style={this.appStyles.TrippleToggle}>
 	        <TrippleToggleSwitch
             onLeftState={()=> this.SwitchThemeFunction('light') }
             onMiddleState={()=> this.SwitchThemeFunction('medium')}
             onRightState={()=> this.SwitchThemeFunction('dark')}
             AnimatedIcon={AnimatedIcon}
-        />
+            defaultActiveIndex={this.defaultActiveIndex}
+          />
       </View>
       </Container>
 

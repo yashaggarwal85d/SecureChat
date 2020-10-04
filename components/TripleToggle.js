@@ -38,6 +38,7 @@ export default class TrippleToggleSwitch extends Component {
       this._switchvalue = this.state.startValue;
       this._animatedValue = new Animated.Value(this._switchvalue);
       this._animatedValue.addListener(({value}) => this._switchvalue = value);
+      this.setActiveIndex(this.props.defaultActiveIndex);
     }
 
 	setActiveIndex = (idx) => {
@@ -48,7 +49,6 @@ export default class TrippleToggleSwitch extends Component {
         }else {
             this._animateToSwitchItem(this.MAX_VALUE)
         }
-
 		this.setState({ activeIdx: idx })
 	}
 
@@ -213,7 +213,7 @@ export default class TrippleToggleSwitch extends Component {
 	}
 
 	render(){
-		return(
+        return(
 	          <View style={{backgroundColor: 'transparent', paddingLeft: 10, paddingRight: 10}}>
                   <View style={[this.props.itemsContainerBackgroundStyle, ]}/>
 
@@ -225,7 +225,6 @@ export default class TrippleToggleSwitch extends Component {
 
 
 TrippleToggleSwitch.defaultProps = {
-	defaultActiveIndex: 0,
     minValue: 0,
     maxValue: 115,
 	leftStateIconName: 'web',
@@ -233,7 +232,7 @@ TrippleToggleSwitch.defaultProps = {
 	rightStateIconName: 'guy-fawkes-mask',
 	stateIconSize: 30,
     switchShiftTime: 200,
-	primaryColor: '#124E96',
+	primaryColor: '#758184',
 	secondaryColor: 'white',
     itemContainer: {
 	  backgroundColor: 'transparent',
@@ -244,7 +243,7 @@ TrippleToggleSwitch.defaultProps = {
 	},
     floatingPointerStyle: {
       position: 'absolute',
-      backgroundColor: '#124E96',
+      backgroundColor: '#221f3b',
       height: 80,
       width: 80,
       borderRadius: 40,
@@ -273,29 +272,9 @@ TrippleToggleSwitch.defaultProps = {
         marginLeft: 7.5,
         marginRight: 7.5,
 		borderRadius: 30,
-		backgroundColor: 'white'
+		backgroundColor: 'black'
 	},
 	onLeftState: () => {},
     onMiddleState: () => {},
     onRightState: () => {}
-}
-
-TrippleToggleSwitch.propTypes = {
-	defaultActiveIndex: PropTypes.number,
-    minValue: PropTypes.number,
-    maxValue: PropTypes.number,
-	leftStateIconName: PropTypes.string,
-	middleStateIconName: PropTypes.string,
-	rightStateIconName: PropTypes.string,
-	stateIconSize: PropTypes.number,
-    switchShiftTime: PropTypes.number,
-	primaryColor: PropTypes.string,
-	secondaryColor: PropTypes.string,
-	itemContainer: ViewPropTypes.style,
-	itemsContainer: ViewPropTypes.style,
-    floatingPointerStyle: ViewPropTypes.style,
-	itemsContainerBackgroundStyle: ViewPropTypes.style,
-	onLeftState: PropTypes.func,
-    onMiddleState: PropTypes.func,
-    onRightState: PropTypes.func,
 }

@@ -3,6 +3,9 @@ import * as colors from './constants/colors';
 
 export const LightTheme= StyleSheet.create({
   
+  MainScreenContainer:{
+    backgroundColor:colors.white,
+  },
   HeaderContainer: {
     width: 57,
     height: 58,
@@ -19,6 +22,9 @@ export const LightTheme= StyleSheet.create({
     height: 48,
     borderRadius: 250
   },
+  HeadertabBarBackgroundColor:{
+    backgroundColor:colors.ghostwhite,
+  },
   HeaderIcon:{
     color:colors.dodgerblue,
     fontSize:25,
@@ -31,6 +37,11 @@ export const LightTheme= StyleSheet.create({
     borderWidth: 0,
     borderColor: colors.dodgerblue,
     borderRadius: 1500,
+  },
+  ListItemStyle:{
+    height:80,
+    borderBottomWidth:1,
+    borderBottomColor:colors.ghostwhite
   },
   headerBackgroundColor: {
     fontFamily: 'Touche_Semibold',
@@ -70,7 +81,12 @@ export const LightTheme= StyleSheet.create({
     textTransform: 'capitalize',
     fontFamily: 'Touche_Semibold',
     fontWeight: '400', 
-    fontSize: 18, 
+    fontSize: 18,
+    color:colors.black,
+  },
+  chatListNote:{
+    fontFamily: 'Roboto_medium',
+    color:colors.grey,
   },
   badgeChats: {
     fontFamily: 'Touche_Semibold',
@@ -112,20 +128,29 @@ export const LightTheme= StyleSheet.create({
     marginRight: 10,
     fontSize: 18,
   },
+  GiftedChatContainer: {
+    backgroundColor:colors.white,
+  },
   CustomMessageTextleft: {
       color:colors.black,
-      fontFamily: 'Kamerik-Bold',
+      fontFamily: 'Touche_Medium',
   },
   CustomMessageTextright: {
-      color:colors.black,
-      fontFamily: 'Kamerik-Bold',
+      color:colors.ghostwhite,
+      fontFamily: 'Touche_Medium',
   },
   CustomBubblercontainer: {
     flex: 1
   },
   CustomBubblerright: {
+    marginTop:10,
     marginVertical: 4,
     backgroundColor: colors.dodgerblue,
+  },
+  CustomBubblerleft: {
+    marginTop:10,
+    marginVertical: 4,
+    backgroundColor: colors.ghostwhite,
   },
   CustomSendcontainer: {
     alignItems: 'center',
@@ -179,7 +204,7 @@ export const MediumTheme= StyleSheet.create({
     borderRadius: 100
   },
   HeaderIcon:{
-    color:colors.black,
+    color:colors.white,
     fontSize:25,
   },
   HeaderImage: {
@@ -317,8 +342,12 @@ export const MediumTheme= StyleSheet.create({
 })
 export const DarkTheme = StyleSheet.create({
   
-  MainScreenContainer: {
-    overflow:"hidden",
+  MainScreenContainer:{
+    backgroundColor:colors.BluishBlack,
+  },
+  HeaderContainer: {
+    width: 57,
+    height: 58,
   },
   appTitle: {
     textTransform: 'capitalize',
@@ -328,18 +357,15 @@ export const DarkTheme = StyleSheet.create({
     color: colors.ghostwhite,
   },
   image: {
-    marginTop:15,
-    marginLeft:5,
-    //marginRight:15,
-    width: 41,
-    height: 41,
-    borderRadius: 250,
-    borderColor: colors.black,
-    borderWidth: 0,
+    width: 48,
+    height: 48,
+    borderRadius: 250
+  },
+  HeadertabBarBackgroundColor:{
     backgroundColor:colors.black,
   },
   HeaderIcon:{
-    color:colors.black,
+    color:colors.ghostwhite,
     fontSize:25,
   },
   HeaderImage: {
@@ -351,18 +377,23 @@ export const DarkTheme = StyleSheet.create({
     borderColor: colors.black,
     borderRadius: 1500,
   },
+  ListItemStyle:{
+    height:80,
+    borderBottomWidth:1,
+    borderBottomColor:colors.black,
+  },
   headerBackgroundColor: {
     fontFamily: 'Touche_Semibold',
     backgroundColor: colors.black,
   },
   // Tabs
   tabBarUnderLine: {
-    height: 2,
-    backgroundColor: colors.black,
+    height: 3,
+    backgroundColor: colors.ghostwhite,
   },
   badge: {
     fontFamily: 'Touche_Semibold',
-    backgroundColor: colors.black,
+    backgroundColor: colors.ghostwhite,
     justifyContent: 'center',
     textAlign: 'center',
     alignSelf: 'center',
@@ -370,7 +401,7 @@ export const DarkTheme = StyleSheet.create({
   },
   lastmessagetime: {
     fontFamily: 'Touche_Semibold',
-    color: colors.black,
+    color: colors.ghostwhite,
   },
   badgeText: {
     fontFamily: 'Touche_Semibold',
@@ -389,11 +420,16 @@ export const DarkTheme = StyleSheet.create({
     textTransform: 'capitalize',
     fontFamily: 'Touche_Semibold',
     fontWeight: '400', 
-    fontSize: 18, 
+    fontSize: 18,
+    color:colors.ghostwhite,
+  },
+  chatListNote:{
+    fontFamily: 'Roboto_medium',
+    color:colors.grey,
   },
   badgeChats: {
     fontFamily: 'Touche_Semibold',
-    backgroundColor: colors.black,
+    backgroundColor: colors.ghostwhite,
     justifyContent: 'center',
     textAlign: 'center',
     alignSelf: 'center',
@@ -402,6 +438,7 @@ export const DarkTheme = StyleSheet.create({
   },
   badgeTextChats: {
     fontFamily: 'Touche_Semibold',
+    fontWeight: 'bold',
     color: colors.black,
     fontSize: 12,
   },
@@ -431,13 +468,16 @@ export const DarkTheme = StyleSheet.create({
     marginRight: 10,
     fontSize: 18,
   },
+  GiftedChatContainer: {
+    backgroundColor:colors.black,
+  },
   CustomMessageTextleft: {
-      color:colors.ghostwhite,
-      fontFamily: 'Kamerik-Bold',
+    color:colors.white,
+    fontFamily: 'Touche_Medium',
   },
   CustomMessageTextright: {
-      color:colors.ghostwhite,
-      fontFamily: 'Kamerik-Bold',
+    color:colors.white,
+    fontFamily: 'Touche_Medium',
   },
   CustomBubblercontainer: {
     flex: 1
@@ -449,7 +489,6 @@ export const DarkTheme = StyleSheet.create({
   CustomSendcontainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    //paddingHorizontal: 20,
   },
   CustomInputToolbarcontainer: {
     height: 40,

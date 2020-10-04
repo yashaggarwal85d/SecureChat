@@ -31,11 +31,12 @@ export default class PresentChatScreen extends React.Component {
     const {state} = this.props.navigation;
     return (
       <>
-      <Container>
+      <Container style={state.params.appStyles.GiftedChatContainer}>
       <ChatHeader {...this.props} name={state.params.activeChatname} ProfilePicUrl={state.params.ProfilePicUrl}/>
       <GiftedChat
         scrollToBottom
-        alwaysShowSend
+        renderAvatar={null}
+        renderUsernameOnMessage={true}
         inverted={false}
         maxInputLength={200}
         textInputProps={{ disable: true }}

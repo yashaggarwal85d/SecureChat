@@ -4,4 +4,6 @@ export const greencyan = '#25D366';
 export const mosque = '#075E54';
 export const black = '#000000';
 export const grey = '#808080';
-export const white = '#ffffff'
+export const white = '#ffffff';
+export const BluishBlack = '#1a1c20';
+export const LightGrey = '#D3D3D3';

@@ -12,7 +12,8 @@ const fetchFonts = () => {
   Font.loadAsync({
     'Roboto_medium': require('./assets/fonts/Roboto-Medium.ttf'),
     'Kamerik-Bold': require('./assets/fonts/Kamerik-Bold.ttf'),
-    'Touche_Semibold': require('./assets/fonts/Touche-Semibold.ttf')
+    'Touche_Semibold': require('./assets/fonts/Touche-Semibold.ttf'),
+    'Touche_Medium':require('./assets/fonts/Touche_Medium.ttf'),
   });
 };
 
