@@ -9,16 +9,14 @@ import {
 } from 'native-base';
 
 import { Image } from 'react-native';
-import { LightTheme,DarkTheme, MediumTheme } from '../appStyles';
 import { AntDesign,Entypo } from '@expo/vector-icons';
 import * as color from '../constants/colors';
 
 export default class ChatHeader extends Component {
   
   render() {
-    const appStyles = LightTheme;
     return (
-      <Header style={appStyles.headerBackgroundColor}>
+      <Header style={this.props.appStyles.headerBackgroundColor}>
         <Left>
           <Button icon transparent onPress={() => {
               this.props.navigation.goBack();
@@ -30,11 +28,11 @@ export default class ChatHeader extends Component {
         <Image
           source={{uri: this.props.ProfilePicUrl}}
           resizeMode="stretch"
-          style={appStyles.HeaderImage}
+          style={this.props.appStyles.HeaderImage}
         ></Image>
         
           <Body>
-            <Title style={appStyles.appTitle}>{this.props.name}</Title>
+            <Title style={this.props.appStyles.appTitle}>{this.props.name}</Title>
           </Body>
           <Right>
             <Button icon transparent onPress={() => {

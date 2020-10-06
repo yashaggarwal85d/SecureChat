@@ -179,7 +179,10 @@ export const LightTheme= StyleSheet.create({
   TrippleToggle:{
     left: 144,
     bottom: 20,
-  }
+  },
+  CustomTextinputStyle:{
+    color:colors.black,
+  },
 });
 
 export const MediumTheme= StyleSheet.create({
@@ -340,6 +343,7 @@ export const MediumTheme= StyleSheet.create({
     bottom: 20,
   }
 })
+
 export const DarkTheme = StyleSheet.create({
   
   MainScreenContainer:{
@@ -462,14 +466,13 @@ export const DarkTheme = StyleSheet.create({
     width: 20,
     fontSize: 20,
   },
-  // Call Screen
   callIcon: {
     fontFamily: 'Touche_Semibold',
     marginRight: 10,
     fontSize: 18,
   },
   GiftedChatContainer: {
-    backgroundColor:colors.black,
+    backgroundColor:colors.BluishBlack,
   },
   CustomMessageTextleft: {
     color:colors.white,
@@ -512,5 +515,8 @@ export const DarkTheme = StyleSheet.create({
   TrippleToggle:{
     left: 144,
     bottom: 20,
-  }
+  },
+  CustomTextinputStyle:{
+    color:colors.white,
+  },
 });

@@ -1,15 +1,23 @@
 import React,{useState} from 'react';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import ChatsNavigator from './navigation/chatsNavigation';
-import {createStore,combineReducers} from 'redux';
+import MainNavigator from './navigation/chatsNavigation';
+import { createStore,combineReducers,applyMiddleware } from 'redux';
 import ChatListReducer from './store/reducers/chatlist';
 import GroupListReducer from './store/reducers/grouplist';
 import ThemeReducer from './store/reducers/CurrentTheme';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+
+const rootReducer = combineReducers({
+  ChatList: ChatListReducer,
+  GroupList: GroupListReducer,
+  CurrentTheme: ThemeReducer,
+});
+const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
-  Font.loadAsync({
+  return Font.loadAsync({
     'Roboto_medium': require('./assets/fonts/Roboto-Medium.ttf'),
     'Kamerik-Bold': require('./assets/fonts/Kamerik-Bold.ttf'),
     'Touche_Semibold': require('./assets/fonts/Touche-Semibold.ttf'),
@@ -17,28 +25,22 @@ const fetchFonts = () => {
   });
 };
 
-const rootReducer = combineReducers({
-  ChatList: ChatListReducer,
-  GroupList: GroupListReducer,
-  CurrentTheme: ThemeReducer,
-});
-const store = createStore(rootReducer);
-
 export default function App() {
-  const [fontloaded,setfontloaded] = useState(false);
-  
-  if(!fontloaded){
+  const [fontLoaded, setFontLoaded] = useState(false);
+  if (!fontLoaded) {
     return (
       <AppLoading
-      startAsync={fetchFonts} 
-      onFinish={() => setfontloaded(true)}
-    />
-    )
+        startAsync={fetchFonts}
+        onFinish={() => setFontLoaded(true)}
+        onError={err => console.log(err)}
+      />
+    );
   }
-  
-  return (
+  return(
+
     <Provider store={store}>
-      <ChatsNavigator/>
+      <MainNavigator/>
     </Provider>
+
   );
 }

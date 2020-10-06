@@ -23,6 +23,7 @@ export default class MainTabScreen extends Component {
           tabContainerStyle={{
             elevation: 0,
           }}
+          prerenderingSiblingsNumber={1/0}
           renderTabBar={() => <ScrollableTab />}
           tabBarUnderlineStyle={this.props.appStyles.tabBarUnderLine}
           initialPage={1}
@@ -56,6 +57,7 @@ export default class MainTabScreen extends Component {
           tabContainerStyle={{
             elevation: 0,
           }}
+          prerenderingSiblingsNumber={1/0}
           renderTabBar={() => <ScrollableTab />}
           tabBarUnderlineStyle={this.props.appStyles.tabBarUnderLine}
           initialPage={0}
@@ -89,6 +91,7 @@ export default class MainTabScreen extends Component {
           tabContainerStyle={{
             elevation: 0,
           }}
+          prerenderingSiblingsNumber={1/0}
           renderTabBar={() => <ScrollableTab />}
           tabBarUnderlineStyle={this.props.appStyles.tabBarUnderLine}
           initialPage={0}
