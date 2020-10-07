@@ -4,7 +4,6 @@ import SettingsScreen from '../screens/Settings';
 import MainApp from '../screens/MainScreen';
 import PresentChatScreen from '../screens/Chats';
 import AuthScreen from '../screens/AuthScreen/LoginScreen';
-import ConfirmAuthScreen from '../screens/AuthScreen/ConfirmLoginScreen';
 
 const ChatsNavigator = createStackNavigator({
     MainScreen: {
@@ -29,11 +28,7 @@ const AuthNavigator = createStackNavigator({
         navigationOptions: {
             headerShown: false
         }
-    },
-    Confirm:{
-        screen: ConfirmAuthScreen,
     }
-
 });
 
 const MainNavigator = createSwitchNavigator({

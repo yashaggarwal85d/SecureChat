@@ -1,4 +1,4 @@
-import { Text,Container } from 'native-base';
+import { Text,Container,Header } from 'native-base';
 import {TextInput, TouchableOpacity,View } from 'react-native';
 import React, { useRef,useState,useEffect } from 'react';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
@@ -11,27 +11,34 @@ export default AuthScreen = (props) => {
   const [code, setCode] = useState('');
   const [verificationId, setVerificationId] = useState(null);
   const recaptchaVerifier = useRef(null);
+  const [error,setError] = useState('');
 
   useEffect( () => {
     firebase.auth().onAuthStateChanged( (user) => {
         if (user) {
-            console.log("hello");
-            props.navigation.navigate('chat');
+          props.navigation.navigate('Chat');
         }
         else{
-            sendVerification('')
+          setVerificationId(null)
         } 
     });
 }, []);  
 
   const sendVerification = () => {
+
+    setError('');
     const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    console.log(recaptchaVerifier.current);
     phoneProvider
       .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-      .then(setVerificationId)
+      .then(setVerificationId).catch(function (error) {
+        setError(String(error))
+    })
+
   };
 
   const confirmCode = () => {
+
     const credential = firebase.auth.PhoneAuthProvider.credential(
       verificationId,
       code
@@ -40,23 +47,56 @@ export default AuthScreen = (props) => {
       .auth()
       .signInWithCredential(credential)
       .then((result) => {
-        console.log(result);
-      });
+        props.navigation.navigate('chat');
+      }).catch(function (error) {
+        setError(String(error))
+      })
   };
+
+  const goback = () => {
+    setVerificationId(null);
+    setError('');
+  }
+
+  if(verificationId)
+  {
+    return (
+      <Container style={styles.container}>
+      <Header>
+        <Text onPress={goback}>Back</Text>
+      </Header>
+        <View>
+    <TextInput
+          placeholder="Confirmation Code"
+          onChangeText={setCode}
+          keyboardType="number-pad"
+          style={styles.textInput}
+        />
+        <TouchableOpacity style={styles.sendCode} onPress={confirmCode}>
+          <Text style={styles.buttonText}>Verifiy</Text>
+        </TouchableOpacity>
+        <Text>{error}</Text>
+        </View>
+        </Container>
+    
+    )
+      
+  }
 
   return (
     <Container style={styles.container}>
       <View>
-        <FirebaseRecaptchaVerifierModal
-          ref={recaptchaVerifier}
-          firebaseConfig={firebase.app().options}
-        />
         <TextInput
-          placeholder="Phone Number"
+          placeholder='Phone number'
           onChangeText={setPhoneNumber}
           keyboardType="phone-pad"
           autoCompleteType="tel"
           style={styles.textInput}
+          defaultValue={phoneNumber}
+        />
+        <FirebaseRecaptchaVerifierModal
+          ref={recaptchaVerifier}
+          firebaseConfig={firebase.app().options}
         />
         <TouchableOpacity
           style={styles.sendVerification}
@@ -64,16 +104,10 @@ export default AuthScreen = (props) => {
         >
           <Text style={styles.buttonText}>Send Verification</Text>
         </TouchableOpacity>
-        <TextInput
-          placeholder="Confirmation Code"
-          onChangeText={setCode}
-          keyboardType="number-pad"
-          style={styles.textInput}
-        />
-        <TouchableOpacity style={styles.sendCode} onPress={confirmCode}>
-          <Text style={styles.buttonText}>Send Verification</Text>
-        </TouchableOpacity>
-      </View>
+        
+        <Text>{error}</Text>
+        
+        </View>
     </Container>
   );
 }

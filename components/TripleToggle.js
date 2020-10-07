@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import {
+import 
+{
     View,
-	ViewPropTypes,
-    StyleSheet,
-    Text,
-    Animated,
+	Animated,
     PanResponder,
 	TouchableOpacity
 } from 'react-native';
-import PropTypes from 'prop-types';
 
 
 export default class TrippleToggleSwitch extends Component {
@@ -39,6 +36,7 @@ export default class TrippleToggleSwitch extends Component {
       this._animatedValue = new Animated.Value(this._switchvalue);
       this._animatedValue.addListener(({value}) => this._switchvalue = value);
       this.setActiveIndex(this.props.defaultActiveIndex);
+      this.componentDidMount();
     }
 
 	setActiveIndex = (idx) => {
@@ -52,14 +50,13 @@ export default class TrippleToggleSwitch extends Component {
 		this.setState({ activeIdx: idx })
 	}
 
-
-    componentWillMount () {
+    componentDidMount () {
       this._panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: (evt, gestureState) => true,
-        onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+        onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
         onMoveShouldSetPanResponder: this._onMoveShouldSetPanResponder,
-        onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-        onPanResponderTerminationRequest: (evt, gestureState) => false,
+        onMoveShouldSetPanResponderCapture: () => true,
+        onPanResponderTerminationRequest: () => false,
         onPanResponderGrant: this._onPanResponderGrant,
         onPanResponderMove: this._onPanResponderMove,
         onPanResponderRelease: this._onPanResponderRelease
@@ -99,11 +96,11 @@ export default class TrippleToggleSwitch extends Component {
         }
     }
 
-    _onPanResponderGrant = (evt, gestureState) => {
+    _onPanResponderGrant = () => {
 
     }
 
-    _onPanResponderRelease = (evt, gestureState) => {
+    _onPanResponderRelease = () => {
         if (this._switchvalue >= this.MID_RIGHT_VALUE){
             this._animateToSwitchItem(this.MAX_VALUE)
         } else if (this._switchvalue >= this.MID_LEFT_VALUE && this._switchvalue <= this.MID_RIGHT_VALUE) {
@@ -116,8 +113,9 @@ export default class TrippleToggleSwitch extends Component {
     _animateToSwitchItem = (toValue) => {
         Animated.timing(this._animatedValue, {
             toValue: toValue,
-            duration: this.props.switchShiftTime
-        }, {useNativeDrive: true}).start(() => {
+            duration: this.props.switchShiftTime,
+            useNativeDrive: true
+        }).start(() => {
             this.setState({startValue: toValue})
         });
     }
@@ -150,9 +148,7 @@ export default class TrippleToggleSwitch extends Component {
     }
 
 	renderToggleItems = () => {
-		const { children } = this.props;
 		const AnimatedIcon = this.props.AnimatedIcon;
-		const toggleButtons = !Array.isArray(children) ? [children] : children;
 
 		return (
 			<View style={[this.props.itemsContainer,]}>
@@ -214,17 +210,17 @@ export default class TrippleToggleSwitch extends Component {
 
 	render(){
         return(
-	          <View style={{backgroundColor: 'transparent', paddingLeft: 10, paddingRight: 10}}>
-                  <View style={[this.props.itemsContainerBackgroundStyle, ]}/>
-
-                  {this.renderToggleItems()}
-	          </View>
+            <View style={{backgroundColor: 'transparent', paddingLeft: 10, paddingRight: 10}}>
+                <View style={[this.props.itemsContainerBackgroundStyle, ]}/>
+                {this.renderToggleItems()}
+            </View>
 		)
     }
 }
 
 
 TrippleToggleSwitch.defaultProps = {
+
     minValue: 0,
     maxValue: 115,
 	leftStateIconName: 'web',
