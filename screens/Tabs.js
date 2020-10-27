@@ -1,122 +1,23 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  Tabs,
-  Tab,
-  ScrollableTab,
-  TabHeading,
-  Badge
-} from 'native-base';
-
-import DarkChatScreen from './DarkScreen/ChatList';
-import DarkGroupScreen from './DarkScreen/GroupList';
-import MediumChatScreen from './MediumScreen/ChatList';
-import MediumGroupScreen from './MediumScreen/GroupList';
-import ChainList from './LightScreen/ChainList';
-import FeedList from './LightScreen/FeedList';
+import DarkHeader from './DarkScreen/Header';
+import MediumHeader from './MediumScreen/Header';
+import LightHeader from './LightScreen/Header';
 
 export default class MainTabScreen extends Component {
     
     renderLight(){
         return(
-        <Tabs
-          tabContainerStyle={{
-            elevation: 0,
-          }}
-          prerenderingSiblingsNumber={1/0}
-          renderTabBar={() => <ScrollableTab />}
-          tabBarUnderlineStyle={this.props.appStyles.tabBarUnderLine}
-          initialPage={1}
-          tabBarBackgroundColor={this.props.SecondaryColor} 
-          >
-          <Tab
-            heading={
-              <TabHeading style={this.props.appStyles.HeadertabBarBackgroundColor}>
-                <Text style={this.props.appStyles.tabsText}>FEED</Text>
-                <Badge style={this.props.appStyles.badge}>
-                  <Text style={this.props.appStyles.badgeText}>2</Text>
-                </Badge>
-              </TabHeading>
-            }>
-            <FeedList navigation={this.props.navigation} appStyles={this.props.appStyles} />
-          </Tab>
-          <Tab
-            heading={
-              <TabHeading style={this.props.appStyles.HeadertabBarBackgroundColor}>
-                <Text style={this.props.appStyles.tabsText}>CHAINS</Text>
-              </TabHeading>
-            }>
-            <ChainList navigation={this.props.navigation} appStyles={this.props.appStyles}/>
-          </Tab>
-        </Tabs>
+          <LightHeader {...this.props} />
         )
     }
     renderDark(){
         return(
-        <Tabs
-          tabContainerStyle={{
-            elevation: 0,
-          }}
-          prerenderingSiblingsNumber={1/0}
-          renderTabBar={() => <ScrollableTab />}
-          tabBarUnderlineStyle={this.props.appStyles.tabBarUnderLine}
-          initialPage={0}
-          tabBarBackgroundColor={this.props.SecondaryColor} 
-          >
-          <Tab
-            heading={
-              <TabHeading style={this.props.appStyles.HeadertabBarBackgroundColor}>
-                <Text style={this.props.appStyles.tabsText}>CHATS</Text>
-                <Badge style={this.props.appStyles.badge}>
-                  <Text style={this.props.appStyles.badgeText}>2</Text>
-                </Badge>
-              </TabHeading>
-            }>
-            <DarkChatScreen navigation={this.props.navigation} appStyles={this.props.appStyles} />
-          </Tab>
-          <Tab
-            heading={
-              <TabHeading style={this.props.appStyles.HeadertabBarBackgroundColor}>
-                <Text style={this.props.appStyles.tabsText}>GROUPS</Text>
-              </TabHeading>
-            }>
-            <DarkGroupScreen navigation={this.props.navigation} appStyles={this.props.appStyles}/>
-          </Tab>
-        </Tabs>
+          <DarkHeader {...this.props} />
         )
     }
     renderMedium(){
         return(
-        <Tabs
-          tabContainerStyle={{
-            elevation: 0,
-          }}
-          prerenderingSiblingsNumber={1/0}
-          renderTabBar={() => <ScrollableTab />}
-          tabBarUnderlineStyle={this.props.appStyles.tabBarUnderLine}
-          initialPage={0}
-          tabBarBackgroundColor={this.props.SecondaryColor} 
-          >
-          <Tab
-            heading={
-              <TabHeading style={this.props.appStyles.HeadertabBarBackgroundColor}>
-                <Text style={this.props.appStyles.tabsText}>CHATS</Text>
-                <Badge style={this.props.appStyles.badge}>
-                  <Text style={this.props.appStyles.badgeText}>2</Text>
-                </Badge>
-              </TabHeading>
-            }>
-            <MediumChatScreen navigation={this.props.navigation} appStyles={this.props.appStyles} />
-          </Tab>
-          <Tab
-            heading={
-              <TabHeading style={this.props.appStyles.HeadertabBarBackgroundColor}>
-                <Text style={this.props.appStyles.tabsText}>GROUPS</Text>
-              </TabHeading>
-            }>
-            <MediumGroupScreen navigation={this.props.navigation} appStyles={this.props.appStyles}/>
-          </Tab>
-        </Tabs>
+          <MediumHeader {...this.props} />
         )
     }
     render(){

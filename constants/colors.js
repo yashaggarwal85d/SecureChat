@@ -7,3 +7,4 @@ export const grey = '#808080';
 export const white = '#ffffff';
 export const BluishBlack = '#1a1c20';
 export const LightGrey = '#D3D3D3';
+export const Shadow = '#1a1a1a';

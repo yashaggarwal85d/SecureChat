@@ -33,8 +33,8 @@ export default class ChatScreenComponent extends Component {
               source={{ uri: ProfilePicUrl}}/>
           
           <Body>
-            <Text style={this.props.appStyles.chatListName}>{itemData.item.name}</Text>
-            <Text style={this.props.appStyles.chatListNote} note>{itemData.item.lastMessage}</Text>
+            <Text numberOfLines={1} style={this.props.appStyles.chatListName}>{itemData.item.name}</Text>
+            <Text numberOfLines={1} style={this.props.appStyles.chatListNote} note>{itemData.item.lastMessage}</Text>
           </Body>
           <Right>
             <Text note style={this.props.appStyles.lastmessagetime}>
