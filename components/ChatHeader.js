@@ -35,9 +35,7 @@ export default class ChatHeader extends Component {
             <Title style={this.props.appStyles.appTitle}>{this.props.name}</Title>
           </Body>
           <Right>
-            <Button icon transparent onPress={() => {
-              this.props.navigation.navigate({routeName: 'Settings'});
-            }}>
+            <Button icon transparent>
               <Entypo name="dots-three-vertical" size={25} color={color.dodgerblue} />
             </Button>
           </Right>

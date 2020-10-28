@@ -1,9 +1,9 @@
-import { createStackNavigator, Header } from 'react-navigation-stack';
+import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer,createSwitchNavigator } from 'react-navigation';
-import SettingsScreen from '../screens/Settings';
 import MainApp from '../screens/MainScreen';
 import PresentChatScreen from '../screens/Chats';
 import AuthScreen from '../screens/AuthScreen/LoginScreen';
+import DetailScreen from '../screens/LightScreen/Details';
 
 const ChatsNavigator = createStackNavigator({
     MainScreen: {
@@ -12,12 +12,18 @@ const ChatsNavigator = createStackNavigator({
             headerShown: false
         }
     },
-    Settings: SettingsScreen,
     ChatScreen:{
         
         screen: PresentChatScreen,
         navigationOptions: {
             headerShown: false
+        }
+    },
+    DetailsScreen:{
+        screen: DetailScreen,
+        navigationOptions: {
+            headerTitle: "Post",
+            headerStatusBarHeight:-10,
         }
     },
 });

@@ -14,7 +14,7 @@ import {
   Left,
 } from 'native-base';
 
-import { Feather,Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { Image,View } from 'react-native';
 import MediumChatScreen from './ChatList';
 import MediumGroupScreen from './GroupList';

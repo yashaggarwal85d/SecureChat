@@ -70,6 +70,16 @@ export const LightTheme= StyleSheet.create({
     fontFamily: 'Roboto_medium',
     color:colors.Shadow,
   },
+  chatListMessageDetail:{
+    fontFamily: 'Touche_Medium',
+    color:colors.Shadow,
+    fontSize:18,
+  },
+  chatListMessageComment:{
+    fontFamily: 'Touche_Medium',
+    color:colors.Shadow,
+    fontSize:15,
+  },
   chatListNote:{
     fontFamily: 'Roboto_medium',
     color:colors.grey,
@@ -86,10 +96,61 @@ export const LightTheme= StyleSheet.create({
   },
   MessageIcon:{
     color:colors.grey,
-    fontSize:25,
+    fontSize:20,
+  },
+  MessageIconNum:{
+    color:colors.black,
+    fontSize:15,
     paddingRight:50,
   },
-  
+  DetailMessageIcon:{
+    color:colors.grey,
+    fontSize:25,
+    paddingRight:30,
+    paddingLeft:30,
+  },
+  DetailView:{
+    fontFamily: 'Roboto_medium',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: 20,
+    paddingBottom: 0
+  },
+  DetailViewName:{
+    fontFamily: 'Touche_Medium',
+    flex: 1,
+    justifyContent: "center",
+    paddingLeft: 10,
+    height: 56 
+  },
+  DetailViewNameText:{
+    fontFamily: 'Touche_Medium',
+    paddingLeft:5,
+    fontWeight: "bold",
+    fontSize: 20
+  },
+  DetailViewIcons:{
+    flexDirection: "row",
+    paddingTop:20,
+    justifyContent: "flex-start",
+    padding: 10,
+    borderBottomColor: colors.grey,
+    borderBottomWidth: StyleSheet.hairlineWidth
+  },
+  DetailViewIconsText:{
+    fontFamily: 'Touche_Medium',
+    color: colors.grey,
+    fontSize: 16,
+    paddingRight: 20
+  },
+  DetailViewIconsTextNum:{
+    fontFamily: 'Touche_Medium',
+    fontWeight: "bold",
+    fontSize: 16,
+    paddingRight: 5 
+  },
+
 });
 
 export const MediumTheme= StyleSheet.create({

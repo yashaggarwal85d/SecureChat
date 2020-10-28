@@ -33,7 +33,7 @@ export default class PresentChatScreen extends React.Component {
       <>
       <Container style={state.params.appStyles.GiftedChatContainer}>
       <ChatHeader 
-        {...this.props} 
+        {...this.props}
         name={state.params.activeChatname} 
         ProfilePicUrl={state.params.ProfilePicUrl}
         appStyles={state.params.appStyles}
