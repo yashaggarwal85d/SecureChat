@@ -32,34 +32,33 @@ export default class PresentChatScreen extends React.Component {
     return (
       <>
       <Container style={state.params.appStyles.GiftedChatContainer}>
-      <ChatHeader 
-        {...this.props}
-        name={state.params.activeChatname} 
-        ProfilePicUrl={state.params.ProfilePicUrl}
-        appStyles={state.params.appStyles}
+        <ChatHeader 
+          {...this.props}
+          name={state.params.activeChatname} 
+          ProfilePicUrl={state.params.ProfilePicUrl}
+          appStyles={state.params.appStyles}
+          />
+        <GiftedChat
+          scrollToBottom
+          textInputStyle={state.params.appStyles.CustomTextinputStyle}
+          renderAvatar={null}
+          renderUsernameOnMessage={true}
+          inverted={false}
+          maxInputLength={2000}
+          textInputProps={{ disable: true }}
+          messages={this.state.messages}
+          inverted={true}
+          onSend={(messages) => this.onSend(messages)}
+          scrollToBottomComponent={CustomScrollToBottom}
+          renderBubble={CustomBubble}
+          renderSend={CustomSend}
+          user={{ _id: 1 }}
+          keyboardShouldPersistTaps={null}
+          listViewProps={{ showsVerticalScrollIndicator: false, style: { marginBottom: 16 } }}
+          renderMessageText={CustomMessageText}
+          renderInputToolbar={CustomInputToolbar}
         />
-      <GiftedChat
-        scrollToBottom
-        textInputStyle={state.params.appStyles.CustomTextinputStyle}
-        renderAvatar={null}
-        renderUsernameOnMessage={true}
-        inverted={false}
-        maxInputLength={200}
-        textInputProps={{ disable: true }}
-        messages={this.state.messages}
-        isTyping={true}
-        inverted={true}
-        onSend={(messages) => this.onSend(messages)}
-        scrollToBottomComponent={CustomScrollToBottom}
-        renderBubble={CustomBubble}
-        renderSend={CustomSend}
-        user={{ _id: 1 }}
-        keyboardShouldPersistTaps={null}
-        listViewProps={{ showsVerticalScrollIndicator: false, style: { marginBottom: 16 } }}
-        renderMessageText={CustomMessageText}
-        renderInputToolbar={CustomInputToolbar}
-      />
-      </Container>
+        </Container>
       </>
     );
   }

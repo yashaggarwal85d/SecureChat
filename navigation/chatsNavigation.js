@@ -1,9 +1,13 @@
+import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer,createSwitchNavigator } from 'react-navigation';
 import MainApp from '../screens/MainScreen';
 import PresentChatScreen from '../screens/Chats';
 import AuthScreen from '../screens/AuthScreen/LoginScreen';
 import DetailScreen from '../screens/LightScreen/Details';
+import LightSettings from '../screens/LightScreen/settings';
+import {createDrawerNavigator} from 'react-navigation-drawer';
+import DrawerContent from '../screens/LightScreen/Drawer';
 
 const ChatsNavigator = createStackNavigator({
     MainScreen: {
@@ -24,6 +28,9 @@ const ChatsNavigator = createStackNavigator({
         navigationOptions: {
             headerTitle: "Post",
             headerStatusBarHeight:-10,
+            headerTitleStyle:{
+                fontFamily:'Touche_Medium',
+            }
         }
     },
 });
@@ -42,4 +49,24 @@ const MainNavigator = createSwitchNavigator({
     Chat:ChatsNavigator
 });
 
-export default createAppContainer(MainNavigator);
+const SettingsNavigator = createStackNavigator({
+    Settings:{
+        screen:LightSettings,
+    },
+})
+
+const DrawerNavigator = createDrawerNavigator({
+    Home:MainNavigator,
+    Settings:SettingsNavigator,
+},
+{
+    contentComponent: props =><DrawerContent {...props}/>,
+    contentOptions:{
+        labelStyle:{
+            fontFamily:'Touche_Medium',
+        }
+    }
+}
+);
+
+export default createAppContainer(DrawerNavigator);

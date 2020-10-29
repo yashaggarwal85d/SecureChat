@@ -18,8 +18,10 @@ export default class LightHeaderComponent extends Component {
         return(
         <>
             <Header style={LightTheme.headerBackgroundColor}>
-                <Left>
-                    <View style={LightTheme.Headercontainer}>
+                <Left style={LightTheme.Headercontainer} onTouchStart={() =>{
+                        this.props.navigation.openDrawer();
+                    }}>  
+                    <View>
                         <Image
                             source={require("../assets/omega.jpg")}
                             resizeMode="stretch"
@@ -27,7 +29,12 @@ export default class LightHeaderComponent extends Component {
                         ></Image>
                     </View>
                 </Left>
-                <Body>
+                <Body 
+                    onTouchStart={() =>{
+                        this.props.navigation.openDrawer();
+                    }}
+                    style={LightTheme.Headercontainer}>
+                        
                     <Title style={LightTheme.appTitle}> Hi, Yash</Title>
                 </Body>
                 <Right>

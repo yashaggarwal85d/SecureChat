@@ -7,7 +7,7 @@ const MediumChatScreen = props => {
   return(
     <ChatScreenComponent
       {...props}
-      CHATLIST={ChatList} 
+      CHATLIST={ChatList}
     />
   );
 }
