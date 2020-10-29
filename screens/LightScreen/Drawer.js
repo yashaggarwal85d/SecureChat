@@ -1,46 +1,37 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
 import {DrawerItem} from '@react-navigation/drawer';
-import {
-  Header,
-  Title,
-  Button,
-  Right,
-  Body,
-  Left,View,Text, Drawer, Label
-} from 'native-base';
+import {View,Text} from 'native-base';
 import { Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { LightTheme } from '../../appStyles';
-import { grey } from '../../constants/colors';
 
 function DrawerContent(props){
   return(
     <View style={{flex:1}}>
-      <View style={{padding:15,flexDirection:'row'}}>
+      <View style={LightTheme.DrawerView}>
         <Image
             source={require("../../assets/omega.jpg")}
             resizeMode="stretch"
             style={LightTheme.image}
         ></Image>
         <View>
-        <Text style={{fontFamily:'Touche_Semibold',fontSize:22,paddingLeft:10}}>Yash</Text>
-        <Text style={{fontFamily:'Touche_Medium',paddingLeft:10,color:'grey'}}>@yash</Text>
+        <Text style={LightTheme.DrawerProfileName}>Yash</Text>
+        <Text style={LightTheme.DrawerProfileTag}>@yash</Text>
         </View>
       </View>
-      <View style={{padding:15,flexDirection:'row'}}>
+      <View style={LightTheme.DrawerView}>
         <View style={{flexDirection:'row'}}>
-          <Text style={{fontFamily:'Touche_Semibold',fontSize:18,paddingLeft:10}}>80</Text>
-          <Text style={{fontFamily:'Touche_Medium',paddingLeft:10,color:'grey'}}>Following</Text>
+          <Text style={LightTheme.DrawerProfileNameStyle}>80</Text>
+          <Text style={LightTheme.DrawerProfileTag}>Following</Text>
         </View>
         <View style={{flexDirection:'row'}}>
-          <Text style={{fontFamily:'Touche_Semibold',fontSize:18,paddingLeft:10}}>25k</Text>
-          <Text style={{fontFamily:'Touche_Medium',paddingLeft:10,color:'grey'}}>Followers</Text>
+          <Text style={LightTheme.DrawerProfileNameStyle}>25k</Text>
+          <Text style={LightTheme.DrawerProfileTag}>Followers</Text>
         </View>
       </View>
       <View style={{paddingTop:10}}>
       <DrawerItem
-          icon={({color,size})=>(
+          icon={({color})=>(
             <Feather
               name='home'
               color={color}
@@ -48,11 +39,11 @@ function DrawerContent(props){
             />
           )}
           label='Home'
-          labelStyle={{color:grey,fontFamily:'Touche_Medium',fontSize:18}}
+          labelStyle={LightTheme.DrawerLabelStyle}
           onPress={() => {props.navigation.navigate('Home')}}
         />
       <DrawerItem
-          icon={({color,size})=>(
+          icon={({color})=>(
             <Feather
               name='user'
               color={color}
@@ -60,11 +51,11 @@ function DrawerContent(props){
             />
           )}
           label='Profile'
-          labelStyle={{color:grey,fontFamily:'Touche_Medium',fontSize:18}}
+          labelStyle={LightTheme.DrawerLabelStyle}
           onPress={() => {props.navigation.navigate('Home')}}
         />
         <DrawerItem
-          icon={({color,size})=>(
+          icon={({color})=>(
             <Feather
               name='settings'
               color={color}
@@ -72,7 +63,7 @@ function DrawerContent(props){
             />
           )}
           label='settings'
-          labelStyle={{color:grey,fontFamily:'Touche_Medium',fontSize:18}}
+          labelStyle={LightTheme.DrawerLabelStyle}
           onPress={() => {props.navigation.navigate('Settings')}}
         />
         </View>

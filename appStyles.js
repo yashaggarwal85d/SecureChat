@@ -150,6 +150,30 @@ export const LightTheme= StyleSheet.create({
     fontSize: 16,
     paddingRight: 5 
   },
+  DrawerView:{
+    padding:15,
+    flexDirection:'row',
+  },
+  DrawerProfileName:{
+    fontFamily:'Touche_Semibold',
+    fontSize:22,
+    paddingLeft:10,
+  },
+  DrawerProfileTag:{
+    fontFamily:'Touche_Medium',
+    paddingLeft:10,
+    color:colors.grey,
+  },
+  DrawerProfileNameStyle:{
+    fontFamily:'Touche_Semibold',
+    fontSize:18,
+    paddingLeft:10
+  },
+  DrawerLabelStyle:{
+    color:'grey',
+    fontFamily:'Touche_Medium',
+    fontSize:18
+  }
 
 });
 
