@@ -6,6 +6,7 @@ import { createStore,combineReducers,applyMiddleware } from 'redux';
 import ChatListReducer from './store/reducers/chatlist';
 import GroupListReducer from './store/reducers/grouplist';
 import ThemeReducer from './store/reducers/CurrentTheme';
+import AuthReducer from './store/reducers/Auth';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
@@ -13,7 +14,9 @@ const rootReducer = combineReducers({
   ChatList: ChatListReducer,
   GroupList: GroupListReducer,
   CurrentTheme: ThemeReducer,
+  user: AuthReducer,
 });
+
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {

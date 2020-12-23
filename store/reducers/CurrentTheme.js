@@ -1,4 +1,4 @@
-import {SWITCH_THEME} from '../actions';
+import {SWITCH_THEME} from '../actions/ThemeActions';
 
 const CurrentTheme ={
     theme: 'light',

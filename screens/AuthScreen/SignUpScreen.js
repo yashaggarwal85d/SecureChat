@@ -1,22 +1,21 @@
 import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { updateEmail, updatePassword, login, getUser } from '../../store/actions/LoginActions';
-import Firebase from '../../firebase/Config';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text,Button } from 'react-native'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { updateEmail, updatePassword, signup } from '../../store/actions/LoginActions';
 
-class Login extends React.Component {
-	componentDidMount = () => {
-		Firebase.auth().onAuthStateChanged(user => {
-			if (user) {
-				this.props.getUser(user.uid)
-				if (this.props.user != null) {
-					this.props.navigation.navigate('Profile')
-				}
-			}
-		})
+class Signup extends React.Component {
+	handleSignUp = () => {
+		this.props.signup()
+		this.props.navigation.navigate('Profile')
 	}
 
+	CheckSame = () => {
+		if(this.confirmPass === this.props.user.password)
+		this.alert='ok';
+		else
+		this.alert='not same';
+	}
 	render() {
 		return (
 			<View style={styles.container}>
@@ -34,13 +33,21 @@ class Login extends React.Component {
 					placeholder='Password'
 					secureTextEntry={true}
 				/>
-				<TouchableOpacity style={styles.button} onPress={() => this.props.login()}>
-					<Text style={styles.buttonText}>Login</Text>
+				<TextInput
+					style={styles.inputBox}
+					value={this.confirmPass}
+					onChangeText={this.CheckSame}
+					placeholder='Confirm Password'
+					secureTextEntry={true}
+				/>
+				<TouchableOpacity style={styles.button} onPress={this.handleSignUp}>
+					<Text style={styles.buttonText}>Signup</Text>
 				</TouchableOpacity>
 				<Button
-					title="Don't have an account yet? Sign up"
-					onPress={() => this.props.navigation.navigate('SignUp')}
+					title="Already have an account yet? Login"
+					onPress={() => this.props.navigation.navigate('Login')}
 				/>
+				<Text>{this.alert}</Text>
 			</View>
 		)
 	}
@@ -67,8 +74,8 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		paddingVertical: 5,
 		alignItems: 'center',
-		backgroundColor: '#F6820D',
-		borderColor: '#F6820D',
+		backgroundColor: '#FFA611',
+		borderColor: '#FFA611',
 		borderWidth: 1,
 		borderRadius: 5,
 		width: 200
@@ -84,7 +91,7 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = dispatch => {
-	return bindActionCreators({ updateEmail, updatePassword, login, getUser }, dispatch)
+	return bindActionCreators({ updateEmail, updatePassword, signup }, dispatch)
 }
 
 const mapStateToProps = state => {
@@ -96,4 +103,4 @@ const mapStateToProps = state => {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(Login)
+)(Signup)

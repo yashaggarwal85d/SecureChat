@@ -3,7 +3,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer,createSwitchNavigator } from 'react-navigation';
 import MainApp from '../screens/MainScreen';
 import PresentChatScreen from '../screens/Chats';
-import AuthScreen from '../screens/AuthScreen/LoginScreen';
+import LoginScreen from '../screens/AuthScreen/LoginScreen';
+import SignUpScreen from '../screens/AuthScreen/SignUpScreen';
 import DetailScreen from '../screens/LightScreen/Details';
 import LightSettings from '../screens/LightScreen/settings';
 import {createDrawerNavigator} from 'react-navigation-drawer';
@@ -13,14 +14,16 @@ const ChatsNavigator = createStackNavigator({
     MainScreen: {
         screen: MainApp,
         navigationOptions: {
-            headerShown: false
+            headerShown: false,
+            animationEnabled: false,
         }
     },
     ChatScreen:{
         
         screen: PresentChatScreen,
         navigationOptions: {
-            headerShown: false
+            headerShown: false,
+            animationEnabled: false,
         }
     },
     DetailsScreen:{
@@ -30,16 +33,25 @@ const ChatsNavigator = createStackNavigator({
             headerStatusBarHeight:-10,
             headerTitleStyle:{
                 fontFamily:'Touche_Medium',
-            }
+            },
+            animationEnabled: false,
         }
     },
 });
 
 const AuthNavigator = createStackNavigator({
-    Auth:{
-        screen: AuthScreen,
+    Login:{
+        screen: LoginScreen,
         navigationOptions: {
-            headerShown: false
+            headerShown: false,
+            animationEnabled: false,
+        }
+    },
+    SignUp:{
+        screen: SignUpScreen,
+        navigationOptions: {
+            headerShown: false,
+            animationEnabled: false,
         }
     }
 });
@@ -52,6 +64,9 @@ const MainNavigator = createSwitchNavigator({
 const SettingsNavigator = createStackNavigator({
     Settings:{
         screen:LightSettings,
+        navigationOptions: {
+            animationEnabled: false,
+        }
     },
 })
 
