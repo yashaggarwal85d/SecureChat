@@ -1,80 +1,116 @@
-import Firebase, { db } from '../../firebase/Config';
+export const UPDATE_EMAIL = "UPDATE_EMAIL";
+export const UPDATE_NAME = "UPDATE_NAME";
+export const UPDATE_PASSWORD = "UPDATE_PASSWORD";
+export const UPDATE_ALERT = "UPDATE_ALERT";
+export const UPDATE_ISAUTH = "UPDATE_ISAUTH";
+export const UPDATE_TOKEN = "UPDATE_TOKEN";
+export const UPDATE_ID = "UPDATE_ID";
+export const LOGIN = "LOGIN";
+export const SIGNUP = "SIGNUP";
+import * as API from "../../constants/APIstore";
 
-export const UPDATE_EMAIL = 'UPDATE_EMAIL'
-export const UPDATE_NAME = 'UPDATE_NAME'
-export const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
-export const LOGIN = 'LOGIN'
-export const SIGNUP = 'SIGNUP'
+export const updateIsAuth = (isauth) => {
+  return {
+    type: UPDATE_ISAUTH,
+    payload: isauth,
+  };
+};
 
-export const updateEmail = email => {
-	return {
-		type: UPDATE_EMAIL,
-		payload: email
-	}
-}
+export const updateAlert = (alert) => {
+  return {
+    type: UPDATE_ALERT,
+    payload: alert,
+  };
+};
 
-export const updateName = name => {
-	return {
-		type: UPDATE_NAME,
-		payload: name
-	}
-}
+export const updateId = (id) => {
+  return {
+    type: UPDATE_ID,
+    payload: id,
+  };
+};
 
-export const updatePassword = password => {
-	return {
-		type: UPDATE_PASSWORD,
-		payload: password
-	}
-}
+export const updatetoken = (token) => {
+  return {
+    type: UPDATE_TOKEN,
+    payload: token,
+  };
+};
+
+export const updateEmail = (email) => {
+  return {
+    type: UPDATE_EMAIL,
+    payload: email,
+  };
+};
+
+export const updateName = (name) => {
+  return {
+    type: UPDATE_NAME,
+    payload: name,
+  };
+};
+
+export const updatePassword = (password) => {
+  return {
+    type: UPDATE_PASSWORD,
+    payload: password,
+  };
+};
 
 export const login = () => {
-	return async (dispatch, getState) => {
-		try {
-			const { email, password } = getState().user
-			const response = await Firebase.auth().signInWithEmailAndPassword(email, password)
-
-			dispatch(getUser(response.user.uid))
-		} catch (e) {
-			alert(e)
-		}
-	}
-}
-
-export const getUser = uid => {
-	return async (dispatch, getState) => {
-		try {
-			const user = await db
-				.collection('users')
-				.doc(uid)
-				.get()
-
-			dispatch({ type: LOGIN, payload: user.data() })
-		} catch (e) {
-			alert(e)
-		}
-	}
-}
+  return async (dispatch, getState) => {
+    try {
+      const { email, password } = getState().user;
+      const data = await fetch(API.LOGINAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      }).then((res) => {
+        return res.json();
+      });
+      var user = getState().user;
+      if (data.user != null) {
+        user.name = data.name;
+        user.token = data.token;
+        user.isauth = true;
+        user.id = data.user;
+        dispatch({ type: LOGIN, payload: user });
+      } else if (data.message != null) {
+        dispatch({ type: UPDATE_ALERT, payload: data.message });
+      }
+    } catch (e) {
+      dispatch({ type: UPDATE_ALERT, payload: e });
+    }
+  };
+};
 
 export const signup = () => {
-	return async (dispatch, getState) => {
-		try {
-			const { email, password , name } = getState().user
-			const response = await Firebase.auth().createUserWithEmailAndPassword(email, password)
-			if (response.user.uid) {
-				const user = {
-					uid: response.user.uid,
-					email: email,
-					name: name,
-				}
-
-				db.collection('users')
-					.doc(response.user.uid)
-					.set(user)
-
-				dispatch({ type: SIGNUP, payload: user })
-			}
-		} catch (e) {
-			alert(e)
-		}
-	}
-}
+  return async (dispatch, getState) => {
+    try {
+      const { name, email, password } = getState().user;
+      const data = await fetch(API.SIGNUPAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+        }),
+      }).then((res) => {
+        return res.json();
+      });
+      if (!data.user) dispatch({ type: UPDATE_ALERT, payload: data.message });
+      else alert("Account created successfully , Login to continue");
+    } catch (e) {
+      dispatch({ type: UPDATE_ALERT, payload: e });
+    }
+  };
+};

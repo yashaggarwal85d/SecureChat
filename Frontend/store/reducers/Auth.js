@@ -1,9 +1,13 @@
-import { LOGIN, SIGNUP, UPDATE_EMAIL, UPDATE_NAME, UPDATE_PASSWORD } from '../actions/LoginActions';
+import { LOGIN, SIGNUP,UPDATE_ALERT, UPDATE_EMAIL, UPDATE_NAME, UPDATE_PASSWORD , UPDATE_ISAUTH ,UPDATE_TOKEN ,UPDATE_ID } from '../actions/LoginActions';
 
 const AuthInitialState ={
-    email: '',
+	id:'',
+    name:'',
+	email: '',
 	password:'',
-	name:'',
+	isauth:false,
+	token:'',
+	alert:null,
 }; 
 
 const AuthReducer = (state = AuthInitialState, action) => {
@@ -12,6 +16,14 @@ const AuthReducer = (state = AuthInitialState, action) => {
 			return action.payload
 		case SIGNUP:
 			return action.payload
+		case UPDATE_ID:
+			return { ...state, id: action.payload }
+		case UPDATE_ALERT:
+			return { ...state, alert: action.payload }
+		case UPDATE_ISAUTH:
+			return { ...state, isauth: action.payload }
+		case UPDATE_TOKEN:
+			return { ...state, token: action.payload }
 		case UPDATE_NAME:
 			return { ...state, name: action.payload }
 		case UPDATE_EMAIL:

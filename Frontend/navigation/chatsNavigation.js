@@ -4,7 +4,6 @@ import MainApp from '../screens/MainScreen';
 import PresentChatScreen from '../screens/Chats';
 import LoginScreen from '../screens/AuthScreen/LoginScreen';
 import SignUpScreen from '../screens/AuthScreen/SignUpScreen';
-import FirstTimeLogin from '../screens/Intro';
 import LightChatHeader from '../screens/LightScreen/Chats';
 import DarkChatHeader from '../screens/DarkScreen/Chats';
 
@@ -41,16 +40,6 @@ const ChatsNavigator = createStackNavigator({
     },
 });
 
-const IntroNavigator = createStackNavigator({
-    FirstTimeLogin:{
-        screen:FirstTimeLogin,
-        navigationOptions: {
-            headerShown: false,
-            animationEnabled: false,
-        }
-    },
-});
-
 const AuthNavigator = createStackNavigator({
     Login:{
         screen: LoginScreen,
@@ -70,7 +59,6 @@ const AuthNavigator = createStackNavigator({
 
 const MainNavigator = createSwitchNavigator({
     Auth:AuthNavigator,
-    Intro:IntroNavigator,
     Chat:ChatsNavigator,
 });
 

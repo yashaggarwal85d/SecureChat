@@ -4,7 +4,7 @@ import * as colors from '../constants/colors';
 import { StatusBar,Animated,View } from 'react-native';
 import { LightTheme,DarkTheme } from '../appStyles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import ToggleSwitch from '../components/TripleToggle';
+import ToggleSwitch from '../components/ToggleSwitch';
 import { connect } from 'react-redux';
 import MainTabScreen from './Tabs';
 

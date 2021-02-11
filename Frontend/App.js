@@ -4,7 +4,6 @@ import { AppLoading } from 'expo';
 import MainNavigator from './navigation/chatsNavigation';
 import { createStore,combineReducers,applyMiddleware } from 'redux';
 import ChatListReducer from './store/reducers/chatlist';
-import GroupListReducer from './store/reducers/grouplist';
 import ThemeReducer from './store/reducers/CurrentTheme';
 import AuthReducer from './store/reducers/Auth';
 import ChatReducer from './store/reducers/Chats'
@@ -14,7 +13,6 @@ import io from 'socket.io-client';
 
 const rootReducer = combineReducers({
   ChatList: ChatListReducer,
-  GroupList: GroupListReducer,
   CurrentTheme: ThemeReducer,
   user: AuthReducer,
   Chats:ChatReducer,
