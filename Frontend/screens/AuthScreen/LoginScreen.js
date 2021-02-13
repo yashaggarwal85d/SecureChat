@@ -51,21 +51,26 @@ class Login extends React.Component {
   }
 
   async handleLogin() {
-    if (this.checkValid()) {
-      await this.props.login();
-      if (
-        this.props.user.isauth &&
-        this.props.user.id != null &&
-        this.props.user.token != null &&
-        this.props.user.alert == null
-      )
-        this.props.navigation.navigate("Chat");
-      else {
-        this.setState({
-          alert: this.props.user.alert || "something went wrong :(",
-        });
-        this.props.updateAlert(null);
+    try {
+      if (this.checkValid()) {
+        await this.props.login();
+        if (
+          this.props.user.id &&
+          this.props.user.token &&
+          !this.props.user.alert
+        )
+          this.props.navigation.navigate("Chat");
+        else {
+          this.setState({
+            alert: this.props.user.alert || "something went wrong :(",
+          });
+          this.props.updateAlert(null);
+        }
       }
+    } catch (e) {
+      this.setState({
+        alert: e || "something went wrong :(",
+      });
     }
   }
 

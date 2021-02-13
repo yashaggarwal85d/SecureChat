@@ -1,15 +1,27 @@
-import React from 'react';
-import {useSelector} from 'react-redux';
-import ChatScreenComponent from '../../components/ChatListComponent';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ChatScreenComponent from "../../components/ChatListComponent";
+import { fillData } from "../../store/actions/RoomActions";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-const LightChatScreen = props => {
-  const ChatList = useSelector(state => state.ChatList.chats ); 
-  return(
-    <ChatScreenComponent
-      {...props}
-      CHATLIST={ChatList}
-    />
-  );
+class LightChatScreen extends React.Component {
+  async componentDidMount() {
+    await this.props.fillData();
+  }
+  render() {
+    return <ChatScreenComponent {...this.props} CHATLIST={this.props.rooms} />;
+  }
 }
 
-export default LightChatScreen;
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ fillData }, dispatch);
+};
+
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.room.rooms,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LightChatScreen);

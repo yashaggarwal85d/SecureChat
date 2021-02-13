@@ -7,7 +7,16 @@ export const UPDATE_TOKEN = "UPDATE_TOKEN";
 export const UPDATE_ID = "UPDATE_ID";
 export const LOGIN = "LOGIN";
 export const SIGNUP = "SIGNUP";
+export const UPDATE_PIC = "UPDATE_PIC";
+import axios from "axios";
 import * as API from "../../constants/APIstore";
+
+export const updateProfile = (profile_pic) => {
+  return {
+    type: UPDATE_PIC,
+    payload: profile_pic,
+  };
+};
 
 export const updateIsAuth = (isauth) => {
   return {
@@ -60,57 +69,63 @@ export const updatePassword = (password) => {
 
 export const login = () => {
   return async (dispatch, getState) => {
-    try {
-      const { email, password } = getState().user;
-      const data = await fetch(API.LOGINAPI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      }).then((res) => {
-        return res.json();
-      });
-      var user = getState().user;
-      if (data.user != null) {
+    var user = getState().user;
+    const data = await axios({
+      method: "POST",
+      url: API.LOGINAPI,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        email: user.email,
+        password: user.password,
+      },
+    })
+      .then((res) => res.data)
+      .then((data) => {
         user.name = data.name;
         user.token = data.token;
         user.isauth = true;
         user.id = data.user;
+        user.profile_pic = data.profile_pic;
         dispatch({ type: LOGIN, payload: user });
-      } else if (data.message != null) {
-        dispatch({ type: UPDATE_ALERT, payload: data.message });
-      }
-    } catch (e) {
-      dispatch({ type: UPDATE_ALERT, payload: e });
-    }
+      })
+      .catch((e) => {
+        try {
+          dispatch({ type: UPDATE_ALERT, payload: e.response.data });
+        } catch (e) {
+          console.log(e);
+        }
+      });
   };
 };
 
 export const signup = () => {
   return async (dispatch, getState) => {
-    try {
-      const { name, email, password } = getState().user;
-      const data = await fetch(API.SIGNUPAPI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-        }),
-      }).then((res) => {
-        return res.json();
+    const { name, email, password } = getState().user;
+    const data = await axios({
+      method: "POST",
+      url: API.SIGNUPAPI,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        name: name,
+        email: email,
+        password: password,
+      },
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        alert("Account created successfully , Login to continue");
+        dispatch({ type: UPDATE_ISAUTH, payload: true });
+      })
+      .catch((e) => {
+        try {
+          dispatch({ type: UPDATE_ALERT, payload: e.response.data });
+        } catch (e) {
+          console.log(e);
+        }
       });
-      if (!data.user) dispatch({ type: UPDATE_ALERT, payload: data.message });
-      else alert("Account created successfully , Login to continue");
-    } catch (e) {
-      dispatch({ type: UPDATE_ALERT, payload: e });
-    }
   };
 };

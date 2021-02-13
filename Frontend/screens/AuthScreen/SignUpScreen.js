@@ -8,6 +8,7 @@ import {
   signup,
   updateName,
   updateAlert,
+  updateIsAuth,
 } from "../../store/actions/LoginActions";
 import { AuthStyle } from "../../appStyles";
 
@@ -44,12 +45,15 @@ class Signup extends React.Component {
   handleSignUp = async () => {
     if (this.CheckValid()) {
       await this.props.signup();
-      if (!this.props.user.alert) {
+      if (this.props.user.isauth) {
         this.props.updateEmail("");
         this.props.updatePassword("");
+        this.props.updateIsAuth(false);
         this.props.navigation.navigate("Login");
       } else {
-        this.setState({ alert: this.props.user.alert });
+        this.setState({
+          alert: this.props.user.alert || "something went wrong :(",
+        });
         this.props.updateAlert(null);
       }
     } else this.setState({ alert: "Please check the details again" });
@@ -163,7 +167,14 @@ class Signup extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { updateEmail, updatePassword, signup, updateName, updateAlert },
+    {
+      updateEmail,
+      updatePassword,
+      signup,
+      updateName,
+      updateAlert,
+      updateIsAuth,
+    },
     dispatch
   );
 };

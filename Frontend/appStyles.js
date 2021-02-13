@@ -1,493 +1,490 @@
-import {StyleSheet} from 'react-native';
-import * as colors from './constants/colors';
+import { StyleSheet } from "react-native";
+import * as colors from "./constants/colors";
 
 export const LightTheme = StyleSheet.create({
-  
   appTitle: {
-    textTransform: 'capitalize',
-    fontFamily: 'Kamerik-Bold',
+    textTransform: "capitalize",
+    fontFamily: "Kamerik-Bold",
     fontSize: 30,
     color: colors.grey,
-    left:16,
+    left: 16,
   },
-  HeaderIcon:{
-    color:colors.grey,
-    fontSize:25,
-    marginLeft:18,
+  HeaderIcon: {
+    color: colors.grey,
+    fontSize: 25,
+    marginLeft: 18,
   },
   HeaderContainer: {
     backgroundColor: colors.white,
-    paddingBottom:45,
-    paddingTop:33,
-    elevation:50,
+    paddingBottom: 45,
+    paddingTop: 33,
+    elevation: 50,
   },
-  Footer:{
-    backgroundColor:colors.white,
+  Footer: {
+    backgroundColor: colors.white,
   },
-  FooterTab:{
-    backgroundColor:colors.white,
+  FooterTab: {
+    backgroundColor: colors.white,
   },
-  FooterActiveTab:{
-    backgroundColor:colors.white,
-    borderBottomColor:colors.black,
-    borderBottomWidth:3,
+  FooterActiveTab: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.black,
+    borderBottomWidth: 3,
   },
-  FooterActiveIcons:{
-    fontSize:33,
-    color:colors.black,
+  FooterActiveIcons: {
+    fontSize: 33,
+    color: colors.black,
   },
-  FooterIcons:{
-    fontSize:28,
-    color:colors.grey,
-  },
-
-  ListItemStyle:{
-    padding:6,
-  },
-  FlatListComponent:{
-    backgroundColor:colors.white,
+  FooterIcons: {
+    fontSize: 28,
+    color: colors.grey,
   },
 
-  chatListName:{
-    fontFamily:'Touche_Medium',
-    fontSize:18,
-    textTransform: 'capitalize',
-    color:colors.grey,
+  ListItemStyle: {
+    padding: 6,
   },
-  chatListNote:{
-    fontFamily:'Roboto_medium',
-    color:colors.LightGrey,
-    paddingLeft:2.5,
-  },
-  chatListActiveName:{
-    fontFamily:'Touche_Semibold',
-    fontSize:18,
-    textTransform: 'capitalize',
-    color:colors.Shadow,
-  },
-  chatListActiveNote:{
-    fontFamily:'Roboto_medium',
-    color:colors.grey,
-    paddingLeft:2.5,
-    fontWeight:'bold',
-  },
-  chatListBadge:{
-    backgroundColor:colors.dodgerblue,
-    height:20,
-    width:20,
-    marginTop:5,
-  },
-  chatListBadgeText:{
-    fontFamily:'Roboto_medium',
-    fontSize:12,
-  },
-  Toggle:{
-    position:'absolute',
-    left:'63%',
-    bottom: '90%',
+  FlatListComponent: {
+    backgroundColor: colors.white,
   },
 
-
-  ChatMainContainer:{
-    backgroundColor:colors.white,
+  chatListName: {
+    fontFamily: "Touche_Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.grey,
   },
-  ChatKeyboardAvoidingView:{
-    height:47,
-    width:'100%',
-    flexDirection:'row',
-    margin:3,
-    marginBottom:7,
-    backgroundColor:colors.white,
+  chatListNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.LightGrey,
+    paddingLeft: 2.5,
   },
-  ChatInputView:{
-    width:'80%',
-    backgroundColor:colors.DarkWhite,
-    borderRadius:50,
-    marginLeft:5,
-    fontSize:20,
-    flexDirection:'row',
+  chatListActiveName: {
+    fontFamily: "Touche_Semibold",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.Shadow,
   },
-  ChatHeaderImage:{
-    height:45,
-    width:45,
-    marginTop:8
+  chatListActiveNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.grey,
+    paddingLeft: 2.5,
+    fontWeight: "bold",
   },
-  ChatInputSmile:{
-    fontSize:26,
-    marginLeft:8,
-    marginTop:10,
-    color:colors.grey,
+  chatListBadge: {
+    backgroundColor: colors.dodgerblue,
+    height: 20,
+    width: 20,
+    marginTop: 5,
   },
-  ChatInputFile:{
-    transform: [{ rotate: '60deg'}],
-    fontSize:26,
-    right:12,
-    top:3,
-    color:colors.grey,
+  chatListBadgeText: {
+    fontFamily: "Roboto_medium",
+    fontSize: 12,
   },
-  ChatInput:{
-    padding:10,
-    width:'78%',
-    fontFamily:'Roboto_medium',
-    fontSize:18,
-    color:colors.grey,
-    marginBottom:2
-  },
-  SendButtonView:{
-    borderRadius:500,
-    width:'13%',
-    marginLeft:3,
-    backgroundColor:colors.dodgerblue,
-  },
-  SendButton:{
-    fontSize:25,
-    left:12,
-    top:10,
-    color:colors.white,
-  },
-  ChatHeaderView:{
-    backgroundColor:colors.white,
-  },
-  ChatHeaderTitle:{
-    color:colors.grey,
-    fontFamily:'Touche_Medium',
-    fontSize:21,
-    marginLeft:10,
-    textTransform: 'capitalize',
-  },
-  ChatHeaderNote:{
-    color:colors.LightGrey,
-    fontFamily:'Touche_Medium',
-    fontSize:12,
-    marginLeft:12,
-    textTransform: 'capitalize',
+  Toggle: {
+    position: "absolute",
+    left: "63%",
+    bottom: "90%",
   },
 
-  ChatBubblesList:{
-    backgroundColor:colors.white,
+  ChatMainContainer: {
+    backgroundColor: colors.white,
   },
-  ChatBubbleView:{
-    alignItems:'flex-end',
-    alignContent:'flex-end',
-    alignSelf:'flex-end',
-    maxWidth:'60%',
-    borderRadius:20,
-    padding:14,
-    marginRight:14,
-    marginTop:3,
-    backgroundColor:colors.BluishGrey,
-    flexDirection:'row'
+  ChatKeyboardAvoidingView: {
+    height: 47,
+    width: "100%",
+    flexDirection: "row",
+    margin: 3,
+    marginBottom: 7,
+    backgroundColor: colors.white,
   },
-  ChatBubbleText:{
-    color:colors.dodgerblue,
-    fontFamily:'Touche_Medium',
-    fontSize:14,
-    marginBottom:3
+  ChatInputView: {
+    width: "80%",
+    backgroundColor: colors.DarkWhite,
+    borderRadius: 50,
+    marginLeft: 5,
+    fontSize: 20,
+    flexDirection: "row",
   },
-  ChatBubbleNote:{
-    color:colors.MiddleGrey,
-    fontSize:10,
-    alignSelf:'flex-end',
-    marginLeft:5,
-    fontFamily:'Touche_Medium',
+  ChatHeaderImage: {
+    height: 45,
+    width: 45,
+    marginTop: 8,
   },
-  ChatBubbleLeftView:{
-    alignItems:'flex-start',
-    alignContent:'flex-start',
-    alignSelf:'flex-start',
-    maxWidth:'60%',
-    borderRadius:20,
-    padding:12,
-    marginLeft:14,
-    marginTop:3,
-    backgroundColor:colors.DarkWhite,
-    flexDirection:'row',
+  ChatInputSmile: {
+    fontSize: 26,
+    marginLeft: 8,
+    marginTop: 10,
+    color: colors.grey,
   },
-  ChatBubbleLeftText:{
-    color:colors.grey,
-    fontFamily:'Touche_Medium',
-    fontSize:14,
-    marginBottom:3
+  ChatInputFile: {
+    transform: [{ rotate: "60deg" }],
+    fontSize: 26,
+    right: 12,
+    top: 3,
+    color: colors.grey,
   },
-  ChatBubbleLeftNote:{
-    color:colors.MiddleGrey,
-    fontSize:10,
-    alignSelf:'flex-end',
-    marginLeft:5,
-    fontFamily:'Touche_Medium',
+  ChatInput: {
+    padding: 10,
+    width: "78%",
+    fontFamily: "Roboto_medium",
+    fontSize: 18,
+    color: colors.grey,
+    marginBottom: 2,
+  },
+  SendButtonView: {
+    borderRadius: 500,
+    width: "13%",
+    marginLeft: 3,
+    backgroundColor: colors.dodgerblue,
+  },
+  SendButton: {
+    fontSize: 25,
+    left: 12,
+    top: 10,
+    color: colors.white,
+  },
+  ChatHeaderView: {
+    backgroundColor: colors.white,
+  },
+  ChatHeaderTitle: {
+    color: colors.grey,
+    fontFamily: "Touche_Medium",
+    fontSize: 21,
+    marginLeft: 10,
+    textTransform: "capitalize",
+  },
+  ChatHeaderNote: {
+    color: colors.LightGrey,
+    fontFamily: "Touche_Medium",
+    fontSize: 12,
+    marginLeft: 12,
+    textTransform: "capitalize",
+  },
+
+  ChatBubblesList: {
+    backgroundColor: colors.white,
+  },
+  ChatBubbleView: {
+    alignItems: "flex-end",
+    alignContent: "flex-end",
+    alignSelf: "flex-end",
+    maxWidth: "60%",
+    borderRadius: 20,
+    padding: 14,
+    marginRight: 14,
+    marginTop: 3,
+    backgroundColor: colors.BluishGrey,
+    flexDirection: "row",
+  },
+  ChatBubbleText: {
+    color: colors.dodgerblue,
+    fontFamily: "Touche_Medium",
+    fontSize: 14,
+    marginBottom: 3,
+  },
+  ChatBubbleNote: {
+    color: colors.MiddleGrey,
+    fontSize: 10,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
+  },
+  ChatBubbleLeftView: {
+    alignItems: "flex-start",
+    alignContent: "flex-start",
+    alignSelf: "flex-start",
+    maxWidth: "60%",
+    borderRadius: 20,
+    padding: 12,
+    marginLeft: 14,
+    marginTop: 3,
+    backgroundColor: colors.DarkWhite,
+    flexDirection: "row",
+  },
+  ChatBubbleLeftText: {
+    color: colors.grey,
+    fontFamily: "Touche_Medium",
+    fontSize: 14,
+    marginBottom: 3,
+  },
+  ChatBubbleLeftNote: {
+    color: colors.MiddleGrey,
+    fontSize: 10,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
   },
 });
 
 export const DarkTheme = StyleSheet.create({
-  
   appTitle: {
-    textTransform: 'capitalize',
-    fontFamily: 'Kamerik-Bold',
+    textTransform: "capitalize",
+    fontFamily: "Kamerik-Bold",
     fontSize: 30,
     color: colors.white,
-    left:16,
+    left: 16,
   },
-  HeaderIcon:{
-    color:colors.white,
-    fontSize:25,
-    marginLeft:18,
+  HeaderIcon: {
+    color: colors.white,
+    fontSize: 25,
+    marginLeft: 18,
   },
   HeaderContainer: {
     backgroundColor: colors.black,
-    paddingBottom:45,
-    paddingTop:33,
-    elevation:50,
+    paddingBottom: 45,
+    paddingTop: 33,
+    elevation: 50,
   },
-  Footer:{
-    backgroundColor:colors.black,
+  Footer: {
+    backgroundColor: colors.black,
   },
-  FooterTab:{
-    backgroundColor:colors.black,
+  FooterTab: {
+    backgroundColor: colors.black,
   },
-  FooterActiveTab:{
-    backgroundColor:colors.black,
-    borderBottomColor:colors.white,
-    borderBottomWidth:3,
+  FooterActiveTab: {
+    backgroundColor: colors.black,
+    borderBottomColor: colors.white,
+    borderBottomWidth: 3,
   },
-  FooterActiveIcons:{
-    fontSize:33,
-    color:colors.white,
+  FooterActiveIcons: {
+    fontSize: 33,
+    color: colors.white,
   },
-  FooterIcons:{
-    fontSize:28,
-    color:colors.LightGrey,
-  },
-
-  ListItemStyle:{
-    padding:6,
-  },
-  FlatListComponent:{
-    backgroundColor:colors.black,
+  FooterIcons: {
+    fontSize: 28,
+    color: colors.LightGrey,
   },
 
-  chatListName:{
-    fontFamily:'Touche_Medium',
-    fontSize:18,
-    textTransform: 'capitalize',
-    color:colors.LightGrey,
+  ListItemStyle: {
+    padding: 6,
   },
-  chatListNote:{
-    fontFamily:'Roboto_medium',
-    color:colors.grey,
-    paddingLeft:2.5,
-  },
-  chatListActiveName:{
-    fontFamily:'Touche_Semibold',
-    fontSize:18,
-    textTransform: 'capitalize',
-    color:colors.white,
-  },
-  chatListActiveNote:{
-    fontFamily:'Roboto_medium',
-    color:colors.white,
-    paddingLeft:2.5,
-    fontWeight:'bold',
-  },
-  chatListBadge:{
-    backgroundColor:colors.dodgerblue,
-    height:20,
-    width:20,
-    marginTop:5,
-  },
-  chatListBadgeText:{
-    fontFamily:'Roboto_medium',
-    fontSize:12,
-  },
-  Toggle:{
-    position:'absolute',
-    left:'63%',
-    bottom: '90%',
+  FlatListComponent: {
+    backgroundColor: colors.black,
   },
 
-  ChatMainContainer:{
-    backgroundColor:colors.black,
+  chatListName: {
+    fontFamily: "Touche_Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.LightGrey,
   },
-  ChatKeyboardAvoidingView:{
-    height:47,
-    width:'100%',
-    flexDirection:'row',
-    margin:3,
-    marginBottom:7,
-    backgroundColor:colors.black,
+  chatListNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.grey,
+    paddingLeft: 2.5,
   },
-  ChatInputView:{
-    width:'80%',
-    backgroundColor:colors.grey,
-    borderRadius:50,
-    marginLeft:5,
-    fontSize:20,
-    flexDirection:'row',
+  chatListActiveName: {
+    fontFamily: "Touche_Semibold",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.white,
   },
-  ChatHeaderImage:{
-    height:45,
-    width:45,
-    marginTop:8
+  chatListActiveNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.white,
+    paddingLeft: 2.5,
+    fontWeight: "bold",
   },
-  ChatInputSmile:{
-    fontSize:26,
-    marginLeft:8,
-    marginTop:10,
-    color:colors.DarkWhite,
+  chatListBadge: {
+    backgroundColor: colors.dodgerblue,
+    height: 20,
+    width: 20,
+    marginTop: 5,
   },
-  ChatInputFile:{
-    transform: [{ rotate: '60deg'}],
-    fontSize:26,
-    right:12,
-    top:3,
-    color:colors.DarkWhite,
+  chatListBadgeText: {
+    fontFamily: "Roboto_medium",
+    fontSize: 12,
   },
-  ChatInput:{
-    padding:10,
-    width:'78%',
-    fontFamily:'Roboto_medium',
-    fontSize:18,
-    color:colors.DarkWhite,
-    marginBottom:2
-  },
-  SendButtonView:{
-    borderRadius:500,
-    width:'13%',
-    marginLeft:3,
-    backgroundColor:colors.dodgerblue,
-  },
-  SendButton:{
-    fontSize:25,
-    left:12,
-    top:10,
-    color:colors.white,
+  Toggle: {
+    position: "absolute",
+    left: "63%",
+    bottom: "90%",
   },
 
-  ChatHeaderView:{
-    backgroundColor:colors.black,
+  ChatMainContainer: {
+    backgroundColor: colors.black,
   },
-  ChatHeaderTitle:{
-    color:colors.white,
-    fontFamily:'Touche_Medium',
-    fontSize:21,
-    marginLeft:10,
-    textTransform: 'capitalize',
+  ChatKeyboardAvoidingView: {
+    height: 47,
+    width: "100%",
+    flexDirection: "row",
+    margin: 3,
+    marginBottom: 7,
+    backgroundColor: colors.black,
   },
-  ChatHeaderNote:{
-    color:colors.grey,
-    fontFamily:'Touche_Medium',
-    fontSize:12,
-    marginLeft:12,
-    textTransform: 'capitalize',
+  ChatInputView: {
+    width: "80%",
+    backgroundColor: colors.grey,
+    borderRadius: 50,
+    marginLeft: 5,
+    fontSize: 20,
+    flexDirection: "row",
+  },
+  ChatHeaderImage: {
+    height: 45,
+    width: 45,
+    marginTop: 8,
+  },
+  ChatInputSmile: {
+    fontSize: 26,
+    marginLeft: 8,
+    marginTop: 10,
+    color: colors.DarkWhite,
+  },
+  ChatInputFile: {
+    transform: [{ rotate: "60deg" }],
+    fontSize: 26,
+    right: 12,
+    top: 3,
+    color: colors.DarkWhite,
+  },
+  ChatInput: {
+    padding: 10,
+    width: "78%",
+    fontFamily: "Roboto_medium",
+    fontSize: 18,
+    color: colors.DarkWhite,
+    marginBottom: 2,
+  },
+  SendButtonView: {
+    borderRadius: 500,
+    width: "13%",
+    marginLeft: 3,
+    backgroundColor: colors.dodgerblue,
+  },
+  SendButton: {
+    fontSize: 25,
+    left: 12,
+    top: 10,
+    color: colors.white,
   },
 
-  ChatBubblesList:{
-    backgroundColor:colors.black,
+  ChatHeaderView: {
+    backgroundColor: colors.black,
   },
-  ChatBubbleView:{
-    alignItems:'flex-end',
-    alignContent:'flex-end',
-    alignSelf:'flex-end',
-    maxWidth:'60%',
-    borderRadius:20,
-    padding:14,
-    marginRight:14,
-    marginTop:3,
-    backgroundColor:colors.dodgerblue,
-    flexDirection:'row'
+  ChatHeaderTitle: {
+    color: colors.white,
+    fontFamily: "Touche_Medium",
+    fontSize: 21,
+    marginLeft: 10,
+    textTransform: "capitalize",
   },
-  ChatBubbleText:{
-    color:colors.BluishGrey,
-    fontFamily:'Touche_Medium',
-    fontSize:14,
-    marginBottom:3
+  ChatHeaderNote: {
+    color: colors.grey,
+    fontFamily: "Touche_Medium",
+    fontSize: 12,
+    marginLeft: 12,
+    textTransform: "capitalize",
   },
-  ChatBubbleNote:{
-    color:colors.grey,
-    fontSize:10,
-    alignSelf:'flex-end',
-    marginLeft:5,
-    fontFamily:'Touche_Medium',
+
+  ChatBubblesList: {
+    backgroundColor: colors.black,
   },
-  ChatBubbleLeftView:{
-    alignItems:'flex-start',
-    alignContent:'flex-start',
-    alignSelf:'flex-start',
-    maxWidth:'60%',
-    borderRadius:20,
-    padding:12,
-    marginLeft:14,
-    marginTop:3,
-    backgroundColor:colors.grey,
-    flexDirection:'row',
+  ChatBubbleView: {
+    alignItems: "flex-end",
+    alignContent: "flex-end",
+    alignSelf: "flex-end",
+    maxWidth: "60%",
+    borderRadius: 20,
+    padding: 14,
+    marginRight: 14,
+    marginTop: 3,
+    backgroundColor: colors.dodgerblue,
+    flexDirection: "row",
   },
-  ChatBubbleLeftText:{
-    color:colors.DarkWhite,
-    fontFamily:'Touche_Medium',
-    fontSize:14,
-    marginBottom:3
+  ChatBubbleText: {
+    color: colors.BluishGrey,
+    fontFamily: "Touche_Medium",
+    fontSize: 14,
+    marginBottom: 3,
   },
-  ChatBubbleLeftNote:{
-    color:colors.MiddleGrey,
-    fontSize:10,
-    alignSelf:'flex-end',
-    marginLeft:5,
-    fontFamily:'Touche_Medium',
+  ChatBubbleNote: {
+    color: colors.grey,
+    fontSize: 10,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
+  },
+  ChatBubbleLeftView: {
+    alignItems: "flex-start",
+    alignContent: "flex-start",
+    alignSelf: "flex-start",
+    maxWidth: "60%",
+    borderRadius: 20,
+    padding: 12,
+    marginLeft: 14,
+    marginTop: 3,
+    backgroundColor: colors.grey,
+    flexDirection: "row",
+  },
+  ChatBubbleLeftText: {
+    color: colors.DarkWhite,
+    fontFamily: "Touche_Medium",
+    fontSize: 14,
+    marginBottom: 3,
+  },
+  ChatBubbleLeftNote: {
+    color: colors.MiddleGrey,
+    fontSize: 10,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
   },
 });
 
 export const AuthStyle = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: colors.black,
-		alignItems: 'center',
-		justifyContent: 'center'
+  container: {
+    flex: 1,
+    backgroundColor: colors.black,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  Heading:{
-    fontSize:23,
-    paddingBottom:20,
-    fontFamily: 'Touche_Semibold',
-    color:colors.white,
-  },
-	inputBox: {
-		width: '85%',
-		margin: 10,
-		padding: 18,
-		fontSize: 16,
-    borderColor: colors.grey,
-    borderWidth:2,
-    borderRadius:20,
-    textAlign: 'left',
-    color:colors.white,
-	},
-	button: {
-    alignItems: 'center',
-		backgroundColor: colors.Shadow,
-		borderRadius: 5,
-    width: '70%',
-    margin: 25,
-    marginBottom:10,
-		padding: 10,
-	},
-	buttonText: {
-		fontWeight: 'bold',
+  Heading: {
+    fontSize: 23,
+    paddingBottom: 20,
+    fontFamily: "Touche_Semibold",
     color: colors.white,
-    fontSize:23,
-    fontFamily: 'Touche_Semibold'
-	},
-	TextButton: {
-		fontFamily: 'Touche_Semibold',
-    fontSize:15,
-    color:colors.dodgerblue,
-    backgroundColor:colors.black,
-    paddingLeft:5,
   },
-  Text:{
-    color:colors.white,
-    fontFamily: 'Touche_Semibold',
-    fontSize:15,
+  inputBox: {
+    width: "85%",
+    margin: 10,
+    padding: 18,
+    fontSize: 16,
+    borderColor: colors.grey,
+    borderWidth: 2,
+    borderRadius: 20,
+    textAlign: "left",
+    color: colors.white,
   },
-  AlertText:{
-    alignItems:'flex-start',
-    color:colors.red,
+  button: {
+    alignItems: "center",
+    backgroundColor: colors.Shadow,
+    borderRadius: 5,
+    width: "70%",
+    margin: 25,
+    marginBottom: 10,
+    padding: 10,
+  },
+  buttonText: {
+    fontWeight: "bold",
+    color: colors.white,
+    fontSize: 23,
+    fontFamily: "Touche_Semibold",
+  },
+  TextButton: {
+    fontFamily: "Touche_Semibold",
+    fontSize: 15,
+    color: colors.dodgerblue,
+    backgroundColor: colors.black,
+    paddingLeft: 5,
+  },
+  Text: {
+    color: colors.white,
+    fontFamily: "Touche_Semibold",
+    fontSize: 15,
+  },
+  AlertText: {
+    alignItems: "flex-start",
+    color: colors.red,
   },
 });

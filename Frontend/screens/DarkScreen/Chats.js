@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { Header, Title, Button, Body, Footer, FooterTab } from "native-base";
-
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Header, Title, Body } from "native-base";
 import DarkChatScreen from "./ChatList";
 import { DarkTheme } from "../../appStyles";
 

@@ -5,42 +5,41 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const { registerValidation, loginValidation } = require("../validation");
 const AuthTokenVerification = require("./TokenVerify");
+const { use } = require("./rooms");
 
 router.get("/all", AuthTokenVerification, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(400).send("Access denied");
+    }
     const users = await User.find();
     res.json(users);
   } catch (err) {
-    res.json({
-      message: err,
-    });
+    return res.status(400).send(err);
   }
 });
 
 router.get("/:UserId", AuthTokenVerification, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(400).send("Access denied");
+    }
     const user = await User.findById(req.params.UserId);
     res.json(user);
   } catch (err) {
-    res.json({
-      message: err,
-    });
+    return res.status(400).send(err);
   }
 });
 
 router.patch("/update", AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.json({
-        message: "Access denied",
-      });
+      return res.status(400).send("Access denied");
     }
     const user = await User.findById(req.user);
     const validPass = await bcrypt.compare(req.body.password, user.password);
     if (!validPass) {
-      return res.json({
-        message: "Incorrect password",
-      });
+      return res.status(400).send("Incorrect password");
     }
 
     if (validPass) {
@@ -64,27 +63,21 @@ router.patch("/update", AuthTokenVerification, async (req, res) => {
       message: "successfully updated",
     });
   } catch (err) {
-    res.json({
-      message: err,
-    });
+    res.status(400).send(err);
   }
 });
 
 router.post("/register", async (req, res) => {
   const { error } = registerValidation(req.body);
   if (error) {
-    return res.json({
-      message: error.details[0].message,
-    });
+    return res.status(400).send(error.details[0].message);
   }
 
   const emailExist = await User.findOne({
     email: req.body.email,
   });
   if (emailExist) {
-    return res.json({
-      message: "Account with this email already exists",
-    });
+    return res.status(400).send("Account with this email already exists");
   }
 
   //hashing the send password
@@ -103,35 +96,27 @@ router.post("/register", async (req, res) => {
       user: user._id,
     });
   } catch (err) {
-    res.json({
-      message: err,
-    });
+    res.status(400).send(err);
   }
 });
 
 router.post("/login", async (req, res) => {
   const { error } = loginValidation(req.body);
   if (error) {
-    return res.json({
-      message: error.details[0].message,
-    });
+    return res.status(400).send(error.details[0].message);
   }
 
   const user = await User.findOne({
     email: req.body.email,
   });
   if (!user) {
-    return res.json({
-      message: "Account with this email does not exists",
-    });
+    return res.status(400).send("Account with this email does not exists");
   }
 
   //comparing the send password
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass) {
-    return res.json({
-      message: "Email or Password is incorrect",
-    });
+    return res.status(400).send("Email or Password is incorrect");
   }
 
   const token = JWT.sign(
@@ -144,6 +129,7 @@ router.post("/login", async (req, res) => {
     name: user.name,
     user: user._id,
     token: token,
+    profile_pic: user.profile_pic,
   });
 });
 

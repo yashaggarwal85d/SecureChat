@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
   Header,
   Title,
@@ -8,31 +8,38 @@ import {
   Left,
   Text,
   Thumbnail,
-} from 'native-base';
+} from "native-base";
 
-import { Image } from 'react-native';
-import { AntDesign,Entypo } from '@expo/vector-icons';
-import * as color from '../constants/colors';
-import LightTheme from '../appStyles';
+import { Image } from "react-native";
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import * as color from "../constants/colors";
+import LightTheme from "../appStyles";
 
 export default class ChatHeader extends Component {
-  
   render() {
     return (
       <Header style={this.props.appStyles.ChatHeaderView}>
         <Left>
-          <Button icon transparent onPress={() => {
+          <Button
+            icon
+            transparent
+            onPress={() => {
               this.props.navigation.goBack();
-            }}>
-            <AntDesign name='arrowleft' size={22} color={color.grey} />
+            }}
+          >
+            <AntDesign name="arrowleft" size={22} color={color.grey} />
           </Button>
-            
         </Left>
-  
-        <Thumbnail style={this.props.appStyles.ChatHeaderImage} source={{ uri: this.props.ProfilePicUrl}}/>
-  
+
+        <Thumbnail
+          style={this.props.appStyles.ChatHeaderImage}
+          source={{ uri: this.props.ProfilePicUrl }}
+        />
+
         <Body>
-          <Title style={this.props.appStyles.ChatHeaderTitle}>{this.props.name}</Title>
+          <Title style={this.props.appStyles.ChatHeaderTitle}>
+            {this.props.name}
+          </Title>
           <Text style={this.props.appStyles.ChatHeaderNote}>Hey there !</Text>
         </Body>
 

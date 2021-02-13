@@ -1,15 +1,10 @@
-import React from 'react';
-import {useSelector} from 'react-redux';
-import ChatScreenComponent from '../../components/ChatListComponent';
+import React from "react";
+import { useSelector } from "react-redux";
+import ChatScreenComponent from "../../components/ChatListComponent";
 
-const DarkChatScreen = props => {
-  const ChatList = useSelector(state => state.ChatList.chats ); 
-  return(
-    <ChatScreenComponent
-      {...props}
-      CHATLIST={ChatList} 
-    />
-  );
-}
+const DarkChatScreen = (props) => {
+  const Rooms = useSelector((state) => state.room.rooms);
+  return <ChatScreenComponent {...props} CHATLIST={Rooms} />;
+};
 
 export default DarkChatScreen;
