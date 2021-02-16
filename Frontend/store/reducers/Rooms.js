@@ -1,4 +1,3 @@
-import { Room } from "../../models/Rooms";
 import { FILL_DATA } from "../actions/RoomActions";
 
 const RoomListInitialState = {

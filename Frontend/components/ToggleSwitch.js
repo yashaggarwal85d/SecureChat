@@ -1,268 +1,290 @@
-import React, { Component } from 'react';
-import 
-{
-    View,
-	Animated,
-    PanResponder,
-	TouchableOpacity
-} from 'react-native';
-import * as colors from '../constants/colors';
+import React, { Component } from "react";
+import { View, Animated, PanResponder, TouchableOpacity } from "react-native";
+import * as colors from "../constants/colors";
 
 export default class ToggleSwitch extends Component {
-    constructor(props) {
-      super(props)
-      this.animatedObject = null;
-      this.animatedSetValue = null;
+  constructor(props) {
+    super(props);
+    this.animatedObject = null;
+    this.animatedSetValue = null;
 
-      this.switchOffSet = 10;
+    this.switchOffSet = 10;
 
-      this.MIN_VALUE = this.props.minValue;
-      this.MAX_VALUE = this.props.maxValue;
+    this.MIN_VALUE = this.props.minValue;
+    this.MAX_VALUE = this.props.maxValue;
 
-      this.TOTAL_DISTANCE = Math.sqrt(Math.pow(this.MAX_VALUE - this.MIN_VALUE, 2))
-      this.factor = this.TOTAL_DISTANCE/2;
+    this.TOTAL_DISTANCE = Math.sqrt(
+      Math.pow(this.MAX_VALUE - this.MIN_VALUE, 2)
+    );
+    this.factor = this.TOTAL_DISTANCE / 2;
 
-      this.MIN_MAX_VALUE = this.MIN_VALUE + this.factor
-      
-      this.state = {
-          startValue: this.MIN_VALUE,
-          calledState: 'left',
-		  activeIdx: this.props.defaultActiveIndex
-	  }
+    this.MIN_MAX_VALUE = this.MIN_VALUE + this.factor;
 
-      this._switchvalue = this.state.startValue;
-      this._animatedValue = new Animated.Value(this._switchvalue);
-      this._animatedValue.addListener(({value}) => this._switchvalue = value);
-      this.setActiveIndex(this.props.defaultActiveIndex);
-      this.componentDidMount();
+    this.state = {
+      startValue: this.MIN_VALUE,
+      calledState: "left",
+      activeIdx: this.props.defaultActiveIndex,
+    };
+
+    this._switchvalue = this.state.startValue;
+    this._animatedValue = new Animated.Value(this._switchvalue);
+    this._animatedValue.addListener(({ value }) => (this._switchvalue = value));
+    this.setActiveIndex(this.props.defaultActiveIndex);
+    this.componentDidMount();
+  }
+
+  setActiveIndex = (idx) => {
+    if (idx === 0) {
+      this._animateToSwitchItem(this.MIN_VALUE);
+    } else if (idx === 1) {
+      this._animateToSwitchItem(this.MAX_VALUE);
+    }
+    this.setState({ activeIdx: idx });
+  };
+
+  componentDidMount() {
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder: this._onMoveShouldSetPanResponder,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: this._onPanResponderGrant,
+      onPanResponderMove: this._onPanResponderMove,
+      onPanResponderRelease: this._onPanResponderRelease,
+    });
+  }
+
+  _onMoveShouldSetPanResponder = (evt, gestureState) => {
+    return Math.abs(gestureState.dx) > 5;
+  };
+
+  _onPanResponderMove = (evt, gestureState) => {
+    if ([this.MIN_VALUE, this.MAX_VALUE].includes(this._switchvalue)) {
+      this.animatedSetValue = this._switchvalue + gestureState.dx;
+    } else {
+      this.animatedSetValue = this.state.startValue + gestureState.dx;
     }
 
-	setActiveIndex = (idx) => {
-        if (idx===0) {
-            this._animateToSwitchItem(this.MIN_VALUE)
-        }else if (idx===1) {
-            this._animateToSwitchItem(this.MAX_VALUE)
-        }
-        this.setState({ activeIdx: idx })
-	}
-
-    componentDidMount () {
-      this._panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onStartShouldSetPanResponderCapture: () => true,
-        onMoveShouldSetPanResponder: this._onMoveShouldSetPanResponder,
-        onMoveShouldSetPanResponderCapture: () => true,
-        onPanResponderTerminationRequest: () => false,
-        onPanResponderGrant: this._onPanResponderGrant,
-        onPanResponderMove: this._onPanResponderMove,
-        onPanResponderRelease: this._onPanResponderRelease
-      })
+    if (this._switchvalue >= this.MAX_VALUE) {
+      if (gestureState.dx > 0) {
+      } else {
+        this._animatedValue.setValue(this.animatedSetValue);
+      }
+    } else if (this._switchvalue <= this.MIN_VALUE) {
+      if (gestureState.dx < 0) {
+      } else {
+        this._animatedValue.setValue(this.animatedSetValue);
+      }
+    } else {
+      this._animatedValue.setValue(this.animatedSetValue);
+      if (
+        this.animatedSetValue < this.MIN_MAX_VALUE &&
+        this.state.calledState !== "left"
+      ) {
+        this.setState({ calledState: "left" });
+        // this.onLeftState(animate=false)
+      } else if (
+        this.animatedSetValue > this.MIN_MAX_VALUE &&
+        this.animatedSetValue < this.MAX_VALUE &&
+        this.state.calledState !== "right"
+      ) {
+        this.setState({ calledState: "right" });
+        // this.onRightState(animate=false)
+      } else {
+      }
     }
+  };
 
-    _onMoveShouldSetPanResponder = (evt, gestureState) => {
-        return Math.abs(gestureState.dx) > 5;
-    }
+  _onPanResponderGrant = () => {};
 
-    _onPanResponderMove = (evt, gestureState) => {
-        if ([this.MIN_VALUE, this.MAX_VALUE].includes(this._switchvalue)){
-            this.animatedSetValue = this._switchvalue + gestureState.dx;
-        } else {
-            this.animatedSetValue = this.state.startValue + gestureState.dx;
-        }
-
-        if (this._switchvalue >= this.MAX_VALUE){
-            if (gestureState.dx > 0){}else {
-                this._animatedValue.setValue(this.animatedSetValue)
-            }
-        } else if (this._switchvalue <= this.MIN_VALUE) {
-            if (gestureState.dx < 0){}else {
-                this._animatedValue.setValue(this.animatedSetValue)
-            }
-        } 
-        else {
-            this._animatedValue.setValue(this.animatedSetValue)
-            if (this.animatedSetValue < this.MIN_MAX_VALUE && this.state.calledState !== 'left'){
-                this.setState({calledState: 'left'})
-                // this.onLeftState(animate=false)
-            }else if (this.animatedSetValue > this.MIN_MAX_VALUE && this.animatedSetValue < this.MAX_VALUE && this.state.calledState !== 'right') {
-                this.setState({calledState: 'right'})
-                // this.onRightState(animate=false)
-            }else {}
-        }
-    }
-
-    _onPanResponderGrant = () => {
-
-    }
-
-    _onPanResponderRelease = () => {
-        // if (this._switchvalue >= this.MID_RIGHT_VALUE){
-        //     this._animateToSwitchItem(this.MAX_VALUE)
-        // } else if (this._switchvalue >= this.MID_LEFT_VALUE && this._switchvalue <= this.MID_RIGHT_VALUE) {
-        //     this._animateToSwitchItem(this.MID_VALUE)
-        // } else {
-        //     this._animateToSwitchItem(this.MIN_VALUE)
-        // }
-        if(this._switchvalue >= this.MIN_MAX_VALUE){
-            this._animateToSwitchItem(this.MAX_VALUE);
-            this.setActiveIndex(1);
-            this.props.onRightState();
-        }
-        else{
-            this._animateToSwitchItem(this.MIN_VALUE);
-            this.setActiveIndex(0);
-            this.props.onLeftState();
-        }
-    }
-
-    _animateToSwitchItem = (toValue) => {
-        Animated.timing(this._animatedValue, {
-            toValue: toValue,
-            duration: this.props.switchShiftTime,
-            useNativeDrive: true
-        }).start(() => {
-            this.setState({startValue: toValue})
-        });
-    }
-
-    onLeftState = (animate=true) => {
-        if (animate === true){
-            this.setActiveIndex(0);
-        } else {
-            this.setState({calledState: 'left'});
-        }
-        this.props.onLeftState();
-    }
-
-    // onMiddleState = (animate=true) => {
-    //     if (animate === true){
-    //         this.setActiveIndex(1)
-    //     } else {
-    //         this.setState({calledState: 'middle'})
-    //     }
-    //     this.props.onMiddleState()
+  _onPanResponderRelease = () => {
+    // if (this._switchvalue >= this.MID_RIGHT_VALUE){
+    //     this._animateToSwitchItem(this.MAX_VALUE)
+    // } else if (this._switchvalue >= this.MID_LEFT_VALUE && this._switchvalue <= this.MID_RIGHT_VALUE) {
+    //     this._animateToSwitchItem(this.MID_VALUE)
+    // } else {
+    //     this._animateToSwitchItem(this.MIN_VALUE)
     // }
-
-    onRightState = (animate=true) => {
-        if (animate === true){
-            this.setActiveIndex(1);
-        } else {
-            this.setState({calledState: 'right'});
-        }
-        this.props.onRightState();
+    if (this._switchvalue >= this.MIN_MAX_VALUE) {
+      this._animateToSwitchItem(this.MAX_VALUE);
+      this.setActiveIndex(1);
+      this.props.onRightState();
+    } else {
+      this._animateToSwitchItem(this.MIN_VALUE);
+      this.setActiveIndex(0);
+      this.props.onLeftState();
     }
+  };
 
-	renderToggleItems = () => {
-		const AnimatedIcon = this.props.AnimatedIcon;
+  _animateToSwitchItem = (toValue) => {
+    Animated.timing(this._animatedValue, {
+      toValue: toValue,
+      duration: this.props.switchShiftTime,
+    }).start(() => {
+      this.setState({ startValue: toValue });
+    });
+  };
 
-		return (
-			<View style={[this.props.itemsContainer,]}>
-                <Animated.View
-                    ref={animatedObject => this.animatedObject = animatedObject}
-                    {...this._panResponder.panHandlers}
-                    style={[{left: this._animatedValue}, this.props.floatingPointerStyle,]}>
-                </Animated.View>
-
-                <Animated.View
-                    ref={animatedObject => this.animatedObject = animatedObject}
-                    {...this._panResponder.panHandlers}
-                    style={[{left: this._animatedValue}, this.props.floatingPointerStyle, {zIndex: 99, backgroundColor: 'transparent'}]}>
-                </Animated.View>
-
-                <TouchableOpacity
-                    {...this._panResponder.panHandlers}
-                    style={[this.props.itemContainer, {elevation: 100}]}
-                    onPress={() => this.onLeftState()}
-                >
-                    <AnimatedIcon name={this.props.leftStateIconName} size={this.props.stateIconSize}
-                        style={{color: this._animatedValue.interpolate({
-                              inputRange: [this.MIN_VALUE, this.MAX_VALUE],
-                              outputRange: [this.props.secondaryColor, this.props.primaryColor]
-                          })
-                        }}
-					/>
-
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={[this.props.itemContainer, {elevation: 100}]}
-                    onPress={() => this.onRightState()}
-                >
-                    <AnimatedIcon name={this.props.rightStateIconName} size={this.props.stateIconSize} style={{
-                        color: this._animatedValue.interpolate({
-                            inputRange: [this.MIN_VALUE, this.MAX_VALUE],
-                            outputRange: [this.props.primaryColor, this.props.secondaryColor]
-                        })
-                    }} />
-                </TouchableOpacity>
-
-			</View>
-		)
-
-	}
-
-	render(){
-        return(
-            <View style={{backgroundColor: 'transparent', paddingLeft: 10, paddingRight: 10}}>
-                <View style={[this.props.itemsContainerBackgroundStyle, ]}/>
-                {this.renderToggleItems()}
-            </View>
-		)
+  onLeftState = (animate = true) => {
+    if (animate === true) {
+      this.setActiveIndex(0);
+    } else {
+      this.setState({ calledState: "left" });
     }
+    this.props.onLeftState();
+  };
+
+  // onMiddleState = (animate=true) => {
+  //     if (animate === true){
+  //         this.setActiveIndex(1)
+  //     } else {
+  //         this.setState({calledState: 'middle'})
+  //     }
+  //     this.props.onMiddleState()
+  // }
+
+  onRightState = (animate = true) => {
+    if (animate === true) {
+      this.setActiveIndex(1);
+    } else {
+      this.setState({ calledState: "right" });
+    }
+    this.props.onRightState();
+  };
+
+  renderToggleItems = () => {
+    const AnimatedIcon = this.props.AnimatedIcon;
+
+    return (
+      <View style={[this.props.itemsContainer]}>
+        <Animated.View
+          ref={(animatedObject) => (this.animatedObject = animatedObject)}
+          {...this._panResponder.panHandlers}
+          style={[
+            { left: this._animatedValue },
+            this.props.floatingPointerStyle,
+          ]}
+        ></Animated.View>
+
+        <Animated.View
+          ref={(animatedObject) => (this.animatedObject = animatedObject)}
+          {...this._panResponder.panHandlers}
+          style={[
+            { left: this._animatedValue },
+            this.props.floatingPointerStyle,
+            { zIndex: 99, backgroundColor: "transparent" },
+          ]}
+        ></Animated.View>
+
+        <TouchableOpacity
+          {...this._panResponder.panHandlers}
+          style={[this.props.itemContainer, { elevation: 100 }]}
+          onPress={() => this.onLeftState()}
+        >
+          <AnimatedIcon
+            name={this.props.leftStateIconName}
+            size={this.props.stateIconSize}
+            style={{
+              color: this._animatedValue.interpolate({
+                inputRange: [this.MIN_VALUE, this.MAX_VALUE],
+                outputRange: [
+                  this.props.secondaryColor,
+                  this.props.primaryColor,
+                ],
+              }),
+            }}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[this.props.itemContainer, { elevation: 100 }]}
+          onPress={() => this.onRightState()}
+        >
+          <AnimatedIcon
+            name={this.props.rightStateIconName}
+            size={this.props.stateIconSize}
+            style={{
+              color: this._animatedValue.interpolate({
+                inputRange: [this.MIN_VALUE, this.MAX_VALUE],
+                outputRange: [
+                  this.props.primaryColor,
+                  this.props.secondaryColor,
+                ],
+              }),
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  render() {
+    return (
+      <View
+        style={{
+          backgroundColor: "transparent",
+          paddingLeft: 10,
+          paddingRight: 10,
+        }}
+      >
+        <View style={[this.props.itemsContainerBackgroundStyle]} />
+        {this.renderToggleItems()}
+      </View>
+    );
+  }
 }
-
 
 ToggleSwitch.defaultProps = {
-
-    minValue: -2.5,
-    maxValue: 44,
-	leftStateIconName: 'web',
-	rightStateIconName: 'guy-fawkes-mask',
-	stateIconSize: 26,
-    switchShiftTime: 200,
-	primaryColor: colors.grey,
-	secondaryColor: colors.white,
-    itemContainer: {
-	  backgroundColor: 'transparent',
-	  height: 45,
-	  width: 45,
-	  alignItems: 'center',
-	  justifyContent: 'center',
+  minValue: -2.5,
+  maxValue: 44,
+  leftStateIconName: "web",
+  rightStateIconName: "guy-fawkes-mask",
+  stateIconSize: 26,
+  switchShiftTime: 200,
+  primaryColor: colors.grey,
+  secondaryColor: colors.white,
+  itemContainer: {
+    backgroundColor: "transparent",
+    height: 45,
+    width: 45,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  // 010033
+  floatingPointerStyle: {
+    position: "absolute",
+    backgroundColor: colors.dodgerblue,
+    height: 65,
+    width: 65,
+    borderRadius: 40,
+    elevation: 7,
+    marginLeft: -7.5,
+    marginRight: 7.5,
+    marginTop: 2.5,
+    shadowOpacity: 0.0015 * 7 + 0.18,
+    shadowRadius: 0.54 * 7,
+    shadowOffset: {
+      height: 0.6 * 7,
     },
-    // 010033
-    floatingPointerStyle: {
-      position: 'absolute',
-      backgroundColor: colors.dodgerblue,
-      height: 65,
-      width: 65,
-      borderRadius: 40,
-      elevation: 7,
-      marginLeft: -7.5,
-      marginRight: 7.5,
-      marginTop: 2.5,
-      shadowOpacity: 0.0015 * 7 + 0.18,
-      shadowRadius: 0.54 * 7,
-      shadowOffset: {
-        height: 0.6 * 7,
-      },
-    },
-	itemsContainer: {
-	  flexDirection: 'row',
-	  paddingTop: 15,
-      paddingBottom: 15,
-	},
-	itemsContainerBackgroundStyle: {
-		position: 'absolute',
-		height: 45,
-        left: 0,
-        right: 0,
-        top: 0.5,
-        marginTop: 15,
-        marginLeft: 7.5,
-        marginRight: 7.5,
-		borderRadius: 30,
-		backgroundColor: colors.Shadow,
-	},
-	onLeftState: () => {},
-    onRightState: () => {}
-}
+  },
+  itemsContainer: {
+    flexDirection: "row",
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  itemsContainerBackgroundStyle: {
+    position: "absolute",
+    height: 45,
+    left: 0,
+    right: 0,
+    top: 0.5,
+    marginTop: 15,
+    marginLeft: 7.5,
+    marginRight: 7.5,
+    borderRadius: 30,
+    backgroundColor: colors.Shadow,
+  },
+  onLeftState: () => {},
+  onRightState: () => {},
+};

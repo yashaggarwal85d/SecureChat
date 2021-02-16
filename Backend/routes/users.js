@@ -31,31 +31,60 @@ router.get("/:UserId", AuthTokenVerification, async (req, res) => {
   }
 });
 
+// router.patch("/active", AuthTokenVerification, async (req, res) => {
+//   try {
+//     if (!req.user) {
+//       return res.status(400).send("Access denied");
+//     }
+//     const UpdatedUser = await User.updateMany(
+//       {
+//         _id: req.user._id,
+//       },
+//       {
+//         $set: {
+//           is_active: true,
+//         },
+//       }
+//     );
+//     res.json({
+//       message: "successfully updated",
+//     });
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// });
+
 router.patch("/update", AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(400).send("Access denied");
     }
-    const user = await User.findById(req.user);
-    const validPass = await bcrypt.compare(req.body.password, user.password);
-    if (!validPass) {
-      return res.status(400).send("Incorrect password");
-    }
+    const user = await User.findById(req.user._id);
+    var hashedPassword = null;
 
-    if (validPass) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.changepassword, salt);
+    if (req.body.password) {
+      const validPass = await bcrypt.compare(req.body.password, user.password);
+      if (!validPass) {
+        return res.status(400).send("Incorrect password");
+      }
+
+      if (validPass) {
+        const salt = await bcrypt.genSalt(10);
+        hashedPassword = await bcrypt.hash(req.body.changepassword, salt);
+      }
     }
 
     const UpdatedUser = await User.updateMany(
       {
-        _id: req.user,
+        _id: req.user._id,
       },
       {
         $set: {
           name: req.body.name || user.name,
           email: req.body.email || user.email,
           password: hashedPassword || user.password,
+          profile_pic: req.body.profile_pic || user.profile_pic,
+          status: req.body.status || user.status,
         },
       }
     );

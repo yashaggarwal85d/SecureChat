@@ -33,12 +33,12 @@ export default class ChatHeader extends Component {
 
         <Thumbnail
           style={this.props.appStyles.ChatHeaderImage}
-          source={{ uri: this.props.ProfilePicUrl }}
+          source={{ uri: this.props.room.profile_pic }}
         />
 
         <Body>
           <Title style={this.props.appStyles.ChatHeaderTitle}>
-            {this.props.name}
+            {this.props.room.name}
           </Title>
           <Text style={this.props.appStyles.ChatHeaderNote}>Hey there !</Text>
         </Body>

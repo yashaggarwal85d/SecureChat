@@ -11,7 +11,6 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
       return res.status(400).send("Access denied");
     }
     const user = await User.findById(req.user._id);
-    console.log(req.user._id);
     const rooms_id = user.rooms_id;
     const rooms = [];
 

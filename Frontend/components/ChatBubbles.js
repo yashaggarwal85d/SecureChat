@@ -1,39 +1,42 @@
 import React, { Component } from "react";
 import { Text, View } from "native-base";
-import { useSelector } from "react-redux";
 import { FlatList } from "react-native";
+import moment from "moment";
 
 class ChatBubble extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   renderGridItem = (itemData) => {
-    if (itemData.item.sender !== this.props.userId) {
+    const time = moment(itemData.item.timestamp).format("h:mm");
+    if (itemData.item.sender_id !== this.props.userId) {
       return (
         <View style={this.props.appStyles.ChatBubbleLeftView}>
           <Text style={this.props.appStyles.ChatBubbleLeftText}>
-            {itemData.item.message}
+            {itemData.item.message_body}
           </Text>
-          <Text style={this.props.appStyles.ChatBubbleLeftNote}>
-            {itemData.item.time}
-          </Text>
+          <Text style={this.props.appStyles.ChatBubbleLeftNote}>{time}</Text>
         </View>
       );
     } else {
       return (
         <View style={this.props.appStyles.ChatBubbleView}>
           <Text style={this.props.appStyles.ChatBubbleText}>
-            {itemData.item.message}
+            {itemData.item.message_body}
           </Text>
-          <Text style={this.props.appStyles.ChatBubbleNote}>
-            {itemData.item.time}
-          </Text>
+          <Text style={this.props.appStyles.ChatBubbleNote}>{time}</Text>
         </View>
       );
     }
   };
   render() {
+    const reverseMessages = this.props.messages.slice().reverse();
     return (
       <FlatList
-        keyExtractor={(item) => item.id}
-        data={this.props.Chats}
+        inverted
+        keyExtractor={(item) => item._id}
+        data={reverseMessages}
         renderItem={this.renderGridItem}
         numColumns={1}
         style={this.props.appStyles.ChatBubblesList}
@@ -42,9 +45,4 @@ class ChatBubble extends Component {
   }
 }
 
-const ChatBubbles = (props) => {
-  // const Chats = useSelector(state => state.Chats.chats );
-  return <ChatBubble {...props} Chats={[{ message: "hi", time: "6:30" }]} />;
-};
-
-export default ChatBubbles;
+export default ChatBubble;

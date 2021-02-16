@@ -24,7 +24,7 @@ const loginValidation = (data) => {
 
 const messageSchema = Joi.object({
   sender_id: Joi.string().required(),
-  message_body: Joi.string().required(),
+  message_body: Joi.string().min(1).required(),
 });
 
 const roomValidation = (data) => {

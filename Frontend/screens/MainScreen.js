@@ -7,44 +7,54 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ToggleSwitch from "../components/ToggleSwitch";
 import { connect } from "react-redux";
 import MainTabScreen from "./Tabs";
-import io from "socket.io-client";
-import { BASEAPI } from "../constants/APIstore";
+import { JoinRooms, socket } from "../store/reducers/Socket";
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
 class MainApp extends Component {
   constructor(props) {
     super(props);
-    this.appStyles = LightTheme;
     this.defaultActiveIndex = 0;
-    this.SecondaryColor = colors.white;
     this.DefaultTheme = "light";
     this.props.ThemeSwitching("light");
+    this.SwitchToLight();
+    JoinRooms(this.props.user.token);
   }
 
-  // componentDidMount() {
-  // socket.on("message", (message) => {
-  //   console.log(message);
-  // });
+  componentDidMount() {
+    setTimeout(() => {
+      StatusBar.setHidden(false);
+    });
+  }
 
-  //   setTimeout(() => {
-  //     StatusBar.setBackgroundColor(this.SecondaryColor);
-  //   });
-  // }
-
+  SwitchToLight() {
+    this.appStyles = LightTheme;
+    this.SecondaryColor = colors.white;
+    setTimeout(() => {
+      StatusBar.setBarStyle("dark-content");
+      StatusBar.setBackgroundColor(colors.white);
+    });
+  }
+  SwitchToDark() {
+    this.appStyles = DarkTheme;
+    this.SecondaryColor = colors.black;
+    setTimeout(() => {
+      StatusBar.setBarStyle("light-content");
+      StatusBar.setBackgroundColor(colors.black);
+    });
+  }
   SwitchThemeFunction(currentTheme) {
     this.props.ThemeSwitching(currentTheme);
     this.DefaultTheme = currentTheme;
     if (currentTheme == "light") {
-      this.appStyles = LightTheme;
-      this.SecondaryColor = colors.white;
+      this.SwitchToLight();
     } else if (currentTheme == "dark") {
-      this.appStyles = DarkTheme;
-      this.SecondaryColor = colors.black;
+      this.SwitchToDark();
     }
   }
 
   render() {
+    console.log(this.props.user);
     return (
       <Container>
         <MainTabScreen
@@ -67,6 +77,7 @@ class MainApp extends Component {
 function mapStateToProps(state) {
   return {
     theme: state.CurrentTheme.theme,
+    user: state.user,
   };
 }
 

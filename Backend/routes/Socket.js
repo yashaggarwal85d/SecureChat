@@ -1,10 +1,41 @@
+const express = require("express");
+const User = require("../models/users");
+const Room = require("../models/rooms");
+const JWT = require("jsonwebtoken");
+
+var ConnectedUsers = {};
+
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log("connection set up");
-    socket.emit("message", "hi");
-    socket.broadcast.emit("message", "hello");
-    socket.on("disconnect", () => {
-      io.emit("message", "fu");
+    socket.on("connectedUser", async (token) => {
+      const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+      const user = await User.findById(verifiedId._id);
+      ConnectedUsers[user._id] = socket.id;
+      console.log(ConnectedUsers);
+    });
+    socket.on("message", async (roomId, token, messageBody) => {
+      const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+      const message = {
+        sender_id: verifiedId._id,
+        message_body: messageBody,
+      };
+      const UpdatedRoom = await Room.updateOne(
+        { _id: roomId },
+        {
+          $push: {
+            messages: message,
+          },
+        }
+      );
+      const room = await Room.findById(roomId);
+      const RoomMembers = room.members_id;
+      RoomMembers.forEach((mem) => {
+        if (ConnectedUsers[mem]) {
+          socket
+            .to(ConnectedUsers[mem])
+            .emit("recieveMessage", message, roomId);
+        }
+      });
     });
   });
 };

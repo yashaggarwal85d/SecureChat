@@ -32,6 +32,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     default: ProfilePicUrl,
   },
+  status: {
+    type: String,
+    default: "Hello there",
+  },
 });
 
 module.exports = mongoose.model("user", UserSchema);

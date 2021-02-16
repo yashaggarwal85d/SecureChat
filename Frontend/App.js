@@ -1,25 +1,15 @@
-import { StatusBar, Animated, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import { StatusBar } from "react-native";
+import React, { useState } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
-import MainNavigator from "./navigation/chatsNavigation";
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import RoomReducer from "./store/reducers/Rooms";
-import ThemeReducer from "./store/reducers/CurrentTheme";
-import AuthReducer from "./store/reducers/Auth";
+import {
+  AuthMainNavigator,
+  ChatMainNavigator,
+} from "./navigation/chatsNavigation";
 import { Provider } from "react-redux";
-import ReduxThunk from "redux-thunk";
-import io from "socket.io-client";
-import { BASEAPI } from "./constants/APIstore";
-
-const rootReducer = combineReducers({
-  room: RoomReducer,
-  CurrentTheme: ThemeReducer,
-  user: AuthReducer,
-});
-
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
-const socket = io(BASEAPI);
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./store/store";
+import { useSelector } from "react-redux";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -30,7 +20,7 @@ const fetchFonts = () => {
   });
 };
 
-export default function App() {
+const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   if (!fontLoaded) {
@@ -46,9 +36,21 @@ export default function App() {
       <>
         <StatusBar hidden />
         <Provider store={store}>
-          <MainNavigator />
+          <PersistGate loading={null} persistor={persistor}>
+            <Navigation />
+          </PersistGate>
         </Provider>
       </>
     );
   }
-}
+};
+
+const Navigation = () => {
+  // const Authstate = useSelector((state) => state.user);
+  // console.log(Authstate);
+  // // if (Authstate) return <ChatMainNavigator />;
+  // else
+  return <AuthMainNavigator />;
+};
+
+export default App;

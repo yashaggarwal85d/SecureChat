@@ -1,9 +1,18 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Right, Text, Badge } from "native-base";
-
 import { FlatList } from "react-native";
+import { connect } from "react-redux";
+import { addMessage } from "../store/actions/RoomActions";
+import { bindActionCreators } from "redux";
+import { socket } from "../store/reducers/Socket";
 
-export default class ChatScreenComponent extends Component {
+class ChatScreenComponent extends Component {
+  componentDidMount = () => {
+    socket.on("recieveMessage", async (message, roomId) => {
+      await this.props.addMessage(roomId, message);
+    });
+  };
+
   renderGridItem = (itemData) => {
     if (itemData.item.active) {
       return (
@@ -15,10 +24,7 @@ export default class ChatScreenComponent extends Component {
             this.props.navigation.navigate({
               routeName: "ChatScreen",
               params: {
-                activeChatID: itemData.item.id,
-                userId: "1",
-                activeChatname: itemData.item.name,
-                ProfilePicUrl: ProfilePicUrl,
+                id: itemData.item.id,
                 appStyles: this.props.appStyles,
               },
             });
@@ -61,16 +67,13 @@ export default class ChatScreenComponent extends Component {
             this.props.navigation.navigate({
               routeName: "ChatScreen",
               params: {
-                activeChatID: itemData.item.id,
-                userId: "1",
-                activeChatname: itemData.item.name,
-                ProfilePicUrl: ProfilePicUrl,
+                id: itemData.item.id,
                 appStyles: this.props.appStyles,
               },
             });
           }}
         >
-          <Thumbnail source={{ uri: ProfilePicUrl }} />
+          <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
             <Text numberOfLines={1} style={this.props.appStyles.chatListName}>
@@ -105,3 +108,19 @@ export default class ChatScreenComponent extends Component {
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ addMessage }, dispatch);
+};
+
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.room.rooms,
+    user: state.user,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChatScreenComponent);
