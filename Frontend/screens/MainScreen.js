@@ -2,22 +2,33 @@ import React, { Component } from "react";
 import { Container } from "native-base";
 import * as colors from "../constants/colors";
 import { StatusBar, Animated, View } from "react-native";
-import { LightTheme, DarkTheme } from "../appStyles";
+import { ToggleSwitchStyle } from "../appStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ToggleSwitch from "../components/ToggleSwitch";
 import { connect } from "react-redux";
 import MainTabScreen from "./Tabs";
-import { JoinRooms, socket } from "../store/reducers/Socket";
+import { JoinRooms } from "../store/reducers/Socket";
+import { updateMode } from "../store/actions/LoginActions";
+import { bindActionCreators } from "redux";
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
 class MainApp extends Component {
   constructor(props) {
     super(props);
-    this.defaultActiveIndex = 0;
-    this.DefaultTheme = "light";
-    this.props.ThemeSwitching("light");
-    this.SwitchToLight();
+
+    var defaultActiveIndex;
+
+    if (this.props.user.mode === "light") {
+      defaultActiveIndex = 0;
+    } else {
+      defaultActiveIndex = 1;
+    }
+    this.state = {
+      defaultActiveIndex: defaultActiveIndex,
+      theme: this.props.user.mode,
+    };
+    this.SwitchThemeFunction(this.state.theme);
     JoinRooms(this.props.user.token);
   }
 
@@ -28,24 +39,20 @@ class MainApp extends Component {
   }
 
   SwitchToLight() {
-    this.appStyles = LightTheme;
-    this.SecondaryColor = colors.white;
     setTimeout(() => {
       StatusBar.setBarStyle("dark-content");
       StatusBar.setBackgroundColor(colors.white);
     });
   }
   SwitchToDark() {
-    this.appStyles = DarkTheme;
-    this.SecondaryColor = colors.black;
     setTimeout(() => {
       StatusBar.setBarStyle("light-content");
       StatusBar.setBackgroundColor(colors.black);
     });
   }
   SwitchThemeFunction(currentTheme) {
-    this.props.ThemeSwitching(currentTheme);
-    this.DefaultTheme = currentTheme;
+    this.props.updateMode(currentTheme);
+    this.setState({ theme: currentTheme });
     if (currentTheme == "light") {
       this.SwitchToLight();
     } else if (currentTheme == "dark") {
@@ -54,19 +61,18 @@ class MainApp extends Component {
   }
 
   render() {
-    console.log(this.props.user);
     return (
       <Container>
         <MainTabScreen
           navigation={this.props.navigation}
-          DefaultTheme={this.DefaultTheme}
+          DefaultTheme={this.state.theme}
         />
-        <View style={this.appStyles.Toggle}>
+        <View style={ToggleSwitchStyle.Toggle}>
           <ToggleSwitch
             onLeftState={() => this.SwitchThemeFunction("light")}
             onRightState={() => this.SwitchThemeFunction("dark")}
             AnimatedIcon={AnimatedIcon}
-            defaultActiveIndex={this.defaultActiveIndex}
+            defaultActiveIndex={this.state.defaultActiveIndex}
           />
         </View>
       </Container>
@@ -76,15 +82,12 @@ class MainApp extends Component {
 
 function mapStateToProps(state) {
   return {
-    theme: state.CurrentTheme.theme,
     user: state.user,
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    ThemeSwitching: (theme) => dispatch({ type: "SWITCH_THEME", theme: theme }),
-  };
-}
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ updateMode }, dispatch);
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainApp);

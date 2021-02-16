@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Header, Title, Body } from "native-base";
-import DarkChatScreen from "./ChatList";
 import { DarkTheme } from "../../appStyles";
+import ChatScreenComponent from "./DarkChatList";
 
 export default class DarkChatHeader extends Component {
   render() {
@@ -13,7 +13,7 @@ export default class DarkChatHeader extends Component {
           </Body>
         </Header>
 
-        <DarkChatScreen
+        <ChatScreenComponent
           navigation={this.props.navigation}
           appStyles={DarkTheme}
         />

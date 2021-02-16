@@ -25,6 +25,7 @@ const loginValidation = (data) => {
 const messageSchema = Joi.object({
   sender_id: Joi.string().required(),
   message_body: Joi.string().min(1).required(),
+  unread_by: Joi.array().optional(),
 });
 
 const roomValidation = (data) => {
@@ -32,8 +33,8 @@ const roomValidation = (data) => {
     name: Joi.string().optional(),
     description: Joi.string().optional(),
     creator_id: Joi.string().required(),
-    members_id: Joi.array()
-      .unique((a, b) => a === b)
+    members: Joi.array()
+      .unique((a, b) => a.id === b.id)
       .required(),
     messages: Joi.array().items(messageSchema).optional(),
   });

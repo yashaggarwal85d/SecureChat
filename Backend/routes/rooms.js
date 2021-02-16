@@ -31,8 +31,8 @@ router.get("/:RoomId", AuthTokenVerification, async (req, res) => {
     }
     var f = 0;
     const room = await Room.findById(req.params.RoomId);
-    for (const member of room.members_id) {
-      if (member === req.user._id) f = 1;
+    for (const member of room.members) {
+      if (member.id === req.user._id) f = 1;
     }
     if (f) res.json(room);
     else res.status(400).send("Access denied");
@@ -47,11 +47,8 @@ router.patch("/:RoomId", AuthTokenVerification, async (req, res) => {
       return res.status(400).send("Access denied");
     }
     const room = await Room.findById(req.params.RoomId);
-    var f = 0;
-    for (const member of room.members_id) {
-      if (member === req.user._id) f = 1;
-    }
-    if (f) {
+
+    if (req.user._id === creator_id) {
       const UpdatedRoom = await Room.updateMany(
         {
           _id: req.params.RoomId,
@@ -60,7 +57,6 @@ router.patch("/:RoomId", AuthTokenVerification, async (req, res) => {
           $set: {
             name: req.body.name || room.name,
             description: req.body.description || room.description,
-            messages: req.body.messages || room.messages,
             profile_pic: req.body.profile_pic || room.profile_pic,
           },
         }
@@ -79,12 +75,12 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
     return res.status(400).send("Access denied");
   }
   const members = req.body.members;
-  members.push(req.user._id);
+  members.push({ id: req.user._id });
   const room_details = {
     name: req.body.name,
     description: req.body.description,
     creator_id: req.user._id,
-    members_id: members,
+    members: members,
   };
   const { error } = roomValidation(room_details);
   if (error) {
@@ -98,7 +94,7 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
     for (const member of members) {
       const UpdatedUser = await User.updateMany(
         {
-          _id: member,
+          _id: member.id,
         },
         {
           $push: {

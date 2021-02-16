@@ -4,8 +4,8 @@ import MainApp from "../screens/MainScreen";
 import PresentChatScreen from "../screens/Chats";
 import LoginScreen from "../screens/AuthScreen/LoginScreen";
 import SignUpScreen from "../screens/AuthScreen/SignUpScreen";
-import LightChatHeader from "../screens/LightScreen/Chats";
-import DarkChatHeader from "../screens/DarkScreen/Chats";
+import LightChatHeader from "../screens/LightScreen/LightChatScreen";
+import DarkChatHeader from "../screens/DarkScreen/DarkChatScreen";
 
 const ChatsNavigator = createStackNavigator({
   MainScreen: {

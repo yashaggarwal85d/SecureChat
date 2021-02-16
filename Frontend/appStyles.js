@@ -80,12 +80,6 @@ export const LightTheme = StyleSheet.create({
     fontFamily: "Roboto_medium",
     fontSize: 12,
   },
-  Toggle: {
-    position: "absolute",
-    left: "63%",
-    bottom: "90%",
-  },
-
   ChatMainContainer: {
     backgroundColor: colors.white,
   },
@@ -213,6 +207,14 @@ export const LightTheme = StyleSheet.create({
     alignSelf: "flex-end",
     marginLeft: 5,
     fontFamily: "Touche_Medium",
+  },
+});
+
+export const ToggleSwitchStyle = StyleSheet.create({
+  Toggle: {
+    position: "absolute",
+    left: "63%",
+    bottom: "90%",
   },
 });
 

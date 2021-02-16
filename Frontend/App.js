@@ -2,14 +2,10 @@ import { StatusBar } from "react-native";
 import React, { useState } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
-import {
-  AuthMainNavigator,
-  ChatMainNavigator,
-} from "./navigation/chatsNavigation";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store";
-import { useSelector } from "react-redux";
+import Navigation from "./store/HandlePersist";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -43,14 +39,6 @@ const App = () => {
       </>
     );
   }
-};
-
-const Navigation = () => {
-  // const Authstate = useSelector((state) => state.user);
-  // console.log(Authstate);
-  // // if (Authstate) return <ChatMainNavigator />;
-  // else
-  return <AuthMainNavigator />;
 };
 
 export default App;

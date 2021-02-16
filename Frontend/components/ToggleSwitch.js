@@ -121,6 +121,7 @@ export default class ToggleSwitch extends Component {
     Animated.timing(this._animatedValue, {
       toValue: toValue,
       duration: this.props.switchShiftTime,
+      useNativeDriver: false,
     }).start(() => {
       this.setState({ startValue: toValue });
     });

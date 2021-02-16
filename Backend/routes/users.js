@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const { registerValidation, loginValidation } = require("../validation");
 const AuthTokenVerification = require("./TokenVerify");
-const { use } = require("./rooms");
 
 router.get("/all", AuthTokenVerification, async (req, res) => {
   try {
@@ -30,29 +29,6 @@ router.get("/:UserId", AuthTokenVerification, async (req, res) => {
     return res.status(400).send(err);
   }
 });
-
-// router.patch("/active", AuthTokenVerification, async (req, res) => {
-//   try {
-//     if (!req.user) {
-//       return res.status(400).send("Access denied");
-//     }
-//     const UpdatedUser = await User.updateMany(
-//       {
-//         _id: req.user._id,
-//       },
-//       {
-//         $set: {
-//           is_active: true,
-//         },
-//       }
-//     );
-//     res.json({
-//       message: "successfully updated",
-//     });
-//   } catch (err) {
-//     res.status(400).send(err);
-//   }
-// });
 
 router.patch("/update", AuthTokenVerification, async (req, res) => {
   try {

@@ -8,8 +8,16 @@ export const UPDATE_ID = "UPDATE_ID";
 export const LOGIN = "LOGIN";
 export const SIGNUP = "SIGNUP";
 export const UPDATE_PIC = "UPDATE_PIC";
+export const SWITCH_MODE = "SWITCH_MODE";
 import axios from "axios";
 import * as API from "../../constants/APIstore";
+
+export const updateMode = (mode) => {
+  return {
+    type: SWITCH_MODE,
+    payload: mode,
+  };
+};
 
 export const updateProfile = (profile_pic) => {
   return {

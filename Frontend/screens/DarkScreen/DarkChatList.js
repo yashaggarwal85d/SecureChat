@@ -2,19 +2,39 @@ import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Right, Text, Badge } from "native-base";
 import { FlatList } from "react-native";
 import { connect } from "react-redux";
-import { addMessage } from "../store/actions/RoomActions";
+import { addMessage, updateActive } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
-import { socket } from "../store/reducers/Socket";
+import { socket } from "../../store/reducers/Socket";
+import moment from "moment";
+
+function sorted(arr) {
+  const sortedArray = arr.sort(function (a, b) {
+    return moment(b.lastTime).unix() - moment(a.lastTime).unix();
+  });
+  return sortedArray;
+}
 
 class ChatScreenComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rooms: sorted(this.props.rooms),
+    };
+  }
   componentDidMount = () => {
     socket.on("recieveMessage", async (message, roomId) => {
+      // console.log(message);
       await this.props.addMessage(roomId, message);
+      await this.props.updateActive(roomId);
+      this.setState({
+        rooms: sorted(this.props.rooms),
+      });
     });
   };
 
   renderGridItem = (itemData) => {
-    if (itemData.item.active) {
+    const time = moment(itemData.item.lastTime).format("h:mm");
+    if (itemData.item.isactive) {
       return (
         <ListItem
           noBorder={true}
@@ -30,7 +50,7 @@ class ChatScreenComponent extends Component {
             });
           }}
         >
-          <Thumbnail source={{ uri: ProfilePicUrl }} />
+          <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
             <Text
@@ -49,7 +69,7 @@ class ChatScreenComponent extends Component {
           </Body>
           <Right>
             <Text note style={this.props.appStyles.chatListActiveNote}>
-              {itemData.item.lastTime}
+              {time}
             </Text>
             <Badge style={this.props.appStyles.chatListBadge}>
               <Text style={this.props.appStyles.chatListBadgeText}>1</Text>
@@ -89,7 +109,7 @@ class ChatScreenComponent extends Component {
           </Body>
           <Right>
             <Text note style={this.props.appStyles.chatListNote}>
-              {itemData.item.lastTime}
+              {time}
             </Text>
           </Right>
         </ListItem>
@@ -100,7 +120,7 @@ class ChatScreenComponent extends Component {
     return (
       <FlatList
         keyExtractor={(item) => item.id}
-        data={this.props.CHATLIST}
+        data={this.state.rooms}
         renderItem={this.renderGridItem}
         numColumns={1}
         style={this.props.appStyles.FlatListComponent}
@@ -110,7 +130,7 @@ class ChatScreenComponent extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addMessage }, dispatch);
+  return bindActionCreators({ addMessage, updateActive }, dispatch);
 };
 
 const mapStateToProps = (state) => {
