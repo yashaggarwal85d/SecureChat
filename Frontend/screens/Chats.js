@@ -4,7 +4,10 @@ import ChatHeader from "../components/ChatHeader";
 import ChatBubbles from "../components/ChatBubbles";
 import ChatFooter from "../components/ChatFooter";
 import { connect } from "react-redux";
-import { addMessage } from "../store/actions/RoomActions";
+import {
+  addMessage,
+  updatelastMessageReadIndex,
+} from "../store/actions/RoomActions";
 import { SendMessage } from "../store/reducers/Socket";
 import { bindActionCreators } from "redux";
 import { socket } from "../store/reducers/Socket";
@@ -12,33 +15,35 @@ import { socket } from "../store/reducers/Socket";
 class PresentChatScreen extends React.Component {
   constructor(props) {
     super(props);
-    const { state } = this.props.navigation;
-    const OpenRoom = this.props.rooms.find(
-      (room) => room.id === state.params.id
-    );
     this.state = {
-      room: OpenRoom,
+      room: this.getRoom(),
     };
   }
 
+  componentWillUnmount = async () => {
+    const { state } = this.props.navigation;
+    this.props.updatelastMessageReadIndex(this.state.room.id);
+    state.params.UpdateActiveRoom(null);
+  };
+
+  getRoom = () => {
+    const { state } = this.props.navigation;
+    return (OpenRoom = this.props.rooms.find(
+      (room) => room.id === state.params.id
+    ));
+  };
+
   componentDidMount = () => {
-    socket.on("recieveMessage", async (message, roomId) => {
-      const { state } = this.props.navigation;
-      const OpenRoom = this.props.rooms.find(
-        (room) => room.id === state.params.id
-      );
-      this.setState({ room: OpenRoom });
+    socket.on("recieveMessage", (message, roomId) => {
+      this.setState({ room: this.getRoom() });
     });
   };
 
   updateState = async (message) => {
     const { state } = this.props.navigation;
-    const OpenRoom = this.props.rooms.find(
-      (room) => room.id === state.params.id
-    );
-    this.setState({ room: OpenRoom });
-
+    this.setState({ room: this.getRoom() });
     await this.props.addMessage(this.state.room.id, message);
+    state.params.UpdateComponent();
   };
 
   sendMessage(message) {
@@ -76,7 +81,10 @@ class PresentChatScreen extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addMessage }, dispatch);
+  return bindActionCreators(
+    { addMessage, updatelastMessageReadIndex },
+    dispatch
+  );
 };
 
 const mapStateToProps = (state) => {

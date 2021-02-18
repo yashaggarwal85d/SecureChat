@@ -73,7 +73,7 @@ export const LightTheme = StyleSheet.create({
   chatListBadge: {
     backgroundColor: colors.dodgerblue,
     height: 20,
-    width: 20,
+    // width: 20,
     marginTop: 5,
   },
   chatListBadgeText: {

@@ -11,7 +11,6 @@ module.exports = (io) => {
       const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
       const user = await User.findById(verifiedId._id);
       ConnectedUsers[user._id] = socket.id;
-      console.log(ConnectedUsers);
     });
     socket.on("message", async (roomId, token, messageBody) => {
       const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
@@ -28,11 +27,11 @@ module.exports = (io) => {
         }
       );
       const room = await Room.findById(roomId);
-      const RoomMembers = room.members_id;
+      const RoomMembers = room.members;
       RoomMembers.forEach((mem) => {
-        if (ConnectedUsers[mem]) {
+        if (ConnectedUsers[mem.id]) {
           socket
-            .to(ConnectedUsers[mem])
+            .to(ConnectedUsers[mem.id])
             .emit("recieveMessage", message, roomId);
         }
       });

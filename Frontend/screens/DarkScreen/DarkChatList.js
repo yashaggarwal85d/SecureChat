@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Right, Text, Badge } from "native-base";
 import { FlatList } from "react-native";
 import { connect } from "react-redux";
-import { addMessage, updateActive } from "../../store/actions/RoomActions";
+import { addMessage } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { socket } from "../../store/reducers/Socket";
 import moment from "moment";
@@ -25,7 +25,6 @@ class ChatScreenComponent extends Component {
     socket.on("recieveMessage", async (message, roomId) => {
       // console.log(message);
       await this.props.addMessage(roomId, message);
-      await this.props.updateActive(roomId);
       this.setState({
         rooms: sorted(this.props.rooms),
       });
@@ -130,7 +129,7 @@ class ChatScreenComponent extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addMessage, updateActive }, dispatch);
+  return bindActionCreators({ addMessage }, dispatch);
 };
 
 const mapStateToProps = (state) => {

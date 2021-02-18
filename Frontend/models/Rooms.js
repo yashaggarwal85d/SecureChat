@@ -13,7 +13,6 @@ class Room {
     this.description = description;
     this.lastMessage = "";
     this.lastTime = "";
-    this.isactive = false;
     this.messages = messages;
     this.profile_pic = profile_pic;
     this.members = members;
@@ -24,9 +23,6 @@ class Room {
   }
   updateLastTime(time) {
     this.lastTime = time;
-  }
-  updateIsActive(bool) {
-    this.isactive = bool;
   }
 }
 

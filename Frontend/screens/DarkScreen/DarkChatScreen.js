@@ -13,10 +13,10 @@ export default class DarkChatHeader extends Component {
           </Body>
         </Header>
 
-        <ChatScreenComponent
+        {/* <ChatScreenComponent
           navigation={this.props.navigation}
           appStyles={DarkTheme}
-        />
+        /> */}
       </>
     );
   }

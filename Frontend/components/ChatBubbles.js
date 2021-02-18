@@ -35,7 +35,7 @@ class ChatBubble extends Component {
     return (
       <FlatList
         inverted
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item, index) => "key" + index}
         data={reverseMessages}
         renderItem={this.renderGridItem}
         numColumns={1}

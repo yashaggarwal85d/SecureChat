@@ -9,6 +9,7 @@ export const LOGIN = "LOGIN";
 export const SIGNUP = "SIGNUP";
 export const UPDATE_PIC = "UPDATE_PIC";
 export const SWITCH_MODE = "SWITCH_MODE";
+export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
 import axios from "axios";
 import * as API from "../../constants/APIstore";
 

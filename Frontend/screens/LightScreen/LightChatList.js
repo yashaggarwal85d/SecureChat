@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Right, Text, Badge } from "native-base";
 import { FlatList } from "react-native";
 import { connect } from "react-redux";
-import { addMessage, updateActive } from "../../store/actions/RoomActions";
+import {
+  addMessage,
+  updatelastMessageReadIndex,
+  fillData,
+} from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { socket } from "../../store/reducers/Socket";
 import moment from "moment";
@@ -19,22 +23,36 @@ class ChatScreenComponent extends Component {
     super(props);
     this.state = {
       rooms: sorted(this.props.rooms),
+      refreshing: false,
+      activeRoom: null,
     };
   }
+
   componentDidMount = () => {
-    socket.on("recieveMessage", async (message, roomId) => {
-      // console.log(message);
-      await this.props.addMessage(roomId, message);
-      await this.props.updateActive(roomId);
-      this.setState({
-        rooms: sorted(this.props.rooms),
-      });
+    socket.on("recieveMessage", (message, roomId) => {
+      this.props.addMessage(roomId, message);
+      this.updateComponent();
+    });
+  };
+
+  updateComponent = () => {
+    this.setState({
+      rooms: sorted(this.props.rooms),
+    });
+  };
+
+  UpdateActiveRoom = (id) => {
+    this.setState({
+      activeRoom: id,
+      rooms: sorted(this.props.rooms),
     });
   };
 
   renderGridItem = (itemData) => {
     const time = moment(itemData.item.lastTime).format("h:mm");
-    if (itemData.item.isactive) {
+    const messagesCount =
+      itemData.item.messages.length - itemData.item.lastMessageReadIndex;
+    if (messagesCount && this.state.activeRoom !== itemData.item.id) {
       return (
         <ListItem
           noBorder={true}
@@ -46,8 +64,11 @@ class ChatScreenComponent extends Component {
               params: {
                 id: itemData.item.id,
                 appStyles: this.props.appStyles,
+                UpdateComponent: this.updateComponent.bind(this),
+                UpdateActiveRoom: this.UpdateActiveRoom.bind(this),
               },
             });
+            this.UpdateActiveRoom(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
@@ -72,7 +93,9 @@ class ChatScreenComponent extends Component {
               {time}
             </Text>
             <Badge style={this.props.appStyles.chatListBadge}>
-              <Text style={this.props.appStyles.chatListBadgeText}>1</Text>
+              <Text style={this.props.appStyles.chatListBadgeText}>
+                {messagesCount}
+              </Text>
             </Badge>
           </Right>
         </ListItem>
@@ -89,8 +112,11 @@ class ChatScreenComponent extends Component {
               params: {
                 id: itemData.item.id,
                 appStyles: this.props.appStyles,
+                UpdateComponent: this.updateComponent.bind(this),
+                UpdateActiveRoom: this.UpdateActiveRoom.bind(this),
               },
             });
+            this.UpdateActiveRoom(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
@@ -116,9 +142,19 @@ class ChatScreenComponent extends Component {
       );
     }
   };
+  handleRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.props.fillData();
+    this.setState({
+      rooms: sorted(this.props.rooms),
+      refreshing: false,
+    });
+  };
   render() {
     return (
       <FlatList
+        onRefresh={this.handleRefresh}
+        refreshing={this.state.refreshing}
         keyExtractor={(item) => item.id}
         data={this.state.rooms}
         renderItem={this.renderGridItem}
@@ -130,7 +166,10 @@ class ChatScreenComponent extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addMessage, updateActive }, dispatch);
+  return bindActionCreators(
+    { addMessage, updatelastMessageReadIndex, fillData },
+    dispatch
+  );
 };
 
 const mapStateToProps = (state) => {

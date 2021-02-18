@@ -21,19 +21,35 @@ export const addMessage = (roomId, message) => {
   };
 };
 
-export const updateActive = (roomId) => {
+export const updatelastMessageReadIndex = (roomId) => {
   return async (dispatch, getState) => {
     try {
-      var rooms = getState().room.rooms;
-      const index = rooms.findIndex((r) => r.id === roomId);
-      rooms[index].isactive = true;
-    } catch (e) {
-      alert(e);
+      if (roomId) {
+        const user = getState().user;
+        var newState = getState().room;
+        const index = newState.rooms.findIndex((room) => room.id == roomId);
+        var room = newState.rooms[index];
+        room.lastMessageReadIndex = room.messages.length;
+
+        const data = axios({
+          method: "PATCH",
+          url: API.ROOMMEMUPDATE + `/${roomId}`,
+          headers: {
+            "auth-token": user.token,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.data)
+          .catch((err) => alert(err));
+      }
+    } catch (error) {
+      alert(error);
     }
   };
 };
 
 export const fillData = () => {
+  console.log("i am called");
   return async (dispatch, getState) => {
     try {
       var user = getState().user;
@@ -94,7 +110,6 @@ export const fillData = () => {
           rooms.push(NewRoom);
         }
       }
-      console.log(rooms);
       const roomState = {
         rooms: rooms,
       };
