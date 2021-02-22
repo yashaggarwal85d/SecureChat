@@ -2,16 +2,12 @@ import React, { Component } from "react";
 import { Header, Title, Body } from "native-base";
 import { LightTheme } from "../../appStyles";
 import ChatScreenComponent from "./LightChatList";
-import { fillData } from "../../store/actions/RoomActions";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
+// import { fillData } from "../../store/actions/RoomActions";
+// import { bindActionCreators } from "redux";
+// import { connect } from "react-redux";
 // import ActionButton from "../../components/FloatBar";
 
 class LightChatScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.props.fillData();
-  }
   render() {
     return (
       <>
@@ -31,14 +27,15 @@ class LightChatScreen extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ fillData }, dispatch);
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return bindActionCreators({ fillData }, dispatch);
+// };
 
-const mapStateToProps = (state) => {
-  return {
-    rooms: state.room.rooms,
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     rooms: state.room.rooms,
+//   };
+// };
+// export default connect(mapStateToProps, mapDispatchToProps)(LightChatScreen);
 
-export default connect(mapStateToProps, mapDispatchToProps)(LightChatScreen);
+export default LightChatScreen;

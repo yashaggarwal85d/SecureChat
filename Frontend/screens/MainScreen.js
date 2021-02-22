@@ -16,9 +16,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 class MainApp extends Component {
   constructor(props) {
     super(props);
-
     var defaultActiveIndex;
-
     if (this.props.user.mode === "light") {
       defaultActiveIndex = 0;
     } else {

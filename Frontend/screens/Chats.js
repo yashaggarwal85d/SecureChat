@@ -69,6 +69,8 @@ class PresentChatScreen extends React.Component {
           messages={this.state.room.messages}
           userId={this.props.user.id}
           appStyles={state.params.appStyles}
+          isGroup={this.state.room.isGroup}
+          members={this.state.room.members}
         />
         <ChatFooter
           {...this.props}

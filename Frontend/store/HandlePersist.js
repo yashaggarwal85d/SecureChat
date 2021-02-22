@@ -6,6 +6,7 @@ import {
   login,
   updateAlert,
 } from "./actions/LoginActions";
+import { fillData } from "./actions/RoomActions";
 import {
   AuthMainNavigator,
   ChatMainNavigator,
@@ -24,9 +25,14 @@ class Navigation extends Component {
 
   async loginUser() {
     await this.props.login();
-    if (this.props.user.token)
+    if (this.props.user.token) {
+      await this.props.fillData();
       this.setState({ loaded: true, Authstate: ChatMainNavigator });
-    else this.setState({ loaded: true, Authstate: AuthMainNavigator });
+    } else this.setState({ loaded: true, Authstate: AuthMainNavigator });
+  }
+
+  async filldatafunc() {
+    await this.props.fillData();
   }
 
   componentDidMount = () => {
@@ -37,8 +43,10 @@ class Navigation extends Component {
     ) {
       this.setState({ loaded: true, Authstate: AuthMainNavigator });
     } else if (this.props.user.token) {
+      this.filldatafunc();
       this.setState({ loaded: true, Authstate: ChatMainNavigator });
     } else {
+      console.log("hello");
       this.loginUser();
     }
   };
@@ -50,7 +58,7 @@ class Navigation extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { updateEmail, updatePassword, login, updateAlert },
+    { updateEmail, updatePassword, login, updateAlert, fillData },
     dispatch
   );
 };

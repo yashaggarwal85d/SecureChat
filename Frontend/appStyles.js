@@ -20,26 +20,6 @@ export const LightTheme = StyleSheet.create({
     paddingTop: 33,
     elevation: 50,
   },
-  Footer: {
-    backgroundColor: colors.white,
-  },
-  FooterTab: {
-    backgroundColor: colors.white,
-  },
-  FooterActiveTab: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.black,
-    borderBottomWidth: 3,
-  },
-  FooterActiveIcons: {
-    fontSize: 33,
-    color: colors.black,
-  },
-  FooterIcons: {
-    fontSize: 28,
-    color: colors.grey,
-  },
-
   ListItemStyle: {
     padding: 6,
   },
@@ -162,10 +142,10 @@ export const LightTheme = StyleSheet.create({
     alignItems: "flex-end",
     alignContent: "flex-end",
     alignSelf: "flex-end",
-    maxWidth: "60%",
     borderRadius: 20,
     padding: 14,
     marginRight: 14,
+    maxWidth: "80%",
     marginTop: 3,
     backgroundColor: colors.BluishGrey,
     flexDirection: "row",
@@ -175,6 +155,8 @@ export const LightTheme = StyleSheet.create({
     fontFamily: "Touche_Medium",
     fontSize: 14,
     marginBottom: 3,
+    textAlign: "left",
+    maxWidth: "92%",
   },
   ChatBubbleNote: {
     color: colors.MiddleGrey,
@@ -187,19 +169,28 @@ export const LightTheme = StyleSheet.create({
     alignItems: "flex-start",
     alignContent: "flex-start",
     alignSelf: "flex-start",
-    maxWidth: "60%",
+    maxWidth: "80%",
     borderRadius: 20,
     padding: 12,
     marginLeft: 14,
     marginTop: 3,
     backgroundColor: colors.DarkWhite,
-    flexDirection: "row",
+    flexDirection: "column",
+  },
+  ChatBubbleLeftViewName: {
+    fontFamily: "Touche_Medium",
+    color: colors.dodgerblue,
+    fontSize: 13,
+    textTransform: "capitalize",
+    marginBottom: 5,
   },
   ChatBubbleLeftText: {
     color: colors.grey,
     fontFamily: "Touche_Medium",
     fontSize: 14,
     marginBottom: 3,
+    textAlign: "left",
+    maxWidth: "92%",
   },
   ChatBubbleLeftNote: {
     color: colors.MiddleGrey,

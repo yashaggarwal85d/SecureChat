@@ -67,8 +67,9 @@ export const fillData = () => {
           var roomName = null;
           var profile_pic = "";
           var description = "";
+          var isGroup = false;
           if (!room.name) {
-            for (const member of room.members) {
+            for (var member of room.members) {
               if (member.id != user.id) {
                 const user2 = await axios({
                   method: "GET",
@@ -81,12 +82,26 @@ export const fillData = () => {
                 roomName = user2.name;
                 profile_pic = user2.profile_pic;
                 description = user2.status;
+                isGroup = false;
               }
             }
           } else {
             roomName = room.name;
             profile_pic = room.profile_pic;
             description = room.description;
+            isGroup = true;
+            for (var member of room.members) {
+              const user2 = await axios({
+                method: "GET",
+                url: API.USERBASEAPI + `/${member.id}`,
+                headers: {
+                  "auth-token": user.token,
+                  "Content-Type": "application/json",
+                },
+              }).then((res) => res.data);
+              delete user2.password;
+              member["details"] = user2;
+            }
           }
           const messages = room.messages;
           var lastMessage = description;
@@ -103,7 +118,8 @@ export const fillData = () => {
             profile_pic,
             messages,
             room.members,
-            readIndex.lastMessageReadIndex
+            readIndex.lastMessageReadIndex,
+            isGroup
           );
           NewRoom.updateLastMessage(lastMessage);
           NewRoom.updateLastTime(lastTime);

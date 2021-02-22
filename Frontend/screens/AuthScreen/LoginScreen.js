@@ -8,6 +8,7 @@ import {
   login,
   updateAlert,
 } from "../../store/actions/LoginActions";
+import { fillData } from "../../store/actions/RoomActions";
 import { AuthStyle } from "../../appStyles";
 
 class Login extends React.Component {
@@ -59,9 +60,10 @@ class Login extends React.Component {
           this.props.user.id &&
           this.props.user.token &&
           !this.props.user.alert
-        )
+        ) {
+          await this.props.fillData();
           this.props.navigation.navigate("Chat");
-        else {
+        } else {
           this.setState({
             alert: this.props.user.alert || "something went wrong :(",
           });
@@ -88,9 +90,9 @@ class Login extends React.Component {
           style={AuthStyle.inputBox}
           value={this.props.user.email}
           onChangeText={(email) => this.props.updateEmail(email)}
-          placeholder="Email"
-          autoCapitalize="none"
-          autoCompleteType="off"
+          placeholder='Email'
+          autoCapitalize='none'
+          autoCompleteType='off'
           onChange={(e) => this.EmailValid(e.nativeEvent.text)}
         />
         <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
@@ -98,10 +100,10 @@ class Login extends React.Component {
           style={AuthStyle.inputBox}
           value={this.props.user.password}
           onChangeText={(password) => this.props.updatePassword(password)}
-          placeholder="Password"
+          placeholder='Password'
           secureTextEntry={true}
           onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
-          autoCompleteType="off"
+          autoCompleteType='off'
         />
         <Text style={AuthStyle.AlertText}>{this.state.Passalert}</Text>
         <TouchableOpacity
@@ -127,7 +129,7 @@ class Login extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { updateEmail, updatePassword, login, updateAlert },
+    { updateEmail, updatePassword, login, updateAlert, fillData },
     dispatch
   );
 };
