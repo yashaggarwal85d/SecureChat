@@ -10,3 +10,7 @@ export const JoinRooms = (token) => {
 export const SendMessage = (roomId, token, message) => {
   return socket.emit("message", roomId, token, message);
 };
+
+export const UpdatelastMessageReadIndex = (roomId, token) => {
+  return socket.emit("UpdatelastMessageReadIndex", roomId, token);
+};

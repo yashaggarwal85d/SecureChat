@@ -69,30 +69,6 @@ router.patch("/:RoomId", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.patch(
-  "/updateMember/:RoomId",
-  AuthTokenVerification,
-  async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(400).send("Access denied");
-      }
-      const room = await Room.findById(req.params.RoomId);
-      const MessageNum = room.messages.length;
-      const UpdatedRoom = await Room.updateOne(
-        { _id: req.params.RoomId, "members.id": req.user },
-        {
-          $set: {
-            "members.$.lastMessageReadIndex": MessageNum,
-          },
-        }
-      );
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-  }
-);
-
 router.post("/new", AuthTokenVerification, async (req, res) => {
   if (!req.user) {
     return res.status(400).send("Access denied");

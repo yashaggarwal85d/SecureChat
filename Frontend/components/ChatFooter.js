@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View } from "native-base";
 import { TextInput, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
 
 class ChatFooter extends Component {
@@ -9,15 +9,21 @@ class ChatFooter extends Component {
     super(props);
     this.state = {
       message: "",
+      icon: "attach-file",
     };
   }
 
   handleSend() {
     if (this.state.message) {
+      this.setText(null);
       this.props.onSend(this.state.message);
-      this.setState({ message: "" });
     }
   }
+
+  setText = (text) => {
+    if (text) this.setState({ message: text, icon: "send" });
+    else this.setState({ message: text, icon: "attach-file" });
+  };
 
   render() {
     return (
@@ -26,28 +32,26 @@ class ChatFooter extends Component {
       >
         <View style={this.props.appStyles.ChatInputView}>
           <FontAwesome5
-            name="smile"
+            name='smile'
             style={this.props.appStyles.ChatInputSmile}
           />
           <TextInput
             value={this.state.message}
-            onChangeText={(text) => this.setState({ message: text })}
+            onChangeText={(text) => this.setText(text)}
             style={this.props.appStyles.ChatInput}
-            placeholder="Type a message"
-            placeholderTextColor="grey"
-            underlineColorAndroid="transparent"
+            placeholder='Type a message'
+            placeholderTextColor='grey'
+            underlineColorAndroid='transparent'
+            multiline={true}
           ></TextInput>
-          <MaterialCommunityIcons
-            name="attachment"
-            style={this.props.appStyles.ChatInputFile}
-          />
         </View>
         <TouchableOpacity
           style={this.props.appStyles.SendButtonView}
           onPress={() => this.handleSend()}
+          activeOpacity={1}
         >
-          <MaterialCommunityIcons
-            name="send"
+          <MaterialIcons
+            name={this.state.icon}
             style={this.props.appStyles.SendButton}
           />
         </TouchableOpacity>

@@ -3,6 +3,7 @@ import * as API from "../../constants/APIstore";
 export const FILL_DATA = "FLL_DATA";
 import axios from "axios";
 import moment from "moment";
+import { UpdatelastMessageReadIndex } from "../reducers/Socket";
 
 export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
@@ -30,17 +31,7 @@ export const updatelastMessageReadIndex = (roomId) => {
         const index = newState.rooms.findIndex((room) => room.id == roomId);
         var room = newState.rooms[index];
         room.lastMessageReadIndex = room.messages.length;
-
-        const data = axios({
-          method: "PATCH",
-          url: API.ROOMMEMUPDATE + `/${roomId}`,
-          headers: {
-            "auth-token": user.token,
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) => res.data)
-          .catch((err) => alert(err));
+        UpdatelastMessageReadIndex(roomId, user.token);
       }
     } catch (error) {
       alert(error);

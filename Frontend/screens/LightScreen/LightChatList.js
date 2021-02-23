@@ -35,7 +35,9 @@ class ChatScreenComponent extends Component {
     });
   };
 
-  updateComponent = () => {
+  updateComponent = async () => {
+    if (this.state.activeRoom)
+      this.props.updatelastMessageReadIndex(this.state.activeRoom);
     this.setState({
       rooms: sorted(this.props.rooms),
     });
@@ -68,6 +70,7 @@ class ChatScreenComponent extends Component {
                 UpdateActiveRoom: this.UpdateActiveRoom.bind(this),
               },
             });
+            this.props.updatelastMessageReadIndex(itemData.item.id);
             this.UpdateActiveRoom(itemData.item.id);
           }}
         >
@@ -117,6 +120,7 @@ class ChatScreenComponent extends Component {
               },
             });
             this.UpdateActiveRoom(itemData.item.id);
+            this.props.updatelastMessageReadIndex(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />

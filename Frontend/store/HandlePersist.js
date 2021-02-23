@@ -35,7 +35,7 @@ class Navigation extends Component {
     await this.props.fillData();
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     if (
       !this.props.user ||
       !this.props.user.password ||
@@ -43,10 +43,9 @@ class Navigation extends Component {
     ) {
       this.setState({ loaded: true, Authstate: AuthMainNavigator });
     } else if (this.props.user.token) {
-      this.filldatafunc();
+      await this.props.fillData();
       this.setState({ loaded: true, Authstate: ChatMainNavigator });
     } else {
-      console.log("hello");
       this.loginUser();
     }
   };

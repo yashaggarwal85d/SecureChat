@@ -4,10 +4,7 @@ import ChatHeader from "../components/ChatHeader";
 import ChatBubbles from "../components/ChatBubbles";
 import ChatFooter from "../components/ChatFooter";
 import { connect } from "react-redux";
-import {
-  addMessage,
-  updatelastMessageReadIndex,
-} from "../store/actions/RoomActions";
+import { addMessage } from "../store/actions/RoomActions";
 import { SendMessage } from "../store/reducers/Socket";
 import { bindActionCreators } from "redux";
 import { socket } from "../store/reducers/Socket";
@@ -22,27 +19,28 @@ class PresentChatScreen extends React.Component {
 
   componentWillUnmount = async () => {
     const { state } = this.props.navigation;
-    this.props.updatelastMessageReadIndex(this.state.room.id);
     state.params.UpdateActiveRoom(null);
   };
 
   getRoom = () => {
     const { state } = this.props.navigation;
-    return (OpenRoom = this.props.rooms.find(
+    const OpenRoom = this.props.rooms.find(
       (room) => room.id === state.params.id
-    ));
+    );
+    return OpenRoom;
   };
 
   componentDidMount = () => {
     socket.on("recieveMessage", (message, roomId) => {
-      this.setState({ room: this.getRoom() });
+      if (roomId === this.state.room.id)
+        this.setState({ room: this.getRoom() });
     });
   };
 
   updateState = async (message) => {
     const { state } = this.props.navigation;
-    this.setState({ room: this.getRoom() });
     await this.props.addMessage(this.state.room.id, message);
+    this.setState({ room: this.getRoom() });
     state.params.UpdateComponent();
   };
 
@@ -83,10 +81,7 @@ class PresentChatScreen extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    { addMessage, updatelastMessageReadIndex },
-    dispatch
-  );
+  return bindActionCreators({ addMessage }, dispatch);
 };
 
 const mapStateToProps = (state) => {

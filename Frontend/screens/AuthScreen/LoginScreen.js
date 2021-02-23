@@ -14,7 +14,6 @@ import { AuthStyle } from "../../appStyles";
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.user);
     this.state = {
       Emailalert: "",
       Passalert: "",
