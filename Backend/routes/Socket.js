@@ -15,14 +15,12 @@ module.exports = (io) => {
           socket.emit("error", "Access Denied");
         } else {
           ConnectedUsers[user._id] = socket.id;
-
-          console.log("hi", ConnectedUsers);
           user.rooms_id.forEach(async (roomId) => {
             const room = await Room.findById(roomId);
             if (room.members.length === 2) {
               room.members.forEach((mem) => {
                 if (ConnectedUsers[mem.id]) {
-                  socket.to(ConnectedUsers[mem.id]).emit("online", key);
+                  socket.to(ConnectedUsers[mem.id]).emit("online", user._id);
                 }
               });
             }
@@ -39,7 +37,9 @@ module.exports = (io) => {
         if (!verifiedId) {
           socket.emit("error", "Access Denied");
         } else {
-          if (ConnectedUsers[userId]) socket.emit("online", userId);
+          if (ConnectedUsers[userId]) {
+            socket.emit("online", userId);
+          }
         }
       } catch (e) {
         console.log(e);
@@ -103,9 +103,9 @@ module.exports = (io) => {
     });
     socket.on("disconnect", async () => {
       try {
-        console.log("bye", ConnectedUsers);
         for (const key in ConnectedUsers) {
           if (ConnectedUsers[key] === socket.id) {
+            delete ConnectedUsers[key];
             const user = await User.findById(key);
             user.rooms_id.forEach(async (roomId) => {
               const room = await Room.findById(roomId);
@@ -117,12 +117,11 @@ module.exports = (io) => {
                 });
               }
             });
-            delete ConnectedUsers[key];
           }
         }
-        console.log("bye", ConnectedUsers);
       } catch (e) {
         console.log(e);
+        socket.emit("error", e);
       }
     });
   });

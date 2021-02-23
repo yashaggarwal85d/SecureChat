@@ -14,3 +14,7 @@ export const SendMessage = (roomId, token, message) => {
 export const UpdatelastMessageReadIndex = (roomId, token) => {
   return socket.emit("UpdatelastMessageReadIndex", roomId, token);
 };
+
+export const CheckOnline = (token, userId) => {
+  return socket.emit("checkOnline", token, userId);
+};

@@ -134,7 +134,13 @@ export const LightTheme = StyleSheet.create({
     marginLeft: 12,
     textTransform: "capitalize",
   },
-
+  ChatHeaderNoteOnline: {
+    color: colors.greencyan,
+    fontFamily: "Touche_Semibold",
+    fontSize: 12,
+    marginLeft: 12,
+    textTransform: "capitalize",
+  },
   ChatBubblesList: {
     backgroundColor: colors.white,
   },
