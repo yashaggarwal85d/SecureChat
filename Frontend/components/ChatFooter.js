@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View } from "native-base";
 import { TextInput, TouchableOpacity } from "react-native";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
 
 class ChatFooter extends Component {
@@ -31,8 +31,8 @@ class ChatFooter extends Component {
         style={this.props.appStyles.ChatKeyboardAvoidingView}
       >
         <View style={this.props.appStyles.ChatInputView}>
-          <FontAwesome5
-            name='smile'
+          <MaterialIcons
+            name='sentiment-satisfied'
             style={this.props.appStyles.ChatInputSmile}
           />
           <TextInput

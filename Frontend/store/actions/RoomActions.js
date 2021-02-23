@@ -9,7 +9,7 @@ export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
     try {
       var newState = getState().room;
-      const index = newState.rooms.findIndex((room) => room.id == roomId);
+      const index = newState.rooms.findIndex((room) => room.id === roomId);
       message = { ...message, timestamp: moment.now() };
       var room = newState.rooms[index];
       room.messages.push(message);
@@ -52,16 +52,37 @@ export const fillData = () => {
           "Content-Type": "application/json",
         },
       }).then((res) => res.data);
-      var rooms = [];
-      for (const room of data) {
-        if (room) {
-          var roomName = null;
-          var profile_pic = "";
-          var description = "";
-          var isGroup = false;
-          if (!room.name) {
-            for (var member of room.members) {
-              if (member.id != user.id) {
+      if (data) {
+        var rooms = [];
+        for (const room of data) {
+          if (room) {
+            var roomName = null;
+            var profile_pic = "";
+            var description = "";
+            var isGroup = false;
+            if (!room.name) {
+              for (var member of room.members) {
+                if (member.id != user.id) {
+                  const user2 = await axios({
+                    method: "GET",
+                    url: API.USERBASEAPI + `/${member.id}`,
+                    headers: {
+                      "auth-token": user.token,
+                      "Content-Type": "application/json",
+                    },
+                  }).then((res) => res.data);
+                  roomName = user2.name;
+                  profile_pic = user2.profile_pic;
+                  description = user2.status;
+                  isGroup = false;
+                }
+              }
+            } else {
+              roomName = room.name;
+              profile_pic = room.profile_pic;
+              description = room.description;
+              isGroup = true;
+              for (var member of room.members) {
                 const user2 = await axios({
                   method: "GET",
                   url: API.USERBASEAPI + `/${member.id}`,
@@ -70,57 +91,38 @@ export const fillData = () => {
                     "Content-Type": "application/json",
                   },
                 }).then((res) => res.data);
-                roomName = user2.name;
-                profile_pic = user2.profile_pic;
-                description = user2.status;
-                isGroup = false;
+                delete user2.password;
+                member["details"] = user2;
               }
             }
-          } else {
-            roomName = room.name;
-            profile_pic = room.profile_pic;
-            description = room.description;
-            isGroup = true;
-            for (var member of room.members) {
-              const user2 = await axios({
-                method: "GET",
-                url: API.USERBASEAPI + `/${member.id}`,
-                headers: {
-                  "auth-token": user.token,
-                  "Content-Type": "application/json",
-                },
-              }).then((res) => res.data);
-              delete user2.password;
-              member["details"] = user2;
+            const messages = room.messages;
+            var lastMessage = description;
+            var lastTime = room.create_date;
+            if (messages[0]) {
+              lastMessage = messages.slice(-1)[0].message_body;
+              lastTime = messages.slice(-1)[0].timestamp;
             }
+            const readIndex = room.members.find((mem) => mem.id === user.id);
+            const NewRoom = new Room(
+              room._id,
+              roomName,
+              description,
+              profile_pic,
+              messages,
+              room.members,
+              readIndex.lastMessageReadIndex,
+              isGroup
+            );
+            NewRoom.updateLastMessage(lastMessage);
+            NewRoom.updateLastTime(lastTime);
+            rooms.push(NewRoom);
           }
-          const messages = room.messages;
-          var lastMessage = description;
-          var lastTime = room.create_date;
-          if (messages[0]) {
-            lastMessage = messages.slice(-1)[0].message_body;
-            lastTime = messages.slice(-1)[0].timestamp;
-          }
-          const readIndex = room.members.find((mem) => mem.id === user.id);
-          const NewRoom = new Room(
-            room._id,
-            roomName,
-            description,
-            profile_pic,
-            messages,
-            room.members,
-            readIndex.lastMessageReadIndex,
-            isGroup
-          );
-          NewRoom.updateLastMessage(lastMessage);
-          NewRoom.updateLastTime(lastTime);
-          rooms.push(NewRoom);
         }
+        const roomState = {
+          rooms: rooms,
+        };
+        dispatch({ type: FILL_DATA, payload: roomState });
       }
-      const roomState = {
-        rooms: rooms,
-      };
-      dispatch({ type: FILL_DATA, payload: roomState });
     } catch (error) {
       alert(error);
     }

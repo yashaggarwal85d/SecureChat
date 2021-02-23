@@ -49,6 +49,7 @@ class PresentChatScreen extends React.Component {
     const messageObject = {
       sender_id: this.props.user.id,
       message_body: message,
+      timer: true,
     };
     this.updateState(messageObject);
   }
