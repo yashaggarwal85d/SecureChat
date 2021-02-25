@@ -42,3 +42,10 @@ const App = () => {
 };
 
 export default App;
+
+//For web compatibility
+
+// Install the react-native-keyboard-aware-scroll-view package into your node_modules with yarn on npm
+// Navigate to native base/dist/src/basic and open Content.js
+// Find var _reactNativeKeyboardAwareScrollView=require('@codler/react-native-keyboard-aware-scroll-view')
+// Change this to var _reactNativeKeyboardAwareScrollView=require('react-native-keyboard-aware-scroll-view') (remove the @codler)
