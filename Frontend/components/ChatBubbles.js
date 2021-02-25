@@ -49,10 +49,10 @@ class ChatBubble extends Component {
       );
     } else {
       if (
-        !this.messages[itemData.index + 1] ||
-        (this.messages[itemData.index + 1].sender_id !==
-          itemData.item.sender_id &&
-          this.props.isGroup)
+        (!this.messages[itemData.index + 1] ||
+          this.messages[itemData.index + 1].sender_id !==
+            itemData.item.sender_id) &&
+        this.props.isGroup
       ) {
         const name = this.props.members.find(
           (mem) => mem.id === itemData.item.sender_id

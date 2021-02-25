@@ -31,10 +31,6 @@ class ChatFooter extends Component {
         style={this.props.appStyles.ChatKeyboardAvoidingView}
       >
         <View style={this.props.appStyles.ChatInputView}>
-          <MaterialIcons
-            name='sentiment-satisfied'
-            style={this.props.appStyles.ChatInputSmile}
-          />
           <TextInput
             value={this.state.message}
             onChangeText={(text) => this.setText(text)}

@@ -1,4 +1,7 @@
-import { createStackNavigator } from "react-navigation-stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "react-navigation-stack";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import MainApp from "../screens/MainScreen";
 import PresentChatScreen from "../screens/Chats";
@@ -6,6 +9,11 @@ import LoginScreen from "../screens/AuthScreen/LoginScreen";
 import SignUpScreen from "../screens/AuthScreen/SignUpScreen";
 import LightChatHeader from "../screens/LightScreen/LightChatScreen";
 import DarkChatHeader from "../screens/DarkScreen/DarkChatScreen";
+import {
+  CardStyleInterpolators,
+  HeaderStyleInterpolators,
+  TransitionSpecs,
+} from "react-navigation-stack";
 
 const ChatsNavigator = createStackNavigator({
   MainScreen: {
@@ -34,7 +42,14 @@ const ChatsNavigator = createStackNavigator({
     screen: PresentChatScreen,
     navigationOptions: {
       headerShown: false,
-      animationEnabled: false,
+      animationEnabled: true,
+      cardShadowEnabled: false,
+      gestureDirection: "horizontal",
+      transitionSpec: {
+        open: TransitionSpecs.ScaleFromCenterAndroidSpec,
+        close: TransitionSpecs.FadeOutToBottomAndroidSpec,
+      },
+      cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid,
     },
   },
 });

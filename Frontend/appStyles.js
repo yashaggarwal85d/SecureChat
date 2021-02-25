@@ -26,7 +26,6 @@ export const LightTheme = StyleSheet.create({
   FlatListComponent: {
     backgroundColor: colors.white,
   },
-
   chatListName: {
     fontFamily: "Touche_Medium",
     fontSize: 18,
@@ -84,22 +83,9 @@ export const LightTheme = StyleSheet.create({
     width: 45,
     marginTop: 8,
   },
-  ChatInputSmile: {
-    fontSize: 26,
-    marginLeft: 8,
-    marginTop: 10,
-    color: colors.grey,
-  },
-  ChatInputFile: {
-    transform: [{ rotate: "60deg" }],
-    fontSize: 26,
-    right: 12,
-    top: 3,
-    color: colors.grey,
-  },
   ChatInput: {
     padding: 10,
-    width: "78%",
+    width: "100%",
     fontFamily: "Roboto_medium",
     fontSize: 18,
     color: colors.grey,
