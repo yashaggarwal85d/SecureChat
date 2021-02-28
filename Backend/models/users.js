@@ -23,10 +23,6 @@ const UserSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  is_active: {
-    type: Boolean,
-    default: false,
-  },
   rooms_id: [String],
   profile_pic: {
     type: String,

@@ -11,7 +11,7 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
     if (!req.user) {
       return res.status(400).send("Access denied");
     }
-    const users = await User.find();
+    const users = await User.find({ _id: { $nin: req.user } });
     res.json(users);
   } catch (err) {
     return res.status(400).send(err);

@@ -6,3 +6,5 @@ export const USERACTIVE = USERBASEAPI + "/active";
 export const ROOMBASEAPI = BASEAPI + "/rooms";
 export const GETROOMS = ROOMBASEAPI + "/all";
 export const ROOMMEMUPDATE = ROOMBASEAPI + "/updateMember";
+export const ALLUSERSAPI = USERBASEAPI + "/all";
+export const ADDNEWROOM = ROOMBASEAPI + "/new";

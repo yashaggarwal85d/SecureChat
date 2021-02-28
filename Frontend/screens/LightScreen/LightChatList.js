@@ -10,6 +10,7 @@ import {
 import { bindActionCreators } from "redux";
 import { socket } from "../../store/reducers/Socket";
 import moment from "moment";
+import { LightTheme } from "../../appStyles";
 
 function sorted(arr) {
   const sortedArray = arr.sort(function (a, b) {
@@ -58,14 +59,14 @@ class ChatScreenComponent extends Component {
       return (
         <ListItem
           noBorder={true}
-          style={this.props.appStyles.ListItemStyle}
+          style={LightTheme.ListItemStyle}
           avatar
           onPress={() => {
             this.props.navigation.navigate({
               routeName: "ChatScreen",
               params: {
                 id: itemData.item.id,
-                appStyles: this.props.appStyles,
+                appStyles: LightTheme,
                 UpdateComponent: this.updateComponent.bind(this),
                 UpdateActiveRoom: this.UpdateActiveRoom.bind(this),
               },
@@ -77,28 +78,19 @@ class ChatScreenComponent extends Component {
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.chatListActiveName}
-            >
+            <Text numberOfLines={1} style={LightTheme.chatListActiveName}>
               {itemData.item.name}
             </Text>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.chatListActiveNote}
-              note
-            >
+            <Text numberOfLines={1} style={LightTheme.chatListActiveNote} note>
               {itemData.item.lastMessage}
             </Text>
           </Body>
           <Right>
-            <Text note style={this.props.appStyles.chatListActiveNote}>
+            <Text note style={LightTheme.chatListActiveNote}>
               {time}
             </Text>
-            <Badge style={this.props.appStyles.chatListBadge}>
-              <Text style={this.props.appStyles.chatListBadgeText}>
-                {messagesCount}
-              </Text>
+            <Badge style={LightTheme.chatListBadge}>
+              <Text style={LightTheme.chatListBadgeText}>{messagesCount}</Text>
             </Badge>
           </Right>
         </ListItem>
@@ -107,14 +99,14 @@ class ChatScreenComponent extends Component {
       return (
         <ListItem
           noBorder={true}
-          style={this.props.appStyles.ListItemStyle}
+          style={LightTheme.ListItemStyle}
           avatar
           onPress={() => {
             this.props.navigation.navigate({
               routeName: "ChatScreen",
               params: {
                 id: itemData.item.id,
-                appStyles: this.props.appStyles,
+                appStyles: LightTheme,
                 UpdateComponent: this.updateComponent.bind(this),
                 UpdateActiveRoom: this.UpdateActiveRoom.bind(this),
               },
@@ -126,19 +118,15 @@ class ChatScreenComponent extends Component {
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
-            <Text numberOfLines={1} style={this.props.appStyles.chatListName}>
+            <Text numberOfLines={1} style={LightTheme.chatListName}>
               {itemData.item.name}
             </Text>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.chatListNote}
-              note
-            >
+            <Text numberOfLines={1} style={LightTheme.chatListNote} note>
               {itemData.item.lastMessage}
             </Text>
           </Body>
           <Right>
-            <Text note style={this.props.appStyles.chatListNote}>
+            <Text note style={LightTheme.chatListNote}>
               {time}
             </Text>
           </Right>
@@ -163,7 +151,7 @@ class ChatScreenComponent extends Component {
         data={this.state.rooms}
         renderItem={this.renderGridItem}
         numColumns={1}
-        style={this.props.appStyles.FlatListComponent}
+        style={LightTheme.FlatListComponent}
       />
     );
   }

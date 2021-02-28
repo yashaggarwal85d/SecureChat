@@ -23,9 +23,45 @@ export const LightTheme = StyleSheet.create({
   ListItemStyle: {
     padding: 6,
   },
+  CheckIcon: {
+    color: colors.greencyan,
+    fontSize: 40,
+  },
   FlatListComponent: {
     backgroundColor: colors.white,
   },
+  chatListTickName: {
+    fontFamily: "Touche_Semibold",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.dodgerblue,
+  },
+
+  chatListTickNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.MiddleGrey,
+    fontWeight: "bold",
+    paddingLeft: 2.5,
+  },
+  RightArrowContainer: {
+    width: 60,
+    height: 60,
+    // left: "70%",
+    alignContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+    top: "85%",
+    borderRadius: 100,
+    right: "10%",
+    position: "absolute",
+    backgroundColor: colors.dodgerblue,
+  },
+  RightArrow: {
+    fontSize: 40,
+    color: colors.white,
+    marginTop: 10,
+  },
+
   chatListName: {
     fontFamily: "Touche_Medium",
     fontSize: 18,
@@ -197,6 +233,12 @@ export const LightTheme = StyleSheet.create({
     alignSelf: "flex-end",
     marginLeft: 5,
     fontFamily: "Touche_Medium",
+  },
+  ChatInputSmile: {
+    fontSize: 26,
+    marginLeft: 8,
+    marginTop: 10,
+    color: colors.grey,
   },
 });
 
@@ -478,5 +520,80 @@ export const AuthStyle = StyleSheet.create({
   AlertText: {
     alignItems: "flex-start",
     color: colors.red,
+  },
+});
+
+export const FloatBarStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  background: {
+    position: "absolute",
+    right: "10%",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 70,
+    height: 70,
+    bottom: "10%",
+  },
+  button0: {
+    position: "absolute",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 55,
+    backgroundColor: colors.black,
+    borderTopLeftRadius: 100,
+    borderTopRightRadius: 100,
+  },
+  button: {
+    position: "absolute",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 55,
+    backgroundColor: colors.black,
+  },
+  button2: {
+    position: "absolute",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 55,
+    height: "100%",
+    backfaceVisibility: "visible",
+    borderBottomRightRadius: 100,
+    borderBottomLeftRadius: 100,
+    backgroundColor: "transparent",
+  },
+  settings: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: 60,
+    color: colors.grey,
+    backgroundColor: colors.black,
+    fontSize: 26,
+    marginTop: 20,
+  },
+  account: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: 60,
+    fontSize: 26,
+    backgroundColor: colors.black,
+    color: colors.grey,
+  },
+  group: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: 60,
+    fontSize: 26,
+    backgroundColor: colors.black,
+    color: colors.grey,
+  },
+  open: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: "150%",
+    fontSize: 55,
+    color: colors.dodgerblue,
+    backgroundColor: colors.white,
   },
 });

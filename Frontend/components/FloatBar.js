@@ -1,88 +1,112 @@
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  Animated,
-  Image,
-  TouchableWithoutFeedback,
-  Alert,
-} from "react-native";
+import { View, Animated, TouchableWithoutFeedback, Alert } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FloatBarStyle } from "../appStyles";
 
 export default class ActionButton extends Component {
-  state = {
-    animation: new Animated.Value(0),
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      animation: new Animated.Value(0),
+      icon: "plus-circle",
+    };
+  }
   toggleOpen = () => {
     if (this._open) {
       Animated.timing(this.state.animation, {
         toValue: 0,
         duration: 500,
+        useNativeDriver: true,
       }).start();
+      this.setState({ icon: "plus-circle" });
     } else {
       Animated.timing(this.state.animation, {
         toValue: 1,
         duration: 200,
+        useNativeDriver: true,
       }).start();
+      this.setState({ icon: "close-circle" });
     }
     this._open = !this._open;
   };
+
   render() {
-    const printInterpolate = this.state.animation.interpolate({
+    const peopleInterpolate = this.state.animation.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, -90],
+      outputRange: [0, -60],
     });
-    const saveInterpolate = this.state.animation.interpolate({
+    const groupInterpolate = this.state.animation.interpolate({
       inputRange: [0, 0.5, 1],
-      outputRange: [0, -80, -180],
+      outputRange: [0, -50, -110],
     });
 
-    const printStyle = {
+    const settingInterpolate = this.state.animation.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [0, -100, -180],
+    });
+
+    const peopleStyle = {
       transform: [
         {
-          translateY: printInterpolate,
+          translateY: peopleInterpolate,
         },
       ],
     };
 
-    const saveStyle = {
+    const groupStyle = {
       transform: [
         {
-          translateY: saveInterpolate,
+          translateY: groupInterpolate,
         },
       ],
     };
+
+    const settingStyle = {
+      transform: [
+        {
+          translateY: settingInterpolate,
+        },
+      ],
+    };
+
     return (
-      <View style={styles.container}>
-        <Animated.View style={[styles.background]}>
-          <TouchableWithoutFeedback onPress={() => Alert.alert("saveIconn")}>
-            <Animated.View style={[styles.button, saveStyle]}>
-              <Image
-                style={styles.iconStyle}
-                resizeMode="contain"
-                source={{
-                  uri: "https://www.freeiconspng.com/uploads/save-icon-31.png",
-                }}
+      <View style={FloatBarStyle.container}>
+        <Animated.View style={[FloatBarStyle.background]}>
+          <TouchableWithoutFeedback
+            onPress={() => this.props.navigation.navigate("SettingsScreen")}
+          >
+            <Animated.View style={[FloatBarStyle.button0, settingStyle]}>
+              <MaterialCommunityIcons
+                style={FloatBarStyle.settings}
+                name='settings'
               />
             </Animated.View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => Alert.alert("printIcon")}>
-            <Animated.View style={[styles.button, printStyle]}>
-              <Image
-                style={styles.iconStyle}
-                resizeMode="contain"
-                source={{
-                  uri:
-                    "https://cdn4.iconfinder.com/data/icons/small-v2/512/device_document_electronic_print_printer_printing-512.png",
-                }}
+          <TouchableWithoutFeedback
+            onPress={() => this.props.navigation.navigate("GroupSearchScreen")}
+          >
+            <Animated.View style={[FloatBarStyle.button, groupStyle]}>
+              <MaterialCommunityIcons
+                style={FloatBarStyle.group}
+                name='account-multiple-plus'
+              />
+            </Animated.View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => this.props.navigation.navigate("SearchScreen")}
+          >
+            <Animated.View style={[FloatBarStyle.button, peopleStyle]}>
+              <MaterialCommunityIcons
+                style={FloatBarStyle.account}
+                name='account-plus'
               />
             </Animated.View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => this.toggleOpen()}>
-            <Animated.View style={[styles.button]}>
-              <Image
-                style={styles.iconStyle}
-                resizeMode="contain"
-                source={{ uri: "https://img.icons8.com/cotton/2x/plus.png" }}
+            <Animated.View style={[FloatBarStyle.button2]}>
+              <MaterialCommunityIcons
+                style={FloatBarStyle.open}
+                name={this.state.icon}
               />
             </Animated.View>
           </TouchableWithoutFeedback>
@@ -91,36 +115,3 @@ export default class ActionButton extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  background: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    alignItems: "center",
-    alignSelf: "center",
-    width: 70,
-    height: 70,
-  },
-  button: {
-    // backgroundColor: 'grey',
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    alignItems: "center",
-    alignSelf: "center",
-    shadowRadius: 4,
-    shadowOpacity: 1,
-    borderRadius: 40,
-    borderBottomColor: 12,
-    width: 70,
-    height: 70,
-  },
-  iconStyle: {
-    width: 60,
-    height: 60,
-  },
-});

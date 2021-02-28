@@ -6,6 +6,7 @@ export const UPDATE_ISAUTH = "UPDATE_ISAUTH";
 export const UPDATE_TOKEN = "UPDATE_TOKEN";
 export const UPDATE_ID = "UPDATE_ID";
 export const LOGIN = "LOGIN";
+export const LOGOUT = "LOGOUT";
 export const SIGNUP = "SIGNUP";
 export const UPDATE_PIC = "UPDATE_PIC";
 export const SWITCH_MODE = "SWITCH_MODE";
@@ -136,5 +137,27 @@ export const signup = () => {
           console.log(e);
         }
       });
+  };
+};
+
+export const AllUsers = async (token) => {
+  try {
+    const data = await axios({
+      method: "GET",
+      url: API.ALLUSERSAPI,
+      headers: {
+        "auth-token": token,
+        "Content-Type": "application/json",
+      },
+    }).then((res) => res.data);
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const logout = () => {
+  return async (dispatch, getState) => {
+    dispatch({ type: LOGOUT });
   };
 };

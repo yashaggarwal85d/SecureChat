@@ -73,22 +73,22 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
   if (!req.user) {
     return res.status(400).send("Access denied");
   }
-  const members = req.body.members;
-  members.push({ id: req.user._id });
-  const room_details = {
-    name: req.body.name,
-    description: req.body.description,
-    creator_id: req.user._id,
-    members: members,
-  };
-  const { error } = roomValidation(room_details);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
-  const room = new Room(room_details);
-
   try {
+    const members = req.body.members;
+    members.push({ id: req.user._id });
+    const room_details = {
+      name: req.body.name,
+      description: req.body.description,
+      creator_id: req.user._id,
+      members: members,
+    };
+    const { error } = roomValidation(room_details);
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
+
+    const room = new Room(room_details);
+
     const Savedroom = await room.save();
     for (const member of members) {
       const UpdatedUser = await User.updateMany(
@@ -103,7 +103,7 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
       );
     }
     res.json({
-      roomid: room._id,
+      room: room,
     });
   } catch (err) {
     return res.status(400).send(err);
