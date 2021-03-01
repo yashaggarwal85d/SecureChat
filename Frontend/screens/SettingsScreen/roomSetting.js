@@ -16,19 +16,28 @@ import {
   Thumbnail,
   Form,
   View,
+  Title,
+  Badge,
 } from "native-base";
+import { FlatList } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native";
 import * as colors from "../../constants/colors";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { logout, updateNameStatus } from "../../store/actions/LoginActions";
+import {
+  leaveRoom,
+  updateNameDescription,
+  AddMember,
+  fillData,
+  RemoveMember,
+} from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { SettingForm } from "../../appStyles";
+import { LightTheme, SettingForm } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
 
 var BUTTONS = [
-  { text: "Yes", icon: "open", iconColor: colors.greencyan },
-  { text: "Cancel", icon: "close", iconColor: colors.red },
+  { text: "Yes", icon: "remove", iconColor: colors.red },
+  { text: "Cancel", icon: "close", iconColor: colors.greencyan },
 ];
 
 var CameraButton = [
@@ -40,11 +49,14 @@ var CameraButton = [
 class RoomSettingsScreen extends Component {
   constructor(props) {
     super(props);
+    const { state } = this.props.navigation;
+    const params = state.params;
     this.state = {
-      name: this.props.user.name,
-      status: this.props.user.status,
+      name: params.room.name,
+      status: params.room.description,
       changed: false,
       infoClicked: false,
+      room: params.room,
     };
     this.getPermission();
   }
@@ -79,21 +91,116 @@ class RoomSettingsScreen extends Component {
     console.log(result);
   }
 
+  renderGridItem = (itemData) => {
+    var admin = <></>;
+    var name = itemData.item.details.name;
+    var removeMem = <></>;
+    if (itemData.item.details._id === this.state.room.creator_id)
+      admin = <Text style={LightTheme.ChatHeaderNoteOnline}>admin</Text>;
+    if (this.props.user.id === this.state.room.creator_id) {
+      removeMem = (
+        <Root>
+          <TouchableOpacity
+            onPress={() =>
+              ActionSheet.show(
+                {
+                  options: BUTTONS,
+                  cancelButtonIndex: 1,
+                  title: `Are you sure you want to remove ${name} from the group ?`,
+                },
+                async (buttonIndex) => {
+                  if (buttonIndex === 0) {
+                    await this.props.RemoveMember(
+                      this.state.room.id,
+                      itemData.item.details._id
+                    );
+                    var newRoom = this.state.room;
+                    var index = newRoom.members.findIndex(
+                      (member) =>
+                        member.details._id === itemData.item.details._id
+                    );
+                    newRoom.members[index].blocked = true;
+                    this.setState({
+                      room: newRoom,
+                    });
+                  }
+                }
+              )
+            }
+          >
+            <Badge>
+              <Text>Remove</Text>
+            </Badge>
+          </TouchableOpacity>
+        </Root>
+      );
+    }
+
+    if (itemData.item.details._id === this.props.user.id) {
+      removeMem = <></>;
+      name = "You";
+    }
+    if (!itemData.item.blocked) {
+      return (
+        <ListItem noBorder={true} style={{ padding: 6 }} avatar>
+          <Thumbnail source={{ uri: itemData.item.details.profile_pic }} />
+
+          <Body>
+            <Text numberOfLines={1} style={SettingForm.memberListName}>
+              {name}
+            </Text>
+            <Text numberOfLines={1} style={SettingForm.memberListNote} note>
+              {itemData.item.details.status}
+            </Text>
+          </Body>
+          <Right>
+            {admin}
+            {removeMem}
+          </Right>
+        </ListItem>
+      );
+    }
+  };
+
   render() {
     var button = <></>;
-    var info = <></>;
+    var members = <></>;
+    var infoArrow = <Icon active name='add' />;
+    var addParticipant = <></>;
+    if (this.props.user.id === this.state.room.creator_id) {
+      addParticipant = (
+        <Root>
+          <ListItem noBorder={true} icon onPress={() => {}}>
+            <Left>
+              <Button style={{ backgroundColor: colors.greencyan }}>
+                <AntDesign
+                  name='plus'
+                  size={18}
+                  style={{ color: colors.white }}
+                />
+              </Button>
+            </Left>
+            <Body>
+              <Text style={LightTheme.chatListName}>Add participants</Text>
+            </Body>
+            <Right>
+              <Icon active name='arrow-forward' />
+            </Right>
+          </ListItem>
+        </Root>
+      );
+    }
     if (this.state.changed)
       button = (
         <TouchableOpacity
           style={SettingForm.button}
           onPress={async () => {
-            await this.props.updateNameStatus(
+            await this.props.updateNameDescription(
+              this.state.room.id,
               this.state.name,
               this.state.status
             );
             this.setState({
-              name: this.props.user.name,
-              status: this.props.user.status,
               changed: false,
             });
           }}
@@ -103,167 +210,179 @@ class RoomSettingsScreen extends Component {
       );
 
     if (this.state.infoClicked) {
-      info = (
-        <ListItem noBorder={true}>
-          <Text style={SettingForm.info}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-            tincidunt fringilla feugiat. Proin tincidunt, ligula ac ornare
-            lobortis, lectus arcu mollis justo, sed commodo purus magna eu
-            lorem. Etiam ipsum est, bibendum ac pharetra in, ultrices eu quam.
-            Quisque cursus vehicula ipsum nec pulvinar. Nullam eu tincidunt
-            velit. Phasellus quis augue pretium orci elementum facilisis id non
-            arcu. Sed a augue finibus, sollicitudin urna quis, pretium eros.
-            Cras sed nisi non lorem gravida suscipit nec ut turpis. Phasellus
-            aliquam tellus vel ante pulvinar varius. Proin vel nibh lectus.
-            Etiam rhoncus tortor vel vulputate luctus. Nullam a risus eget urna
-            pharetra ultricies a maximus metus. Phasellus tempor magna massa.
-            Proin sit amet molestie orci, eget laoreet mi. Sed lacinia velit
-            eget justo tincidunt aliquet.
-          </Text>
-        </ListItem>
+      members = (
+        <FlatList
+          keyExtractor={(item) => item.details._id}
+          data={this.state.room.members}
+          renderItem={this.renderGridItem}
+          numColumns={1}
+        />
       );
+      infoArrow = <Icon active name='remove' />;
     }
     return (
-      <Container>
-        <Content>
-          <List>
-            <ListItem style={{ flexDirection: "column" }}>
-              <Thumbnail
-                style={SettingForm.profile_pic}
-                source={{ uri: this.props.user.profile_pic }}
-              />
-              <TouchableOpacity style={SettingForm.cameraView}>
-                <Root>
-                  <MaterialIcons
-                    onPress={() =>
-                      ActionSheet.show(
-                        {
-                          options: CameraButton,
-                          cancelButtonIndex: 2,
-                          title: "Profile Photo",
-                        },
-                        (buttonIndex) => {
-                          if (buttonIndex === 0) {
-                            this.PickImageFromCamera();
-                          } else if (buttonIndex === 1) {
-                            this.PickImageFromGallery();
-                          }
-                        }
-                      )
-                    }
-                    style={SettingForm.camera}
-                    size={28}
-                    name='photo-camera'
-                  />
-                </Root>
-              </TouchableOpacity>
-            </ListItem>
-            <ListItem
-              style={{
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Form>
-                <Text style={SettingForm.Text}>Name : </Text>
-                <TextInput
-                  numberOfLines={1}
-                  style={SettingForm.inputBox}
-                  value={this.state.name}
-                  onChangeText={(text) =>
-                    this.setState({
-                      name: text,
-                      changed: true,
-                    })
-                  }
-                />
-                <Text style={SettingForm.Text}>Status : </Text>
-                <TextInput
-                  multiline={true}
-                  style={SettingForm.inputBox}
-                  value={this.state.status}
-                  onChangeText={(text) =>
-                    this.setState({
-                      status: text,
-                      changed: true,
-                    })
-                  }
-                />
-              </Form>
-              {button}
-            </ListItem>
-
-            <ListItem
+      <>
+        <Header style={{ backgroundColor: colors.white }}>
+          <Left>
+            <Button
               icon
-              noBorder={true}
+              transparent
               onPress={() => {
-                if (this.state.infoClicked)
-                  this.setState({ infoClicked: false });
-                else this.setState({ infoClicked: true });
+                this.props.navigation.goBack();
               }}
             >
-              <Left>
-                <Button style={{ backgroundColor: colors.dodgerblue }}>
-                  <AntDesign
-                    name='info'
-                    size={18}
-                    style={{ color: colors.white }}
+              <MaterialIcons name='arrow-back' size={22} color={colors.grey} />
+            </Button>
+          </Left>
+          <Body></Body>
+        </Header>
+        <Container>
+          <Content>
+            <List>
+              <ListItem style={{ flexDirection: "column" }}>
+                <Thumbnail
+                  style={SettingForm.profile_pic}
+                  source={{ uri: this.state.room.profile_pic }}
+                />
+                <TouchableOpacity style={SettingForm.cameraView}>
+                  <Root>
+                    <MaterialIcons
+                      onPress={() =>
+                        ActionSheet.show(
+                          {
+                            options: CameraButton,
+                            cancelButtonIndex: 2,
+                            title: "Profile Photo",
+                          },
+                          (buttonIndex) => {
+                            if (buttonIndex === 0) {
+                              this.PickImageFromCamera();
+                            } else if (buttonIndex === 1) {
+                              this.PickImageFromGallery();
+                            }
+                          }
+                        )
+                      }
+                      style={SettingForm.camera}
+                      size={28}
+                      name='photo-camera'
+                    />
+                  </Root>
+                </TouchableOpacity>
+              </ListItem>
+              <ListItem
+                style={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Form>
+                  <Text style={SettingForm.Text}>Name : </Text>
+                  <TextInput
+                    numberOfLines={1}
+                    style={SettingForm.inputBox}
+                    value={this.state.name}
+                    onChangeText={(text) =>
+                      this.setState({
+                        name: text,
+                        changed: true,
+                      })
+                    }
                   />
-                </Button>
-              </Left>
-              <Body>
-                <Text>App Info</Text>
-              </Body>
-              <Right>
-                <Icon active name='arrow-forward' />
-              </Right>
-            </ListItem>
-            {info}
-            <Root>
+                  <Text style={SettingForm.Text}>Description : </Text>
+                  <TextInput
+                    multiline={true}
+                    style={SettingForm.inputBox}
+                    value={this.state.status}
+                    onChangeText={(text) =>
+                      this.setState({
+                        status: text,
+                        changed: true,
+                      })
+                    }
+                  />
+                </Form>
+                {button}
+              </ListItem>
+
               <ListItem
                 icon
-                onPress={() =>
-                  ActionSheet.show(
-                    {
-                      options: BUTTONS,
-                      cancelButtonIndex: 1,
-                      title: "Are you sure you want to logout ?",
-                    },
-                    (buttonIndex) => {
-                      if (buttonIndex === 0) {
-                        this.props.logout();
-                        this.props.navigation.navigate("Auth");
-                      }
-                    }
-                  )
-                }
+                noBorder={true}
+                onPress={() => {
+                  if (this.state.infoClicked)
+                    this.setState({ infoClicked: false });
+                  else this.setState({ infoClicked: true });
+                }}
               >
                 <Left>
-                  <Button style={{ backgroundColor: colors.red }}>
+                  <Button style={{ backgroundColor: colors.dodgerblue }}>
                     <AntDesign
-                      name='logout'
+                      name='info'
                       size={18}
                       style={{ color: colors.white }}
                     />
                   </Button>
                 </Left>
                 <Body>
-                  <Text>Log Out</Text>
+                  <Text style={LightTheme.chatListName}>Members</Text>
                 </Body>
-                <Right>
-                  <Icon active name='arrow-forward' />
-                </Right>
+                <Right>{infoArrow}</Right>
               </ListItem>
-            </Root>
-          </List>
-        </Content>
-      </Container>
+              <>{members}</>
+              {addParticipant}
+              <Root>
+                <ListItem
+                  icon
+                  noBorder={true}
+                  onPress={() =>
+                    ActionSheet.show(
+                      {
+                        options: BUTTONS,
+                        cancelButtonIndex: 1,
+                        title: `Are you sure you want to leave ${this.state.room.name} ?`,
+                      },
+                      async (buttonIndex) => {
+                        if (buttonIndex === 0) {
+                          await this.props.leaveRoom(this.state.room.id);
+                          await this.props.fillData();
+                          this.props.navigation.navigate("MainScreen");
+                        }
+                      }
+                    )
+                  }
+                >
+                  <Left>
+                    <Button style={{ backgroundColor: colors.red }}>
+                      <AntDesign
+                        name='logout'
+                        size={18}
+                        style={{ color: colors.white }}
+                      />
+                    </Button>
+                  </Left>
+                  <Body>
+                    <Text style={LightTheme.chatListName}>
+                      Leave this group
+                    </Text>
+                  </Body>
+                  <Right>
+                    <Icon active name='arrow-forward' />
+                  </Right>
+                </ListItem>
+              </Root>
+            </List>
+          </Content>
+        </Container>
+      </>
     );
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ logout, updateNameStatus }, dispatch);
+  return bindActionCreators(
+    { leaveRoom, updateNameDescription, AddMember, fillData, RemoveMember },
+    dispatch
+  );
 };
 
 const mapStateToProps = (state) => {

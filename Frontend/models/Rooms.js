@@ -7,7 +7,8 @@ class Room {
     messages,
     members,
     lastMessageReadIndex,
-    isGroup
+    isGroup,
+    creator_id
   ) {
     this.id = id;
     this.name = name;
@@ -19,6 +20,7 @@ class Room {
     this.members = members;
     this.lastMessageReadIndex = lastMessageReadIndex;
     this.isGroup = isGroup;
+    this.creator_id = creator_id;
   }
   updateLastMessage(message) {
     this.lastMessage = message;

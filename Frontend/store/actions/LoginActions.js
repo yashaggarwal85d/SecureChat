@@ -87,7 +87,11 @@ export const updateNameStatus = (name, status) => {
           status: status,
         },
       }).then((res) => res.data);
-      console.log(data);
+      const payload = {
+        name: name,
+        status: status,
+      };
+      dispatch({ type: UPDATE_NAME_STATUS, payload: payload });
     } catch (e) {
       console.log(e);
     }

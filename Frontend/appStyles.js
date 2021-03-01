@@ -531,6 +531,17 @@ export const AuthStyle = StyleSheet.create({
 });
 
 export const SettingForm = StyleSheet.create({
+  memberListNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.LightGrey,
+    paddingLeft: 2.5,
+  },
+  memberListName: {
+    fontFamily: "Touche_Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.grey,
+  },
   profile_pic: {
     padding: 75,
     borderRadius: 100,

@@ -16,7 +16,15 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
 
     for (const roomid of rooms_id) {
       const room = await Room.findById(roomid);
-      rooms.push(room);
+      if (room.name) {
+        for (const member of room.members) {
+          if (member.id === req.user._id && !member.blocked) {
+            rooms.push(room);
+          }
+        }
+      } else {
+        rooms.push(room);
+      }
     }
     res.json(rooms);
   } catch (err) {
@@ -41,29 +49,27 @@ router.get("/:RoomId", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.patch("/:RoomId", AuthTokenVerification, async (req, res) => {
+router.patch("/update/:RoomId", AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(400).send("Access denied");
     }
     const room = await Room.findById(req.params.RoomId);
-    if (req.user._id === creator_id) {
-      const UpdatedRoom = await Room.updateMany(
-        {
-          _id: req.params.RoomId,
+    const UpdatedRoom = await Room.updateMany(
+      {
+        _id: req.params.RoomId,
+      },
+      {
+        $set: {
+          name: req.body.name || room.name,
+          description: req.body.description || room.description,
+          profile_pic: req.body.profile_pic || room.profile_pic,
         },
-        {
-          $set: {
-            name: req.body.name || room.name,
-            description: req.body.description || room.description,
-            profile_pic: req.body.profile_pic || room.profile_pic,
-          },
-        }
-      );
-      res.json({
-        message: "successfully updated",
-      });
-    } else res.status(400).send("Access denied");
+      }
+    );
+    res.json({
+      message: "successfully updated",
+    });
   } catch (err) {
     return res.status(400).send(err);
   }
@@ -109,4 +115,111 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
     return res.status(400).send(err);
   }
 });
+
+router.patch(
+  "/RemoveMember/:RoomId",
+  AuthTokenVerification,
+  async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(400).send("Access denied");
+      }
+      const room = await Room.findById(req.params.RoomId);
+      if (req.user._id === room.creator_id) {
+        const UpdatedRoom = await Room.updateMany(
+          {
+            _id: room._id,
+            "members.id": req.body.member,
+          },
+          {
+            $set: {
+              "members.$.blocked": true,
+            },
+          }
+        );
+        res.json({
+          message: "successfully updated",
+        });
+      } else {
+        return res.status(400).send("Access denied");
+      }
+    } catch (err) {
+      return res.status(400).send(err);
+    }
+  }
+);
+
+router.patch("/AddMember/:RoomId", AuthTokenVerification, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(400).send("Access denied");
+    }
+    const room = await Room.findById(req.params.RoomId);
+    if (req.user._id === room.creator_id) {
+      const member_id = req.body.member;
+      for (const member in room.members) {
+        if (member.id === member_id) {
+          const UpdatedRoom = await Room.updateMany(
+            {
+              _id: req.params.RoomId,
+              "members.id": req.body.member,
+            },
+            {
+              $set: {
+                "members.$.blocked": false,
+              },
+            }
+          );
+        }
+        return res.json({
+          message: "successfully updated",
+        });
+      }
+      const UpdatedRoom = await Room.updateMany(
+        {
+          _id: req.params.RoomId,
+        },
+        {
+          $push: {
+            members: {
+              id: member_id,
+            },
+          },
+        }
+      );
+      res.json({
+        message: "successfully updated",
+      });
+    } else {
+      return res.status(400).send("Access denied");
+    }
+  } catch (err) {
+    return res.status(400).send(err);
+  }
+});
+
+router.patch("/leave/:RoomId", AuthTokenVerification, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(400).send("Access denied");
+    }
+    const UpdatedRoom = await Room.updateMany(
+      {
+        _id: req.params.RoomId,
+        "members.id": req.user._id,
+      },
+      {
+        $set: {
+          "members.$.blocked": true,
+        },
+      }
+    );
+    res.json({
+      message: "successfully updated",
+    });
+  } catch (err) {
+    return res.status(400).send(err);
+  }
+});
+
 module.exports = router;

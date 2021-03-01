@@ -1,4 +1,4 @@
-const { array, number } = require("@hapi/joi");
+const { array, number, bool, boolean } = require("@hapi/joi");
 const mongoose = require("mongoose");
 const ProfilePicUrl =
   "https://www.nicepng.com/png/detail/131-1318812_avatar-group-icon.png";
@@ -27,6 +27,10 @@ const membersSchema = mongoose.Schema(
     lastMessageReadIndex: {
       type: Number,
       default: 0,
+    },
+    blocked: {
+      type: Boolean,
+      default: false,
     },
   },
   { _id: false }

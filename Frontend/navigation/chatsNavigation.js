@@ -8,6 +8,7 @@ import GroupSearchScreen from "../screens/SettingsScreen/groupSearch";
 import GroupConfirmScreen from "../screens/SettingsScreen/groupConfirm";
 import SettingsScreen from "../screens/SettingsScreen/settings";
 import SearchScreen from "../screens/SettingsScreen/search";
+import RoomSettingsScreen from "../screens/SettingsScreen/roomSetting";
 import { LightTheme } from "../appStyles";
 
 import {
@@ -101,6 +102,21 @@ const ChatsNavigator = createStackNavigator({
         close: TransitionSpecs.FadeOutToBottomAndroidSpec,
       },
       cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid,
+    },
+  },
+
+  RoomSettingsScreen: {
+    screen: RoomSettingsScreen,
+    navigationOptions: {
+      headerShown: false,
+      animationEnabled: true,
+      cardShadowEnabled: false,
+      gestureDirection: "horizontal",
+      transitionSpec: {
+        open: TransitionSpecs.RevealFromBottomAndroidSpec,
+        close: TransitionSpecs.FadeOutToBottomAndroidSpec,
+      },
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
     },
   },
 });

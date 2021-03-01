@@ -9,3 +9,7 @@ export const ROOMMEMUPDATE = ROOMBASEAPI + "/updateMember";
 export const ALLUSERSAPI = USERBASEAPI + "/all";
 export const ADDNEWROOM = ROOMBASEAPI + "/new";
 export const PATCHUSER = USERBASEAPI + "/update";
+export const PATCHROOM = ROOMBASEAPI + "/update";
+export const LEAVEROOM = ROOMBASEAPI + "/leave";
+export const REMOVEMEMBER = ROOMBASEAPI + "/RemoveMember";
+export const ADDMEMBER = ROOMBASEAPI + "/AddMember";

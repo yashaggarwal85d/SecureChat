@@ -10,7 +10,7 @@ import {
   Thumbnail,
 } from "native-base";
 
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import * as color from "../constants/colors";
 import { socket, CheckOnline } from "../store/reducers/Socket";
 
@@ -61,8 +61,19 @@ export default class ChatHeader extends Component {
       );
     if (this.props.room.isGroup)
       button = (
-        <Button icon transparent>
-          <Entypo name='dots-three-vertical' size={22} color={color.grey} />
+        <Button
+          icon
+          transparent
+          onPress={() => {
+            this.props.navigation.navigate({
+              routeName: "RoomSettingsScreen",
+              params: {
+                room: this.props.room,
+              },
+            });
+          }}
+        >
+          <MaterialIcons name='more-vert' size={22} color={color.grey} />
         </Button>
       );
     return (
@@ -75,7 +86,7 @@ export default class ChatHeader extends Component {
               this.props.navigation.goBack();
             }}
           >
-            <AntDesign name='arrowleft' size={22} color={color.grey} />
+            <MaterialIcons name='arrow-back' size={22} color={color.grey} />
           </Button>
         </Left>
 
