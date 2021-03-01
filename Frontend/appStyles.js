@@ -119,6 +119,12 @@ export const LightTheme = StyleSheet.create({
     width: 45,
     marginTop: 8,
   },
+  ChatInputCamera: {
+    fontSize: 26,
+    marginLeft: 12,
+    marginTop: 10,
+    color: colors.black,
+  },
   ChatInput: {
     padding: 10,
     width: "100%",
@@ -489,6 +495,7 @@ export const AuthStyle = StyleSheet.create({
     borderRadius: 20,
     textAlign: "left",
     color: colors.white,
+    fontFamily: "Roboto_medium",
   },
   button: {
     alignItems: "center",
@@ -520,6 +527,63 @@ export const AuthStyle = StyleSheet.create({
   AlertText: {
     alignItems: "flex-start",
     color: colors.red,
+  },
+});
+
+export const SettingForm = StyleSheet.create({
+  profile_pic: {
+    padding: 75,
+    borderRadius: 100,
+  },
+  info: {
+    fontFamily: "Roboto_medium",
+    fontSize: 16,
+    padding: 12,
+  },
+  cameraView: {
+    position: "absolute",
+    left: "60%",
+    top: "80%",
+    backgroundColor: colors.dodgerblue,
+    height: 60,
+    width: 60,
+    borderRadius: 100,
+    alignItems: "center",
+  },
+  camera: {
+    marginTop: 15,
+    color: colors.white,
+  },
+  inputBox: {
+    maxWidth: "90%",
+    margin: 10,
+    padding: 12,
+    fontSize: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.dodgerblue,
+    fontFamily: "Roboto_medium",
+  },
+  button: {
+    alignSelf: "center",
+    alignItems: "center",
+    backgroundColor: colors.dodgerblue,
+    borderRadius: 5,
+    width: "30%",
+    margin: 25,
+    marginBottom: 10,
+    padding: 10,
+  },
+  buttonText: {
+    fontWeight: "bold",
+    color: colors.white,
+    fontSize: 20,
+    fontFamily: "Touche_Semibold",
+  },
+  Text: {
+    alignSelf: "flex-start",
+    color: colors.black,
+    fontFamily: "Touche_Semibold",
+    fontSize: 15,
   },
 });
 

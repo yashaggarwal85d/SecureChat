@@ -135,6 +135,7 @@ router.post("/login", async (req, res) => {
     user: user._id,
     token: token,
     profile_pic: user.profile_pic,
+    status: user.status,
   });
 });
 

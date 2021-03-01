@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
 import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../appStyles";
+import { LightTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as colors from "../constants/colors";
+import * as colors from "../../constants/colors";
 
 class GroupSearchScreen extends Component {
   constructor(props) {

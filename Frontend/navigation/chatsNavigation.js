@@ -4,10 +4,10 @@ import MainApp from "../screens/MainScreen";
 import PresentChatScreen from "../screens/Chats";
 import LoginScreen from "../screens/AuthScreen/LoginScreen";
 import SignUpScreen from "../screens/AuthScreen/SignUpScreen";
-import GroupSearchScreen from "../screens/groupSearch";
-import GroupConfirmScreen from "../screens/groupConfirm";
-import SettingsScreen from "../screens/settings";
-import SearchScreen from "../screens/search";
+import GroupSearchScreen from "../screens/SettingsScreen/groupSearch";
+import GroupConfirmScreen from "../screens/SettingsScreen/groupConfirm";
+import SettingsScreen from "../screens/SettingsScreen/settings";
+import SearchScreen from "../screens/SettingsScreen/search";
 import { LightTheme } from "../appStyles";
 
 import {

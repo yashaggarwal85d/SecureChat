@@ -111,40 +111,40 @@ class Signup extends React.Component {
           style={AuthStyle.inputBox}
           value={this.props.user.name}
           onChangeText={(name) => this.props.updateName(name)}
-          placeholder="Full Name"
+          placeholder='Full Name'
           onChange={(e) => this.NameValid(e.nativeEvent.text)}
-          autoCompleteType="off"
+          autoCompleteType='off'
         />
         <Text style={AuthStyle.AlertText}>{this.state.Namealert}</Text>
         <TextInput
           style={AuthStyle.inputBox}
           value={this.props.user.email}
           onChangeText={(email) => this.props.updateEmail(email)}
-          placeholder="Email"
-          autoCapitalize="none"
+          placeholder='Email'
+          autoCapitalize='none'
           onChange={(e) => this.EmailValid(e.nativeEvent.text)}
-          autoCompleteType="off"
+          autoCompleteType='off'
         />
         <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
         <TextInput
           style={AuthStyle.inputBox}
           value={this.props.user.password}
           onChangeText={(password) => this.props.updatePassword(password)}
-          placeholder="Password"
+          placeholder='Password'
           secureTextEntry={true}
           onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
           onEndEditing={() => this.ConfirmPassValid(this.state.confirmPass)}
-          autoCompleteType="off"
+          autoCompleteType='off'
         />
         <Text style={AuthStyle.AlertText}>{this.state.Passalert}</Text>
         <TextInput
           style={AuthStyle.inputBox}
           value={this.confirmPass}
-          placeholder="Confirm Password"
+          placeholder='Confirm Password'
           onChangeText={(password) => this.setState({ confirmPass: password })}
           secureTextEntry={true}
           onChange={(e) => this.ConfirmPassValid(e.nativeEvent.text)}
-          autoCompleteType="off"
+          autoCompleteType='off'
         />
         <Text style={AuthStyle.AlertText}>{this.state.Confirmalert}</Text>
         <TouchableOpacity style={AuthStyle.button} onPress={this.handleSignUp}>

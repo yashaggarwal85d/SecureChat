@@ -11,6 +11,7 @@ import {
   UPDATE_PIC,
   SWITCH_MODE,
   LOGOUT,
+  UPDATE_NAME_STATUS,
 } from "../actions/LoginActions";
 
 const AuthInitialState = {
@@ -23,6 +24,7 @@ const AuthInitialState = {
   alert: null,
   profile_pic: "",
   mode: "light",
+  status: "",
 };
 
 const AuthReducer = (state = AuthInitialState, action) => {
@@ -47,6 +49,12 @@ const AuthReducer = (state = AuthInitialState, action) => {
       return { ...state, password: action.payload };
     case UPDATE_PIC:
       return { ...state, profile_pic: action.payload };
+    case UPDATE_NAME_STATUS:
+      return {
+        ...state,
+        name: action.payload.name,
+        status: action.payload.status,
+      };
     case SWITCH_MODE:
       return { ...state, mode: action.payload };
     case LOGOUT:

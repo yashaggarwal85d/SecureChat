@@ -8,3 +8,4 @@ export const GETROOMS = ROOMBASEAPI + "/all";
 export const ROOMMEMUPDATE = ROOMBASEAPI + "/updateMember";
 export const ALLUSERSAPI = USERBASEAPI + "/all";
 export const ADDNEWROOM = ROOMBASEAPI + "/new";
+export const PATCHUSER = USERBASEAPI + "/update";

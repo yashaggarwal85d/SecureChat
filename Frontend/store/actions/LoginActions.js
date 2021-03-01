@@ -11,6 +11,7 @@ export const SIGNUP = "SIGNUP";
 export const UPDATE_PIC = "UPDATE_PIC";
 export const SWITCH_MODE = "SWITCH_MODE";
 export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
+export const UPDATE_NAME_STATUS = "UPDATE_NAME_STATUS";
 import axios from "axios";
 import * as API from "../../constants/APIstore";
 
@@ -63,17 +64,33 @@ export const updateEmail = (email) => {
   };
 };
 
-export const updateName = (name) => {
-  return {
-    type: UPDATE_NAME,
-    payload: name,
-  };
-};
-
 export const updatePassword = (password) => {
   return {
     type: UPDATE_PASSWORD,
     payload: password,
+  };
+};
+
+export const updateNameStatus = (name, status) => {
+  return async (dispatch, getState) => {
+    try {
+      const user = getState().user;
+      const data = await axios({
+        method: "PATCH",
+        url: API.PATCHUSER,
+        headers: {
+          "auth-token": user.token,
+          "Content-Type": "application/json",
+        },
+        data: {
+          name: name,
+          status: status,
+        },
+      }).then((res) => res.data);
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 
@@ -98,6 +115,7 @@ export const login = () => {
         user.isauth = true;
         user.id = data.user;
         user.profile_pic = data.profile_pic;
+        user.status = data.status;
         dispatch({ type: LOGIN, payload: user });
       })
       .catch((e) => {

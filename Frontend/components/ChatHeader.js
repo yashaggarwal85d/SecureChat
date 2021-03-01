@@ -44,80 +44,55 @@ export default class ChatHeader extends Component {
   };
 
   render() {
+    var note = (
+      <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderNote}>
+        {this.props.room.description}
+      </Text>
+    );
+    var button = <></>;
     if (this.state.online)
-      return (
-        <Header style={this.props.appStyles.ChatHeaderView}>
-          <Left>
-            <Button
-              icon
-              transparent
-              onPress={() => {
-                this.props.navigation.goBack();
-              }}
-            >
-              <AntDesign name='arrowleft' size={22} color={color.grey} />
-            </Button>
-          </Left>
-
-          <Thumbnail
-            style={this.props.appStyles.ChatHeaderImage}
-            source={{ uri: this.props.room.profile_pic }}
-          />
-
-          <Body>
-            <Title style={this.props.appStyles.ChatHeaderTitle}>
-              {this.props.room.name}
-            </Title>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.ChatHeaderNoteOnline}
-            >
-              Online
-            </Text>
-          </Body>
-
-          <Right>
-            <Button icon transparent>
-              <Entypo name='dots-three-vertical' size={22} color={color.grey} />
-            </Button>
-          </Right>
-        </Header>
+      note = (
+        <Text
+          numberOfLines={1}
+          style={this.props.appStyles.ChatHeaderNoteOnline}
+        >
+          Online
+        </Text>
       );
-    else
-      return (
-        <Header style={this.props.appStyles.ChatHeaderView}>
-          <Left>
-            <Button
-              icon
-              transparent
-              onPress={() => {
-                this.props.navigation.goBack();
-              }}
-            >
-              <AntDesign name='arrowleft' size={22} color={color.grey} />
-            </Button>
-          </Left>
-
-          <Thumbnail
-            style={this.props.appStyles.ChatHeaderImage}
-            source={{ uri: this.props.room.profile_pic }}
-          />
-
-          <Body>
-            <Title style={this.props.appStyles.ChatHeaderTitle}>
-              {this.props.room.name}
-            </Title>
-            <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderNote}>
-              {this.props.room.description}
-            </Text>
-          </Body>
-
-          <Right>
-            <Button icon transparent>
-              <Entypo name='dots-three-vertical' size={22} color={color.grey} />
-            </Button>
-          </Right>
-        </Header>
+    if (this.props.room.isGroup)
+      button = (
+        <Button icon transparent>
+          <Entypo name='dots-three-vertical' size={22} color={color.grey} />
+        </Button>
       );
+    return (
+      <Header style={this.props.appStyles.ChatHeaderView}>
+        <Left>
+          <Button
+            icon
+            transparent
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <AntDesign name='arrowleft' size={22} color={color.grey} />
+          </Button>
+        </Left>
+
+        <Thumbnail
+          style={this.props.appStyles.ChatHeaderImage}
+          source={{ uri: this.props.room.profile_pic }}
+        />
+
+        <Body>
+          <Title style={this.props.appStyles.ChatHeaderTitle}>
+            {this.props.room.name}
+          </Title>
+          {note}
+        </Body>
+
+        <Right>{button}</Right>
+      </Header>
+    );
   }
 }

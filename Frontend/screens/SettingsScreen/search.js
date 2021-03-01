@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View } from "native-base";
 import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../appStyles";
+import { LightTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
-import { AllUsers } from "../store/actions/LoginActions";
-import { addRoom } from "../store/actions/RoomActions";
+import { AllUsers } from "../../store/actions/LoginActions";
+import { addRoom } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
-import * as colors from "../constants/colors";
+import * as colors from "../../constants/colors";
 
 class SearchScreen extends Component {
   constructor(props) {
