@@ -115,6 +115,7 @@ export const LightTheme = StyleSheet.create({
     flexDirection: "row",
   },
   ChatHeaderImage: {
+    right: "70%",
     height: 45,
     width: 45,
     marginTop: 8,

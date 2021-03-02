@@ -15,6 +15,7 @@ import { AuthStyle } from "../../appStyles";
 class Signup extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props.user);
     this.state = {
       confirmPass: "",
       Emailalert: "",

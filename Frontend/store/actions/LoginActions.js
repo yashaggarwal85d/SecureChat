@@ -14,6 +14,7 @@ export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
 export const UPDATE_NAME_STATUS = "UPDATE_NAME_STATUS";
 import axios from "axios";
 import * as API from "../../constants/APIstore";
+import { socket, logoutSocket } from "../reducers/Socket";
 
 export const updateMode = (mode) => {
   return {
@@ -61,6 +62,13 @@ export const updateEmail = (email) => {
   return {
     type: UPDATE_EMAIL,
     payload: email,
+  };
+};
+
+export const updateName = (name) => {
+  return {
+    type: UPDATE_NAME,
+    payload: name,
   };
 };
 
@@ -180,6 +188,7 @@ export const AllUsers = async (token) => {
 
 export const logout = () => {
   return async (dispatch, getState) => {
+    await logoutSocket();
     dispatch({ type: LOGOUT });
   };
 };

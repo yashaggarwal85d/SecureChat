@@ -157,7 +157,7 @@ router.patch("/AddMember/:RoomId", AuthTokenVerification, async (req, res) => {
     const room = await Room.findById(req.params.RoomId);
     if (req.user._id === room.creator_id) {
       const member_id = req.body.member;
-      for (const member in room.members) {
+      for (const member of room.members) {
         if (member.id === member_id) {
           const UpdatedRoom = await Room.updateMany(
             {
@@ -170,12 +170,13 @@ router.patch("/AddMember/:RoomId", AuthTokenVerification, async (req, res) => {
               },
             }
           );
+
+          return res.json({
+            message: "successfully updated",
+          });
         }
-        return res.json({
-          message: "successfully updated",
-        });
       }
-      const UpdatedRoom = await Room.updateMany(
+      const updatedRoom = await Room.updateMany(
         {
           _id: req.params.RoomId,
         },
@@ -184,6 +185,16 @@ router.patch("/AddMember/:RoomId", AuthTokenVerification, async (req, res) => {
             members: {
               id: member_id,
             },
+          },
+        }
+      );
+      const UpdatedUser = await User.updateMany(
+        {
+          _id: member_id,
+        },
+        {
+          $push: {
+            rooms_id: room._id,
           },
         }
       );

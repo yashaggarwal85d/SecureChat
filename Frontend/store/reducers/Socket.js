@@ -18,3 +18,11 @@ export const UpdatelastMessageReadIndex = (roomId, token) => {
 export const CheckOnline = (token, userId) => {
   return socket.emit("checkOnline", token, userId);
 };
+
+export const promptGroup = (token, userId) => {
+  return socket.emit("updateRooms", token, userId);
+};
+
+export const logoutSocket = () => {
+  return socket.emit("logout");
+};

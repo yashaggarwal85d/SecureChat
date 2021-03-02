@@ -3,7 +3,7 @@ import * as API from "../../constants/APIstore";
 export const FILL_DATA = "FLL_DATA";
 import axios from "axios";
 import moment from "moment";
-import { UpdatelastMessageReadIndex } from "../reducers/Socket";
+import { UpdatelastMessageReadIndex, promptGroup } from "../reducers/Socket";
 
 export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
@@ -195,7 +195,6 @@ export const addRoom = (body) => {
         lastTime = messages.slice(-1)[0].timestamp;
       }
       const readIndex = room.members.find((mem) => mem.id === user.id);
-
       const NewRoom = new Room(
         room._id,
         roomName,
@@ -210,6 +209,7 @@ export const addRoom = (body) => {
       NewRoom.updateLastMessage(lastMessage);
       NewRoom.updateLastTime(lastTime);
       newState.rooms.push(NewRoom);
+      await promptGroup(user.token, room._id);
       dispatch({ type: FILL_DATA, payload: newState });
     } catch (e) {
       console.log(e);
@@ -256,6 +256,7 @@ export const leaveRoom = (roomId) => {
           "Content-Type": "application/json",
         },
       }).then((res) => res.data);
+      await promptGroup(user.token, roomId);
     } catch (e) {
       console.log(e);
     }
@@ -277,6 +278,7 @@ export const RemoveMember = (roomId, member) => {
           member: member,
         },
       }).then((res) => res.data);
+      await promptGroup(user.token, roomId);
     } catch (e) {
       console.log(e);
     }
@@ -298,6 +300,7 @@ export const AddMember = (roomId, member) => {
           member: member,
         },
       }).then((res) => res.data);
+      await promptGroup(user.token, roomId);
     } catch (e) {
       console.log(e);
     }

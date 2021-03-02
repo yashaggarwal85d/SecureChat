@@ -68,6 +68,24 @@ module.exports = (io) => {
         socket.emit("error", e);
       }
     });
+    // socket.on("updateRooms", async (token, roomId) => {
+    //   try {
+    //     const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+    //     if (!verifiedId) {
+    //       socket.emit("error", "Access Denied");
+    //     } else {
+    //       const room = await Room.findById(roomId);
+    //       room.members.forEach((mem) => {
+    //         if (ConnectedUsers[mem.id]) {
+    //           socket.to(ConnectedUsers[mem.id]).emit("updateMembers");
+    //         }
+    //       });
+    //     }
+    //   } catch (e) {
+    //     console.log(e);
+    //     socket.emit("error", e);
+    //   }
+    // });
     socket.on("message", async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
@@ -95,6 +113,29 @@ module.exports = (io) => {
                 .emit("recieveMessage", message, roomId);
             }
           });
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+    socket.on("logout", async () => {
+      try {
+        for (const key in ConnectedUsers) {
+          if (ConnectedUsers[key] === socket.id) {
+            delete ConnectedUsers[key];
+            const user = await User.findById(key);
+            user.rooms_id.forEach(async (roomId) => {
+              const room = await Room.findById(roomId);
+              if (room.members.length === 2) {
+                room.members.forEach((mem) => {
+                  if (ConnectedUsers[mem.id]) {
+                    socket.to(ConnectedUsers[mem.id]).emit("offline", key);
+                  }
+                });
+              }
+            });
+          }
         }
       } catch (e) {
         console.log(e);

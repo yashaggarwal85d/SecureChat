@@ -115,6 +115,12 @@ class RoomSettingsScreen extends Component {
                       itemData.item.details._id
                     );
                     var newRoom = this.state.room;
+                    var filteredMem = this.state.room.members.filter(
+                      (member) => {
+                        return !member.blocked;
+                      }
+                    );
+                    newRoom.members = filteredMem;
                     var index = newRoom.members.findIndex(
                       (member) =>
                         member.details._id === itemData.item.details._id
@@ -140,26 +146,34 @@ class RoomSettingsScreen extends Component {
       removeMem = <></>;
       name = "You";
     }
-    if (!itemData.item.blocked) {
-      return (
-        <ListItem noBorder={true} style={{ padding: 6 }} avatar>
-          <Thumbnail source={{ uri: itemData.item.details.profile_pic }} />
+    return (
+      <ListItem noBorder={true} style={{ padding: 6 }} avatar>
+        <Thumbnail source={{ uri: itemData.item.details.profile_pic }} />
 
-          <Body>
-            <Text numberOfLines={1} style={SettingForm.memberListName}>
-              {name}
-            </Text>
-            <Text numberOfLines={1} style={SettingForm.memberListNote} note>
-              {itemData.item.details.status}
-            </Text>
-          </Body>
-          <Right>
-            {admin}
-            {removeMem}
-          </Right>
-        </ListItem>
-      );
-    }
+        <Body>
+          <Text numberOfLines={1} style={SettingForm.memberListName}>
+            {name}
+          </Text>
+          <Text numberOfLines={1} style={SettingForm.memberListNote} note>
+            {itemData.item.details.status}
+          </Text>
+        </Body>
+        <Right>
+          {admin}
+          {removeMem}
+        </Right>
+      </ListItem>
+    );
+  };
+
+  addMem = async (user) => {
+    await this.props.AddMember(this.state.room.id, user._id);
+    var newRoom = this.state.room;
+    const details = {
+      details: user,
+    };
+    newRoom.members.push(details);
+    this.setState({ room: newRoom });
   };
 
   render() {
@@ -169,25 +183,35 @@ class RoomSettingsScreen extends Component {
     var addParticipant = <></>;
     if (this.props.user.id === this.state.room.creator_id) {
       addParticipant = (
-        <Root>
-          <ListItem noBorder={true} icon onPress={() => {}}>
-            <Left>
-              <Button style={{ backgroundColor: colors.greencyan }}>
-                <AntDesign
-                  name='plus'
-                  size={18}
-                  style={{ color: colors.white }}
-                />
-              </Button>
-            </Left>
-            <Body>
-              <Text style={LightTheme.chatListName}>Add participants</Text>
-            </Body>
-            <Right>
-              <Icon active name='arrow-forward' />
-            </Right>
-          </ListItem>
-        </Root>
+        <ListItem
+          noBorder={true}
+          icon
+          onPress={() =>
+            this.props.navigation.navigate({
+              routeName: "AddParticipantScreen",
+              params: {
+                members: this.state.room.members,
+                addMem: this.addMem.bind(this),
+              },
+            })
+          }
+        >
+          <Left>
+            <Button style={{ backgroundColor: colors.greencyan }}>
+              <AntDesign
+                name='plus'
+                size={18}
+                style={{ color: colors.white }}
+              />
+            </Button>
+          </Left>
+          <Body>
+            <Text style={LightTheme.chatListName}>Add participants</Text>
+          </Body>
+          <Right>
+            <Icon active name='arrow-forward' />
+          </Right>
+        </ListItem>
       );
     }
     if (this.state.changed)
@@ -210,10 +234,13 @@ class RoomSettingsScreen extends Component {
       );
 
     if (this.state.infoClicked) {
+      const filteredMembers = this.state.room.members.filter((member) => {
+        return !member.blocked;
+      });
       members = (
         <FlatList
           keyExtractor={(item) => item.details._id}
-          data={this.state.room.members}
+          data={filteredMembers}
           renderItem={this.renderGridItem}
           numColumns={1}
         />

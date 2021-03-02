@@ -10,6 +10,7 @@ import SettingsScreen from "../screens/SettingsScreen/settings";
 import SearchScreen from "../screens/SettingsScreen/search";
 import RoomSettingsScreen from "../screens/SettingsScreen/roomSetting";
 import { LightTheme } from "../appStyles";
+import AddParticipantScreen from "../screens/SettingsScreen/addParticipant";
 
 import {
   CardStyleInterpolators,
@@ -117,6 +118,21 @@ const ChatsNavigator = createStackNavigator({
         close: TransitionSpecs.FadeOutToBottomAndroidSpec,
       },
       cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+    },
+  },
+  AddParticipantScreen: {
+    screen: AddParticipantScreen,
+    navigationOptions: {
+      headerTitle: "Add participant",
+      headerTitleStyle: LightTheme.ChatHeaderTitle,
+      animationEnabled: true,
+      cardShadowEnabled: false,
+      gestureDirection: "vertical",
+      transitionSpec: {
+        open: TransitionSpecs.TransitionIOSSpec,
+        close: TransitionSpecs.TransitionIOSSpec,
+      },
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     },
   },
 });

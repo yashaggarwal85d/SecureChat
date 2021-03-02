@@ -1,14 +1,5 @@
 import React, { Component } from "react";
-import {
-  Header,
-  Title,
-  Button,
-  Right,
-  Body,
-  Left,
-  Text,
-  Thumbnail,
-} from "native-base";
+import { Header, Button, Body, Left, Text, Thumbnail } from "native-base";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import * as color from "../constants/colors";
@@ -35,9 +26,11 @@ export default class ChatHeader extends Component {
   componentDidMount = () => {
     if (!this.props.room.isGroup) {
       socket.on("online", async (userId) => {
+        console.log("hello");
         if (userId === this.state.secondUser) this.setState({ online: true });
       });
       socket.on("offline", async (userId) => {
+        console.log("bye");
         if (userId === this.state.secondUser) this.setState({ online: false });
       });
     }
@@ -95,14 +88,13 @@ export default class ChatHeader extends Component {
           source={{ uri: this.props.room.profile_pic }}
         />
 
-        <Body>
-          <Title style={this.props.appStyles.ChatHeaderTitle}>
+        <Body style={{ right: "70%" }}>
+          <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderTitle}>
             {this.props.room.name}
-          </Title>
+          </Text>
           {note}
         </Body>
-
-        <Right>{button}</Right>
+        {button}
       </Header>
     );
   }
