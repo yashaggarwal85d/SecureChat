@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store";
 import Navigation from "./store/HandlePersist";
+import firebaseConfig from "./constants/firebase";
+import * as firebase from "firebase";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -16,9 +18,12 @@ const fetchFonts = () => {
   });
 };
 
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
-
   if (!fontLoaded) {
     return (
       <AppLoading

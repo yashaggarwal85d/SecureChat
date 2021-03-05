@@ -68,28 +68,15 @@ module.exports = (io) => {
         socket.emit("error", e);
       }
     });
-    // socket.on("updateRooms", async (token, roomId) => {
-    //   try {
-    //     const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
-    //     if (!verifiedId) {
-    //       socket.emit("error", "Access Denied");
-    //     } else {
-    //       const room = await Room.findById(roomId);
-    //       room.members.forEach((mem) => {
-    //         if (ConnectedUsers[mem.id]) {
-    //           socket.to(ConnectedUsers[mem.id]).emit("updateMembers");
-    //         }
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.log(e);
-    //     socket.emit("error", e);
-    //   }
-    // });
     socket.on("message", async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
-        if (!verifiedId) {
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id && !member.blocked) f = 1;
+        }
+        if (!verifiedId && f) {
           socket.emit("error", "Access Denied");
         } else {
           const message = {
@@ -107,7 +94,7 @@ module.exports = (io) => {
           );
           socket.emit("confirmSend", message, roomId);
           room.members.forEach((mem) => {
-            if (ConnectedUsers[mem.id]) {
+            if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
@@ -119,6 +106,150 @@ module.exports = (io) => {
         socket.emit("error", e);
       }
     });
+
+    socket.on("newGroup", async (token, roomId) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        if (!verifiedId) {
+          socket.emit("error", "Access Denied");
+        } else {
+          const room = await Room.findById(roomId);
+          socket.emit("addRoom", room);
+          room.members.forEach((mem) => {
+            if (ConnectedUsers[mem.id]) {
+              socket.to(ConnectedUsers[mem.id]).emit("addRoom", room);
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+
+    socket.on("leaveGroup", async (token, roomId) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) f = 1;
+        }
+
+        if (!verifiedId && f) {
+          socket.emit("error", "Access Denied");
+        } else {
+          room.members.forEach((mem) => {
+            if (ConnectedUsers[mem.id]) {
+              socket
+                .to(ConnectedUsers[mem.id])
+                .emit("updateRoom", roomId, room.members);
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+
+    socket.on("addMember", async (token, roomId, memberId) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) f = 1;
+        }
+        if (!verifiedId && f) {
+          socket.emit("error", "Access Denied");
+        } else {
+          room.members.forEach((mem) => {
+            if (ConnectedUsers[mem.id]) {
+              if (mem.id === memberId) {
+                socket.to(ConnectedUsers[mem.id]).emit("addRoom", room);
+              } else {
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit("updateRoom", roomId, room.members);
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+
+    socket.on("removeMember", async (token, roomId, memberId) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) f = 1;
+        }
+
+        if (!verifiedId && f) {
+          socket.emit("error", "Access Denied");
+        } else {
+          room.members.forEach((mem) => {
+            if (ConnectedUsers[mem.id]) {
+              if (mem.id === memberId) {
+                socket.to(ConnectedUsers[mem.id]).emit("removeRoom", room.id);
+              } else {
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit("updateRoom", roomId, room.members);
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+
+    socket.on("profile_pic", async (token, url) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        if (!verifiedId) {
+          socket.emit("error", "Access Denied");
+        } else {
+          const user = await User.findById(verifiedId._id);
+          const UpdatedUser = await User.updateMany(
+            {
+              _id: user._id,
+            },
+            {
+              $set: {
+                profile_pic: url,
+              },
+            }
+          );
+          const rooms_id = user.rooms_id;
+
+          for (const roomid of rooms_id) {
+            const room = await Room.findById(roomid);
+            if (!room.name) {
+              for (const member of room.members) {
+                if (ConnectedUsers[member.id]) {
+                  socket
+                    .to(ConnectedUsers[mem.id])
+                    .emit("update_profile", user._id, url);
+                }
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+
     socket.on("logout", async () => {
       try {
         for (const key in ConnectedUsers) {

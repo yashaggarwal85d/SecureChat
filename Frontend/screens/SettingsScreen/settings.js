@@ -20,11 +20,17 @@ import {
 import { TextInput, TouchableOpacity } from "react-native";
 import * as colors from "../../constants/colors";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { logout, updateNameStatus } from "../../store/actions/LoginActions";
+import {
+  logout,
+  updateNameStatus,
+  updateProfile,
+} from "../../store/actions/LoginActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { SettingForm } from "../../appStyles";
+import { SettingForm, LightTheme } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
+import * as firebase from "firebase";
+import { updateProfilePic } from "../../store/reducers/Socket";
 
 var BUTTONS = [
   { text: "Yes", icon: "open", iconColor: colors.greencyan },
@@ -41,15 +47,24 @@ class SettingsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      profile_pic: this.props.user.profile_pic,
       name: this.props.user.name,
       status: this.props.user.status,
       changed: false,
       infoClicked: false,
     };
-    this.getPermission();
   }
 
-  async getPermission() {}
+  uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    var ref = firebase.storage().ref().child(`images/${this.props.user.id}`);
+    await ref.put(blob);
+    const url = await ref.getDownloadURL();
+    this.setState({ profile_pic: url });
+    await this.props.updateProfile(url);
+    await updateProfilePic(token, url);
+  };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -62,7 +77,9 @@ class SettingsScreen extends Component {
       aspect: [1.91, 1],
       quality: 1,
     });
-    console.log(result);
+    if (!result.cancelled) {
+      this.uploadImage(result.uri);
+    }
   }
 
   async PickImageFromGallery() {
@@ -76,7 +93,9 @@ class SettingsScreen extends Component {
       aspect: [1.91, 1],
       quality: 1,
     });
-    console.log(result);
+    if (!result.cancelled) {
+      this.uploadImage(result.uri);
+    }
   }
 
   render() {
@@ -130,7 +149,7 @@ class SettingsScreen extends Component {
             <ListItem style={{ flexDirection: "column" }}>
               <Thumbnail
                 style={SettingForm.profile_pic}
-                source={{ uri: this.props.user.profile_pic }}
+                source={{ uri: this.state.profile_pic }}
               />
               <TouchableOpacity style={SettingForm.cameraView}>
                 <Root>
@@ -212,7 +231,7 @@ class SettingsScreen extends Component {
                 </Button>
               </Left>
               <Body>
-                <Text>App Info</Text>
+                <Text style={LightTheme.chatListName}>App Info</Text>
               </Body>
               <Right>
                 <Icon active name='arrow-forward' />
@@ -248,7 +267,7 @@ class SettingsScreen extends Component {
                   </Button>
                 </Left>
                 <Body>
-                  <Text>Log Out</Text>
+                  <Text style={LightTheme.chatListName}>Log Out</Text>
                 </Body>
                 <Right>
                   <Icon active name='arrow-forward' />
@@ -263,7 +282,10 @@ class SettingsScreen extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ logout, updateNameStatus }, dispatch);
+  return bindActionCreators(
+    { logout, updateNameStatus, updateProfile },
+    dispatch
+  );
 };
 
 const mapStateToProps = (state) => {

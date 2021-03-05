@@ -54,9 +54,13 @@ class ChatBubble extends Component {
             itemData.item.sender_id) &&
         this.props.isGroup
       ) {
-        const name = this.props.members.find(
-          (mem) => mem.id === itemData.item.sender_id
-        ).details.name;
+        var name;
+        const memIndex = this.props.members.findIndex(
+          (mem) =>
+            mem.id === itemData.item.sender_id ||
+            mem.details._id === itemData.item.sender_id
+        );
+        name = this.props.members[memIndex].details.name;
         return (
           <View style={this.props.appStyles.ChatBubbleLeftView}>
             <Text style={this.props.appStyles.ChatBubbleLeftViewName}>

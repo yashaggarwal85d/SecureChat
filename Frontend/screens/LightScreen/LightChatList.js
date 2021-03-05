@@ -6,6 +6,9 @@ import {
   addMessage,
   updatelastMessageReadIndex,
   fillData,
+  addRoom,
+  updateRoom,
+  removeRoom,
 } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { socket } from "../../store/reducers/Socket";
@@ -32,6 +35,18 @@ class ChatScreenComponent extends Component {
   componentDidMount = () => {
     socket.on("recieveMessage", (message, roomId) => {
       this.props.addMessage(roomId, message);
+      this.updateComponent();
+    });
+    socket.on("addRoom", async (room) => {
+      await this.props.addRoom(room);
+      this.updateComponent();
+    });
+    socket.on("updateRoom", async (roomId, members) => {
+      await this.props.updateRoom(roomId, members);
+      this.updateComponent();
+    });
+    socket.on("removeRoom", async (roomId) => {
+      await this.props.removeRoom(roomId);
       this.updateComponent();
     });
   };
@@ -159,7 +174,14 @@ class ChatScreenComponent extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { addMessage, updatelastMessageReadIndex, fillData },
+    {
+      addMessage,
+      updatelastMessageReadIndex,
+      fillData,
+      addRoom,
+      updateRoom,
+      removeRoom,
+    },
     dispatch
   );
 };

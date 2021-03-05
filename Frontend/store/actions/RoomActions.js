@@ -3,7 +3,13 @@ import * as API from "../../constants/APIstore";
 export const FILL_DATA = "FLL_DATA";
 import axios from "axios";
 import moment from "moment";
-import { UpdatelastMessageReadIndex, promptGroup } from "../reducers/Socket";
+import {
+  UpdatelastMessageReadIndex,
+  promptGroup,
+  promptMember,
+  promptMemberandAdd,
+  promptMemberandRemove,
+} from "../reducers/Socket";
 
 export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
@@ -132,11 +138,37 @@ export const fillData = () => {
   };
 };
 
-export const addRoom = (body) => {
+export const updateNameDescription = (roomId, name, description) => {
   return async (dispatch, getState) => {
     try {
       var user = getState().user;
+      const data = await axios({
+        method: "PATCH",
+        url: API.PATCHROOM + `/${roomId}`,
+        headers: {
+          "auth-token": user.token,
+          "Content-Type": "application/json",
+        },
+        data: {
+          name: name,
+          description: description,
+        },
+      }).then((res) => res.data);
       var newState = getState().room;
+      const index = newState.rooms.findIndex((room) => room.id === roomId);
+      var room = newState.rooms[index];
+      room.name = name;
+      room.description = description;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const CreateNewRoom = (body) => {
+  return async (dispatch, getState) => {
+    try {
+      var user = getState().user;
       const room = await axios({
         method: "POST",
         url: API.ADDNEWROOM,
@@ -146,6 +178,88 @@ export const addRoom = (body) => {
         },
         data: body,
       }).then((res) => res.data.room);
+      await promptGroup(user.token, room._id);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const leaveRoom = (roomId) => {
+  return async (dispatch, getState) => {
+    try {
+      var user = getState().user;
+      var rooms = getState().room.rooms;
+      const data = await axios({
+        method: "PATCH",
+        url: API.LEAVEROOM + `/${roomId}`,
+        headers: {
+          "auth-token": user.token,
+          "Content-Type": "application/json",
+        },
+      }).then((res) => res.data);
+      promptMember(user.token, roomId);
+      var newRooms = rooms.filter((room) => room.id !== roomId);
+      const newState = {
+        rooms: newRooms,
+      };
+      dispatch({ type: FILL_DATA, payload: newState });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const RemoveMember = (roomId, member) => {
+  return async (dispatch, getState) => {
+    try {
+      var user = getState().user;
+      const data = await axios({
+        method: "PATCH",
+        url: API.REMOVEMEMBER + `/${roomId}`,
+        headers: {
+          "auth-token": user.token,
+          "Content-Type": "application/json",
+        },
+        data: {
+          member: member,
+        },
+      }).then((res) => res.data);
+      await promptMemberandRemove(user.token, roomId, member);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const AddMember = (roomId, member) => {
+  return async (dispatch, getState) => {
+    try {
+      var user = getState().user;
+      const data = await axios({
+        method: "PATCH",
+        url: API.ADDMEMBER + `/${roomId}`,
+        headers: {
+          "auth-token": user.token,
+          "Content-Type": "application/json",
+        },
+        data: {
+          member: member,
+        },
+      }).then((res) => res.data);
+      await promptMemberandAdd(user.token, roomId, member);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const addRoom = (room) => {
+  return async (dispatch, getState) => {
+    try {
+      var user = getState().user;
+      var newState = getState().room;
+
       var roomName = null;
       var profile_pic = "";
       var description = "";
@@ -209,7 +323,6 @@ export const addRoom = (body) => {
       NewRoom.updateLastMessage(lastMessage);
       NewRoom.updateLastTime(lastTime);
       newState.rooms.push(NewRoom);
-      await promptGroup(user.token, room._id);
       dispatch({ type: FILL_DATA, payload: newState });
     } catch (e) {
       console.log(e);
@@ -217,90 +330,46 @@ export const addRoom = (body) => {
   };
 };
 
-export const updateNameDescription = (roomId, name, description) => {
+export const removeRoom = (roomId) => {
   return async (dispatch, getState) => {
     try {
-      var user = getState().user;
-      const data = await axios({
-        method: "PATCH",
-        url: API.PATCHROOM + `/${roomId}`,
-        headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
-        },
-        data: {
-          name: name,
-          description: description,
-        },
-      }).then((res) => res.data);
-      var newState = getState().room;
-      const index = newState.rooms.findIndex((room) => room.id === roomId);
-      var room = newState.rooms[index];
-      room.name = name;
-      room.description = description;
+      const rooms = getState().room.rooms;
+      var newRooms = rooms.filter((room) => room.id !== roomId);
+      var newState = {
+        rooms: newRooms,
+      };
+      dispatch({ type: FILL_DATA, payload: newState });
     } catch (e) {
       console.log(e);
     }
   };
 };
 
-export const leaveRoom = (roomId) => {
+export const updateRoom = (roomId, members) => {
   return async (dispatch, getState) => {
     try {
       var user = getState().user;
-      const data = await axios({
-        method: "PATCH",
-        url: API.LEAVEROOM + `/${roomId}`,
-        headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
-        },
-      }).then((res) => res.data);
-      await promptGroup(user.token, roomId);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-};
-
-export const RemoveMember = (roomId, member) => {
-  return async (dispatch, getState) => {
-    try {
-      var user = getState().user;
-      const data = await axios({
-        method: "PATCH",
-        url: API.REMOVEMEMBER + `/${roomId}`,
-        headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
-        },
-        data: {
-          member: member,
-        },
-      }).then((res) => res.data);
-      await promptGroup(user.token, roomId);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-};
-
-export const AddMember = (roomId, member) => {
-  return async (dispatch, getState) => {
-    try {
-      var user = getState().user;
-      const data = await axios({
-        method: "PATCH",
-        url: API.ADDMEMBER + `/${roomId}`,
-        headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
-        },
-        data: {
-          member: member,
-        },
-      }).then((res) => res.data);
-      await promptGroup(user.token, roomId);
+      const rooms = getState().room.rooms;
+      var roomMembers = members;
+      for (var member of roomMembers) {
+        const user2 = await axios({
+          method: "GET",
+          url: API.USERBASEAPI + `/${member.id}`,
+          headers: {
+            "auth-token": user.token,
+            "Content-Type": "application/json",
+          },
+        }).then((res) => res.data);
+        delete user2.password;
+        member["details"] = user2;
+      }
+      const roomIndex = rooms.findIndex((room) => room.id === roomId);
+      var newRooms = rooms;
+      newRooms[roomIndex].members = roomMembers;
+      const newState = {
+        rooms: newRooms,
+      };
+      dispatch({ type: FILL_DATA, payload: newState });
     } catch (e) {
       console.log(e);
     }

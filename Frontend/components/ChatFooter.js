@@ -6,6 +6,7 @@ import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as colors from "../constants/colors";
 import * as DocumentPicker from "expo-document-picker";
+import * as firebase from "firebase";
 
 var CameraButton = [
   { text: "Camera", icon: "camera", iconColor: colors.black },
@@ -30,7 +31,6 @@ class ChatFooter extends Component {
     }
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [1.91, 1],
       quality: 1,
     });
     console.log(result);
@@ -44,7 +44,6 @@ class ChatFooter extends Component {
     }
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [1.91, 1],
       quality: 1,
     });
     console.log(result);

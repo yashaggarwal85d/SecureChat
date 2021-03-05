@@ -5,7 +5,7 @@ import { LightTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AllUsers } from "../../store/actions/LoginActions";
-import { addRoom } from "../../store/actions/RoomActions";
+import { CreateNewRoom } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import * as colors from "../../constants/colors";
 
@@ -54,7 +54,7 @@ class SearchScreen extends Component {
               },
             ],
           };
-          await this.props.addRoom(body);
+          await this.props.CreateNewRoom(body);
           this.props.navigation.navigate("MainScreen");
         }}
       >
@@ -126,7 +126,7 @@ class SearchScreen extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addRoom }, dispatch);
+  return bindActionCreators({ CreateNewRoom }, dispatch);
 };
 
 const mapStateToProps = (state) => {

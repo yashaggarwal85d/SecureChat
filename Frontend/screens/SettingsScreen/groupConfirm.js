@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as colors from "../../constants/colors";
 import { bindActionCreators } from "redux";
-import { addRoom } from "../../store/actions/RoomActions";
+import { CreateNewRoom } from "../../store/actions/RoomActions";
 
 class GroupConfirmScreen extends Component {
   constructor(props) {
@@ -90,7 +90,7 @@ class GroupConfirmScreen extends Component {
                   };
                   body.members.push(id);
                 });
-                await this.props.addRoom(body);
+                await this.props.CreateNewRoom(body);
                 this.props.navigation.navigate("MainScreen");
               }}
             />
@@ -124,7 +124,7 @@ class GroupConfirmScreen extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addRoom }, dispatch);
+  return bindActionCreators({ CreateNewRoom }, dispatch);
 };
 
 const mapStateToProps = (state) => {

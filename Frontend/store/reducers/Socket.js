@@ -19,10 +19,26 @@ export const CheckOnline = (token, userId) => {
   return socket.emit("checkOnline", token, userId);
 };
 
-export const promptGroup = (token, userId) => {
-  return socket.emit("updateRooms", token, userId);
+export const promptMember = (token, roomId) => {
+  return socket.emit("leaveGroup", token, roomId);
+};
+
+export const promptMemberandAdd = (token, roomId, memberId) => {
+  return socket.emit("addMember", token, roomId, memberId);
+};
+
+export const promptMemberandRemove = (token, roomId, memberId) => {
+  return socket.emit("removeMember", token, roomId, memberId);
+};
+
+export const promptGroup = (token, roomId) => {
+  return socket.emit("newGroup", token, roomId);
 };
 
 export const logoutSocket = () => {
   return socket.emit("logout");
+};
+
+export const updateProfilePic = (token, url) => {
+  return socket.emit("profile_pic", token, url);
 };

@@ -26,11 +26,9 @@ export default class ChatHeader extends Component {
   componentDidMount = () => {
     if (!this.props.room.isGroup) {
       socket.on("online", async (userId) => {
-        console.log("hello");
         if (userId === this.state.secondUser) this.setState({ online: true });
       });
       socket.on("offline", async (userId) => {
-        console.log("bye");
         if (userId === this.state.secondUser) this.setState({ online: false });
       });
     }

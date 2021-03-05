@@ -59,7 +59,6 @@ router.patch("/update", AuthTokenVerification, async (req, res) => {
           name: req.body.name || user.name,
           email: req.body.email || user.email,
           password: hashedPassword || user.password,
-          profile_pic: req.body.profile_pic || user.profile_pic,
           status: req.body.status || user.status,
         },
       }

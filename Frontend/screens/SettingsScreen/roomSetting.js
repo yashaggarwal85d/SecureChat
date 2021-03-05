@@ -15,8 +15,6 @@ import {
   Root,
   Thumbnail,
   Form,
-  View,
-  Title,
   Badge,
 } from "native-base";
 import { FlatList } from "react-native";
@@ -29,11 +27,13 @@ import {
   AddMember,
   fillData,
   RemoveMember,
+  updateRoom,
 } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { LightTheme, SettingForm } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
+import { socket } from "../../store/reducers/Socket";
 
 var BUTTONS = [
   { text: "Yes", icon: "remove", iconColor: colors.red },
@@ -58,10 +58,19 @@ class RoomSettingsScreen extends Component {
       infoClicked: false,
       room: params.room,
     };
-    this.getPermission();
   }
 
-  async getPermission() {}
+  componentDidMount = () => {
+    socket.on("updateRoom", async (roomId, members) => {
+      if (roomId === this.state.room.id) {
+        await this.props.updateRoom(roomId, members);
+        const index = await this.props.rooms.findIndex(
+          (room) => room.id === roomId
+        );
+        this.setState({ room: this.props.rooms[index] });
+      }
+    });
+  };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -181,6 +190,52 @@ class RoomSettingsScreen extends Component {
     var members = <></>;
     var infoArrow = <Icon active name='add' />;
     var addParticipant = <></>;
+    var leaveButton = (
+      <Root>
+        <ListItem
+          icon
+          noBorder={true}
+          onPress={() =>
+            ActionSheet.show(
+              {
+                options: BUTTONS,
+                cancelButtonIndex: 1,
+                title: `Are you sure you want to leave ${this.state.room.name} ?`,
+              },
+              async (buttonIndex) => {
+                if (buttonIndex === 0) {
+                  await this.props.leaveRoom(this.state.room.id);
+                  this.props.navigation.navigate("MainScreen");
+                }
+              }
+            )
+          }
+        >
+          <Left>
+            <Button style={{ backgroundColor: colors.red }}>
+              <AntDesign
+                name='logout'
+                size={18}
+                style={{ color: colors.white }}
+              />
+            </Button>
+          </Left>
+          <Body>
+            <Text style={LightTheme.chatListName}>Leave this group</Text>
+          </Body>
+          <Right>
+            <Icon active name='arrow-forward' />
+          </Right>
+        </ListItem>
+      </Root>
+    );
+    var f = 0;
+    for (const member of this.state.room.members) {
+      if (member.details._id === this.props.user.id) f = 1;
+    }
+    if (!f) {
+      leaveButton = <></>;
+    }
     if (this.props.user.id === this.state.room.creator_id) {
       addParticipant = (
         <ListItem
@@ -219,14 +274,18 @@ class RoomSettingsScreen extends Component {
         <TouchableOpacity
           style={SettingForm.button}
           onPress={async () => {
-            await this.props.updateNameDescription(
-              this.state.room.id,
-              this.state.name,
-              this.state.status
-            );
-            this.setState({
-              changed: false,
-            });
+            if (!this.state.name || !this.state.status) {
+              alert("Name or description cant be empty");
+            } else {
+              await this.props.updateNameDescription(
+                this.state.room.id,
+                this.state.name,
+                this.state.status
+              );
+              this.setState({
+                changed: false,
+              });
+            }
           }}
         >
           <Text style={SettingForm.buttonText}>Save</Text>
@@ -357,46 +416,7 @@ class RoomSettingsScreen extends Component {
               </ListItem>
               <>{members}</>
               {addParticipant}
-              <Root>
-                <ListItem
-                  icon
-                  noBorder={true}
-                  onPress={() =>
-                    ActionSheet.show(
-                      {
-                        options: BUTTONS,
-                        cancelButtonIndex: 1,
-                        title: `Are you sure you want to leave ${this.state.room.name} ?`,
-                      },
-                      async (buttonIndex) => {
-                        if (buttonIndex === 0) {
-                          await this.props.leaveRoom(this.state.room.id);
-                          await this.props.fillData();
-                          this.props.navigation.navigate("MainScreen");
-                        }
-                      }
-                    )
-                  }
-                >
-                  <Left>
-                    <Button style={{ backgroundColor: colors.red }}>
-                      <AntDesign
-                        name='logout'
-                        size={18}
-                        style={{ color: colors.white }}
-                      />
-                    </Button>
-                  </Left>
-                  <Body>
-                    <Text style={LightTheme.chatListName}>
-                      Leave this group
-                    </Text>
-                  </Body>
-                  <Right>
-                    <Icon active name='arrow-forward' />
-                  </Right>
-                </ListItem>
-              </Root>
+              {leaveButton}
             </List>
           </Content>
         </Container>
@@ -407,7 +427,14 @@ class RoomSettingsScreen extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { leaveRoom, updateNameDescription, AddMember, fillData, RemoveMember },
+    {
+      leaveRoom,
+      updateNameDescription,
+      AddMember,
+      fillData,
+      RemoveMember,
+      updateRoom,
+    },
     dispatch
   );
 };

@@ -13,3 +13,4 @@ export const PATCHROOM = ROOMBASEAPI + "/update";
 export const LEAVEROOM = ROOMBASEAPI + "/leave";
 export const REMOVEMEMBER = ROOMBASEAPI + "/RemoveMember";
 export const ADDMEMBER = ROOMBASEAPI + "/AddMember";
+export const UPDATEPROFILEPIC = USERBASEAPI + "/profile_pic";

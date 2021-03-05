@@ -4,6 +4,7 @@ const User = require("../models/users");
 const Room = require("../models/rooms");
 const AuthTokenVerification = require("./TokenVerify");
 const { roomValidation } = require("../validation");
+const RoomMemberVerification = require("./RoomMemberVerify");
 
 router.get("/all", AuthTokenVerification, async (req, res) => {
   try {
@@ -32,24 +33,19 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.get("/:RoomId", AuthTokenVerification, async (req, res) => {
+router.get("/:RoomId", RoomMemberVerification, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(400).send("Access denied");
     }
-    var f = 0;
     const room = await Room.findById(req.params.RoomId);
-    for (const member of room.members) {
-      if (member.id === req.user._id) f = 1;
-    }
-    if (f) res.json(room);
-    else res.status(400).send("Access denied");
+    res.json(room);
   } catch (err) {
     return res.status(400).send(err);
   }
 });
 
-router.patch("/update/:RoomId", AuthTokenVerification, async (req, res) => {
+router.patch("/update/:RoomId", RoomMemberVerification, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(400).send("Access denied");
@@ -118,7 +114,7 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
 
 router.patch(
   "/RemoveMember/:RoomId",
-  AuthTokenVerification,
+  RoomMemberVerification,
   async (req, res) => {
     try {
       if (!req.user) {
@@ -149,7 +145,7 @@ router.patch(
   }
 );
 
-router.patch("/AddMember/:RoomId", AuthTokenVerification, async (req, res) => {
+router.patch("/AddMember/:RoomId", RoomMemberVerification, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(400).send("Access denied");
@@ -209,7 +205,7 @@ router.patch("/AddMember/:RoomId", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.patch("/leave/:RoomId", AuthTokenVerification, async (req, res) => {
+router.patch("/leave/:RoomId", RoomMemberVerification, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(400).send("Access denied");

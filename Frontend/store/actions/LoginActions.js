@@ -13,6 +13,7 @@ export const SWITCH_MODE = "SWITCH_MODE";
 export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
 export const UPDATE_NAME_STATUS = "UPDATE_NAME_STATUS";
 import axios from "axios";
+import { exp } from "react-native-reanimated";
 import * as API from "../../constants/APIstore";
 import { socket, logoutSocket } from "../reducers/Socket";
 
