@@ -18,7 +18,7 @@ import {
   Badge,
 } from "native-base";
 import { FlatList } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native";
+import { TextInput, TouchableOpacity, ProgressBarAndroid } from "react-native";
 import * as colors from "../../constants/colors";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import {
@@ -60,6 +60,7 @@ class RoomSettingsScreen extends Component {
       infoClicked: false,
       room: params.room,
       profile_pic: params.room.profile_pic,
+      loader: false,
     };
   }
 
@@ -76,19 +77,21 @@ class RoomSettingsScreen extends Component {
   };
 
   uploadImage = async (uri) => {
+    this.setState({ loader: true });
     const { state } = this.props.navigation;
     const response = await fetch(uri);
     const blob = await response.blob();
     var ref = firebase
       .storage()
       .ref()
-      .child(`images/${this.state.room.id}/${this.props.user.id}`);
+      .child(`Groupimages/${this.state.room.id}`);
     await ref.put(blob);
     const url = await ref.getDownloadURL();
     this.setState({ profile_pic: url });
     await this.props.updateRoomProfile(this.state.room.id, url);
     await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
     state.params.updateHeaderComponent();
+    this.setState({ loader: false });
   };
 
   async PickImageFromCamera() {
@@ -213,6 +216,20 @@ class RoomSettingsScreen extends Component {
     var members = <></>;
     var infoArrow = <Icon active name='add' />;
     var addParticipant = <></>;
+    var pic = (
+      <Thumbnail
+        style={SettingForm.profile_pic}
+        source={{ uri: this.state.profile_pic }}
+      />
+    );
+    if (this.state.loader) {
+      pic = (
+        <ProgressBarAndroid
+          color={colors.dodgerblue}
+          styleAttr='LargeInverse'
+        />
+      );
+    }
     var leaveButton = (
       <Root>
         <ListItem
@@ -351,10 +368,7 @@ class RoomSettingsScreen extends Component {
           <Content>
             <List>
               <ListItem style={{ flexDirection: "column" }}>
-                <Thumbnail
-                  style={SettingForm.profile_pic}
-                  source={{ uri: this.state.profile_pic }}
-                />
+                {pic}
                 <TouchableOpacity style={SettingForm.cameraView}>
                   <Root>
                     <MaterialIcons

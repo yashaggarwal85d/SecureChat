@@ -60,6 +60,57 @@ class PresentChatScreen extends React.Component {
     this.updateState(messageObject);
   }
 
+  updatePromptState = async (message) => {
+    const { state } = this.props.navigation;
+    await this.props.addMessage(this.state.room.id, message);
+    this.setState({ room: this.getRoom() });
+    state.params.UpdateComponent();
+  };
+
+  sendPromptMessage(message) {
+    SendMessage(this.state.room.id, this.props.user.token, message);
+    const messageObject = {
+      sender_id: this.props.user.id,
+      message_body: message,
+      timer: true,
+    };
+    this.updatePromptState(messageObject);
+  }
+
+  updateImageState = async (message) => {
+    const { state } = this.props.navigation;
+    await this.props.addMessage(this.state.room.id, message);
+    this.setState({ room: this.getRoom() });
+    state.params.UpdateComponent();
+  };
+
+  sendImageMessage(message) {
+    SendMessage(this.state.room.id, this.props.user.token, message);
+    const messageObject = {
+      sender_id: this.props.user.id,
+      message_body: message,
+      timer: true,
+    };
+    this.updateImageState(messageObject);
+  }
+
+  updateFileState = async (message) => {
+    const { state } = this.props.navigation;
+    await this.props.addMessage(this.state.room.id, message);
+    this.setState({ room: this.getRoom() });
+    state.params.UpdateComponent();
+  };
+
+  sendFileMessage(message) {
+    SendMessage(this.state.room.id, this.props.user.token, message);
+    const messageObject = {
+      sender_id: this.props.user.id,
+      message_body: message,
+      timer: true,
+    };
+    this.updateFileState(messageObject);
+  }
+
   render() {
     const { state } = this.props.navigation;
     return (
@@ -69,6 +120,7 @@ class PresentChatScreen extends React.Component {
           room={this.state.room}
           appStyles={state.params.appStyles}
           user={this.props.user}
+          onPromptSend={this.sendPromptMessage.bind(this)}
         />
         <ChatBubbles
           {...this.props}
@@ -81,6 +133,8 @@ class PresentChatScreen extends React.Component {
         <ChatFooter
           {...this.props}
           onSend={this.sendMessage.bind(this)}
+          onFileSend={this.sendFileMessage.bind(this)}
+          onImageSend={this.sendImageMessage.bind(this)}
           appStyles={state.params.appStyles}
         />
       </Container>

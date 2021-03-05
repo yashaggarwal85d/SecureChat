@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   Container,
-  Header,
   Content,
   List,
   ListItem,
@@ -15,9 +14,8 @@ import {
   Root,
   Thumbnail,
   Form,
-  View,
 } from "native-base";
-import { TextInput, TouchableOpacity } from "react-native";
+import { TextInput, TouchableOpacity, ProgressBarAndroid } from "react-native";
 import * as colors from "../../constants/colors";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import {
@@ -52,10 +50,12 @@ class SettingsScreen extends Component {
       status: this.props.user.status,
       changed: false,
       infoClicked: false,
+      loader: false,
     };
   }
 
   uploadImage = async (uri) => {
+    this.setState({ loader: true });
     const response = await fetch(uri);
     const blob = await response.blob();
     var ref = firebase.storage().ref().child(`images/${this.props.user.id}`);
@@ -64,6 +64,7 @@ class SettingsScreen extends Component {
     this.setState({ profile_pic: url });
     await this.props.updateProfile(url);
     await updateProfilePic(this.props.user.token, url);
+    this.setState({ loader: false });
   };
 
   async PickImageFromCamera() {
@@ -101,6 +102,20 @@ class SettingsScreen extends Component {
   render() {
     var button = <></>;
     var info = <></>;
+    var pic = (
+      <Thumbnail
+        style={SettingForm.profile_pic}
+        source={{ uri: this.state.profile_pic }}
+      />
+    );
+    if (this.state.loader) {
+      pic = (
+        <ProgressBarAndroid
+          color={colors.dodgerblue}
+          styleAttr='LargeInverse'
+        />
+      );
+    }
     if (this.state.changed)
       button = (
         <TouchableOpacity
@@ -147,10 +162,7 @@ class SettingsScreen extends Component {
         <Content>
           <List>
             <ListItem style={{ flexDirection: "column" }}>
-              <Thumbnail
-                style={SettingForm.profile_pic}
-                source={{ uri: this.state.profile_pic }}
-              />
+              {pic}
               <TouchableOpacity style={SettingForm.cameraView}>
                 <Root>
                   <MaterialIcons

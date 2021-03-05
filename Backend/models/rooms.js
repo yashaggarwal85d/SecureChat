@@ -4,6 +4,18 @@ const ProfilePicUrl =
   "https://www.nicepng.com/png/detail/131-1318812_avatar-group-icon.png";
 
 const MessageSchema = mongoose.Schema({
+  isPrompt: {
+    type: Boolean,
+    default: false,
+  },
+  isImage: {
+    type: Boolean,
+    default: false,
+  },
+  isFile: {
+    type: Boolean,
+    default: false,
+  },
   sender_id: {
     type: String,
     required: true,
