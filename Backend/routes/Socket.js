@@ -237,10 +237,44 @@ module.exports = (io) => {
               for (const member of room.members) {
                 if (ConnectedUsers[member.id]) {
                   socket
-                    .to(ConnectedUsers[mem.id])
-                    .emit("update_profile", user._id, url);
+                    .to(ConnectedUsers[member.id])
+                    .emit("update_profile", roomid, url);
                 }
               }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit("error", e);
+      }
+    });
+
+    socket.on("roomProfile_pic", async (token, roomId, url) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) f = 1;
+        }
+
+        if (!verifiedId && f) {
+          socket.emit("error", "Access Denied");
+        } else {
+          const UpdatedRoom = await Room.updateOne(
+            { _id: roomId },
+            {
+              $set: {
+                profile_pic: url,
+              },
+            }
+          );
+          for (const member of room.members) {
+            if (ConnectedUsers[member.id]) {
+              socket
+                .to(ConnectedUsers[member.id])
+                .emit("update_profile", roomId, url);
             }
           }
         }

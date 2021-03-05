@@ -375,3 +375,16 @@ export const updateRoom = (roomId, members) => {
     }
   };
 };
+
+export const updateRoomProfile = (roomId, url) => {
+  return async (dispatch, getState) => {
+    try {
+      var newState = getState().room;
+      const index = newState.rooms.findIndex((room) => room.id == roomId);
+      var room = newState.rooms[index];
+      room.profile_pic = url;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};

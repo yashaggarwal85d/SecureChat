@@ -18,13 +18,18 @@ export default class ChatHeader extends Component {
       });
     }
     this.state = {
+      room: this.props.room,
       online: false,
       secondUser: secondUser,
     };
   }
 
+  updateHeaderComponent = () => {
+    this.setState({ room: this.props.room });
+  };
+
   componentDidMount = () => {
-    if (!this.props.room.isGroup) {
+    if (!this.state.room.isGroup) {
       socket.on("online", async (userId) => {
         if (userId === this.state.secondUser) this.setState({ online: true });
       });
@@ -37,7 +42,7 @@ export default class ChatHeader extends Component {
   render() {
     var note = (
       <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderNote}>
-        {this.props.room.description}
+        {this.state.room.description}
       </Text>
     );
     var button = <></>;
@@ -50,7 +55,7 @@ export default class ChatHeader extends Component {
           Online
         </Text>
       );
-    if (this.props.room.isGroup)
+    if (this.state.room.isGroup)
       button = (
         <Button
           icon
@@ -59,7 +64,8 @@ export default class ChatHeader extends Component {
             this.props.navigation.navigate({
               routeName: "RoomSettingsScreen",
               params: {
-                room: this.props.room,
+                updateHeaderComponent: this.updateHeaderComponent.bind(this),
+                room: this.state.room,
               },
             });
           }}
@@ -83,12 +89,12 @@ export default class ChatHeader extends Component {
 
         <Thumbnail
           style={this.props.appStyles.ChatHeaderImage}
-          source={{ uri: this.props.room.profile_pic }}
+          source={{ uri: this.state.room.profile_pic }}
         />
 
         <Body style={{ right: "70%" }}>
           <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderTitle}>
-            {this.props.room.name}
+            {this.state.room.name}
           </Text>
           {note}
         </Body>

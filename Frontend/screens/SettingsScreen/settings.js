@@ -63,13 +63,13 @@ class SettingsScreen extends Component {
     const url = await ref.getDownloadURL();
     this.setState({ profile_pic: url });
     await this.props.updateProfile(url);
-    await updateProfilePic(token, url);
+    await updateProfilePic(this.props.user.token, url);
   };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+      alert("Sorry, we need camera permissions to make this work!");
       return;
     }
     let result = await ImagePicker.launchCameraAsync({

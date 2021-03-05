@@ -9,6 +9,7 @@ import {
   addRoom,
   updateRoom,
   removeRoom,
+  updateRoomProfile,
 } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { socket } from "../../store/reducers/Socket";
@@ -47,6 +48,10 @@ class ChatScreenComponent extends Component {
     });
     socket.on("removeRoom", async (roomId) => {
       await this.props.removeRoom(roomId);
+      this.updateComponent();
+    });
+    socket.on("update_profile", async (roomId, url) => {
+      await this.props.updateRoomProfile(roomId, url);
       this.updateComponent();
     });
   };
@@ -181,6 +186,7 @@ const mapDispatchToProps = (dispatch) => {
       addRoom,
       updateRoom,
       removeRoom,
+      updateRoomProfile,
     },
     dispatch
   );

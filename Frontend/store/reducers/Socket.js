@@ -42,3 +42,7 @@ export const logoutSocket = () => {
 export const updateProfilePic = (token, url) => {
   return socket.emit("profile_pic", token, url);
 };
+
+export const updateRoomProfilePic = (token, roomId, url) => {
+  return socket.emit("roomProfile_pic", token, roomId, url);
+};

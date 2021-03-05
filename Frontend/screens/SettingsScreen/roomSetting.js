@@ -28,12 +28,14 @@ import {
   fillData,
   RemoveMember,
   updateRoom,
+  updateRoomProfile,
 } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { LightTheme, SettingForm } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
-import { socket } from "../../store/reducers/Socket";
+import { socket, updateRoomProfilePic } from "../../store/reducers/Socket";
+import * as firebase from "firebase";
 
 var BUTTONS = [
   { text: "Yes", icon: "remove", iconColor: colors.red },
@@ -57,6 +59,7 @@ class RoomSettingsScreen extends Component {
       changed: false,
       infoClicked: false,
       room: params.room,
+      profile_pic: params.room.profile_pic,
     };
   }
 
@@ -72,10 +75,26 @@ class RoomSettingsScreen extends Component {
     });
   };
 
+  uploadImage = async (uri) => {
+    const { state } = this.props.navigation;
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    var ref = firebase
+      .storage()
+      .ref()
+      .child(`images/${this.state.room.id}/${this.props.user.id}`);
+    await ref.put(blob);
+    const url = await ref.getDownloadURL();
+    this.setState({ profile_pic: url });
+    await this.props.updateRoomProfile(this.state.room.id, url);
+    await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
+    state.params.updateHeaderComponent();
+  };
+
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+      alert("Sorry, we need camera permissions to make this work!");
       return;
     }
     let result = await ImagePicker.launchCameraAsync({
@@ -83,7 +102,9 @@ class RoomSettingsScreen extends Component {
       aspect: [1.91, 1],
       quality: 1,
     });
-    console.log(result);
+    if (!result.cancelled) {
+      this.uploadImage(result.uri);
+    }
   }
 
   async PickImageFromGallery() {
@@ -97,7 +118,9 @@ class RoomSettingsScreen extends Component {
       aspect: [1.91, 1],
       quality: 1,
     });
-    console.log(result);
+    if (!result.cancelled) {
+      this.uploadImage(result.uri);
+    }
   }
 
   renderGridItem = (itemData) => {
@@ -277,6 +300,7 @@ class RoomSettingsScreen extends Component {
             if (!this.state.name || !this.state.status) {
               alert("Name or description cant be empty");
             } else {
+              const { state } = this.props.navigation;
               await this.props.updateNameDescription(
                 this.state.room.id,
                 this.state.name,
@@ -285,6 +309,7 @@ class RoomSettingsScreen extends Component {
               this.setState({
                 changed: false,
               });
+              state.params.updateHeaderComponent();
             }
           }}
         >
@@ -328,7 +353,7 @@ class RoomSettingsScreen extends Component {
               <ListItem style={{ flexDirection: "column" }}>
                 <Thumbnail
                   style={SettingForm.profile_pic}
-                  source={{ uri: this.state.room.profile_pic }}
+                  source={{ uri: this.state.profile_pic }}
                 />
                 <TouchableOpacity style={SettingForm.cameraView}>
                   <Root>
@@ -434,6 +459,7 @@ const mapDispatchToProps = (dispatch) => {
       fillData,
       RemoveMember,
       updateRoom,
+      updateRoomProfile,
     },
     dispatch
   );
