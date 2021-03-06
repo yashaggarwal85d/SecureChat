@@ -5,15 +5,22 @@ import ChatBubbles from "../components/ChatBubbles";
 import ChatFooter from "../components/ChatFooter";
 import { connect } from "react-redux";
 import { addMessage } from "../store/actions/RoomActions";
-import { SendMessage } from "../store/reducers/Socket";
+import {
+  socket,
+  SendMessage,
+  addPromptMessage,
+  addImageMessage,
+} from "../store/reducers/Socket";
 import { bindActionCreators } from "redux";
-import { socket } from "../store/reducers/Socket";
+import { ProgressBarAndroid } from "react-native";
+import * as colors from "../constants/colors";
 
 class PresentChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       room: this.getRoom(),
+      loader: false,
     };
   }
 
@@ -68,8 +75,9 @@ class PresentChatScreen extends React.Component {
   };
 
   sendPromptMessage(message) {
-    SendMessage(this.state.room.id, this.props.user.token, message);
+    addPromptMessage(this.state.room.id, this.props.user.token, message);
     const messageObject = {
+      isPrompt: true,
       sender_id: this.props.user.id,
       message_body: message,
       timer: true,
@@ -82,11 +90,13 @@ class PresentChatScreen extends React.Component {
     await this.props.addMessage(this.state.room.id, message);
     this.setState({ room: this.getRoom() });
     state.params.UpdateComponent();
+    this.updateLoader(false);
   };
 
   sendImageMessage(message) {
-    SendMessage(this.state.room.id, this.props.user.token, message);
+    addImageMessage(this.state.room.id, this.props.user.token, message);
     const messageObject = {
+      isImage: true,
       sender_id: this.props.user.id,
       message_body: message,
       timer: true,
@@ -94,25 +104,43 @@ class PresentChatScreen extends React.Component {
     this.updateImageState(messageObject);
   }
 
-  updateFileState = async (message) => {
-    const { state } = this.props.navigation;
-    await this.props.addMessage(this.state.room.id, message);
-    this.setState({ room: this.getRoom() });
-    state.params.UpdateComponent();
-  };
+  // updateFileState = async (message) => {
+  //   const { state } = this.props.navigation;
+  //   await this.props.addMessage(this.state.room.id, message);
+  //   this.setState({ room: this.getRoom() });
+  //   state.params.UpdateComponent();
+  //   this.updateLoader(false);
+  // };
 
-  sendFileMessage(message) {
-    SendMessage(this.state.room.id, this.props.user.token, message);
-    const messageObject = {
-      sender_id: this.props.user.id,
-      message_body: message,
-      timer: true,
-    };
-    this.updateFileState(messageObject);
+  // sendFileMessage(message, FileName) {
+  //   addFileMessage(
+  //     this.state.room.id,
+  //     this.props.user.token,
+  //     message,
+  //     FileName
+  //   );
+  //   const messageObject = {
+  //     isFile: true,
+  //     fileName: FileName,
+  //     sender_id: this.props.user.id,
+  //     message_body: message,
+  //     timer: true,
+  //   };
+  //   this.updateFileState(messageObject);
+  // }
+
+  updateLoader(loader) {
+    this.setState({ loader: loader });
   }
 
   render() {
     const { state } = this.props.navigation;
+    var progress = <></>;
+    if (this.state.loader) {
+      progress = (
+        <ProgressBarAndroid color={colors.dodgerblue} styleAttr='Horizontal' />
+      );
+    }
     return (
       <Container style={state.params.appStyles.ChatMainContainer}>
         <ChatHeader
@@ -130,11 +158,14 @@ class PresentChatScreen extends React.Component {
           isGroup={this.state.room.isGroup}
           members={this.state.room.members}
         />
+        {progress}
         <ChatFooter
           {...this.props}
+          room={this.state.room}
           onSend={this.sendMessage.bind(this)}
-          onFileSend={this.sendFileMessage.bind(this)}
+          // onFileSend={this.sendFileMessage.bind(this)}
           onImageSend={this.sendImageMessage.bind(this)}
+          updateLoader={this.updateLoader.bind(this)}
           appStyles={state.params.appStyles}
         />
       </Container>

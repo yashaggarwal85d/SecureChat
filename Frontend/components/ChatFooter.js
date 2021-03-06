@@ -5,8 +5,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as colors from "../constants/colors";
-import * as DocumentPicker from "expo-document-picker";
+// import * as DocumentPicker from "expo-document-picker";
 import * as firebase from "firebase";
+import moment from "moment";
 
 var CameraButton = [
   { text: "Camera", icon: "camera", iconColor: colors.black },
@@ -19,9 +20,25 @@ class ChatFooter extends Component {
     super(props);
     this.state = {
       message: "",
-      icon: "attach-file",
     };
   }
+
+  uploadImage = async (uri) => {
+    this.props.updateLoader(true);
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    var ref = firebase
+      .storage()
+      .ref()
+      .child(
+        `rooms/images/${this.props.room.id}/${
+          this.props.user.id
+        }/${moment.now()}`
+      );
+    await ref.put(blob);
+    const url = await ref.getDownloadURL();
+    this.props.onImageSend(url);
+  };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -33,7 +50,9 @@ class ChatFooter extends Component {
       allowsEditing: true,
       quality: 1,
     });
-    console.log(result);
+    if (!result.cancelled) {
+      this.uploadImage(result.uri);
+    }
   }
 
   async PickImageFromGallery() {
@@ -46,23 +65,44 @@ class ChatFooter extends Component {
       allowsEditing: true,
       quality: 1,
     });
-    console.log(result);
-  }
-
-  async handleSend() {
-    if (this.state.message) {
-      this.setText(null);
-      this.props.onSend(this.state.message.trim());
-    } else {
-      const result = await DocumentPicker.getDocumentAsync();
-      console.log(result);
+    if (!result.cancelled) {
+      this.uploadImage(result.uri);
     }
   }
 
-  setText = (text) => {
-    if (text) this.setState({ message: text, icon: "send" });
-    else this.setState({ message: text, icon: "attach-file" });
-  };
+  // async uploadDocument(result) {
+  //   this.props.updateLoader(true);
+  //   const uri = result.uri;
+  //   const response = await fetch(uri);
+  //   const blob = await response.blob();
+  //   var ref = firebase
+  //     .storage()
+  //     .ref()
+  //     .child(
+  //       `rooms/files/${this.props.room.id}/${
+  //         this.props.user.id
+  //       }/${moment.now()}`
+  //     );
+  //   await ref.put(blob);
+  //   const url = await ref.getDownloadURL();
+  //   this.props.onFileSend(url, result.name);
+  // }
+
+  async handleSend() {
+    if (this.state.message) {
+      this.props.onSend(this.state.message.trim());
+      this.setState({ message: null });
+    }
+    // else {
+    //   const result = await DocumentPicker.getDocumentAsync();
+    //   this.uploadDocument(result);
+    // }
+  }
+
+  // setText = (text) => {
+  //   if (text) this.setState({ message: text, icon: "send" });
+  //   else this.setState({ message: text, icon: "attach-file" });
+  // };
 
   render() {
     return (
@@ -96,7 +136,7 @@ class ChatFooter extends Component {
           </View>
           <TextInput
             value={this.state.message}
-            onChangeText={(text) => this.setText(text)}
+            onChangeText={(text) => this.setState({ message: text })}
             style={this.props.appStyles.ChatInput}
             placeholder='Type a message'
             placeholderTextColor='grey'
@@ -109,10 +149,7 @@ class ChatFooter extends Component {
           onPress={() => this.handleSend()}
           activeOpacity={1}
         >
-          <MaterialIcons
-            name={this.state.icon}
-            style={this.props.appStyles.SendButton}
-          />
+          <MaterialIcons name='send' style={this.props.appStyles.SendButton} />
         </TouchableOpacity>
       </KeyboardAvoidingView>
     );

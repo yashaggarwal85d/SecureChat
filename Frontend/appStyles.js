@@ -247,6 +247,22 @@ export const LightTheme = StyleSheet.create({
     marginTop: 10,
     color: colors.grey,
   },
+  PromptMessageView: {
+    padding: 6,
+    flex: 1,
+    maxWidth: "80%",
+    alignSelf: "center",
+  },
+  PromptMessage: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: colors.DarkWhite,
+    color: colors.MiddleGrey,
+    textAlign: "center",
+    textTransform: "capitalize",
+    fontFamily: "Roboto_medium",
+    fontSize: 12,
+  },
 });
 
 export const ToggleSwitchStyle = StyleSheet.create({

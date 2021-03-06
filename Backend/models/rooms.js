@@ -1,4 +1,3 @@
-const { array, number, bool, boolean } = require("@hapi/joi");
 const mongoose = require("mongoose");
 const ProfilePicUrl =
   "https://www.nicepng.com/png/detail/131-1318812_avatar-group-icon.png";
@@ -12,10 +11,14 @@ const MessageSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  isFile: {
-    type: Boolean,
-    default: false,
-  },
+  // isFile: {
+  //   type: Boolean,
+  //   default: false,
+  // },
+  // fileName: {
+  //   type: String,
+  //   default: "File",
+  // },
   sender_id: {
     type: String,
     required: true,

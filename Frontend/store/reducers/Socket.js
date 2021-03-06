@@ -53,6 +53,7 @@ export const addPromptMessage = (roomId, token, message) => {
 export const addImageMessage = (roomId, token, message) => {
   return socket.emit("addImage", roomId, token, message);
 };
-export const addFileMessage = (roomId, token, message) => {
-  return socket.emit("addFile", roomId, token, message);
-};
+
+// export const addFileMessage = (roomId, token, message, FileName) => {
+//   return socket.emit("addFile", roomId, token, message, FileName);
+// };

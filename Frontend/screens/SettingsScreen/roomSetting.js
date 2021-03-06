@@ -91,6 +91,7 @@ class RoomSettingsScreen extends Component {
     await this.props.updateRoomProfile(this.state.room.id, url);
     await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
     state.params.updateHeaderComponent();
+    state.params.onPromptSend(`${this.props.user.name} updated the group icon`);
     this.setState({ loader: false });
   };
 
@@ -164,6 +165,10 @@ class RoomSettingsScreen extends Component {
                     this.setState({
                       room: newRoom,
                     });
+                    const { state } = this.props.navigation;
+                    state.params.onPromptSend(
+                      `${this.props.user.name} removed ${itemData.item.details.name}`
+                    );
                   }
                 }
               )
@@ -209,6 +214,8 @@ class RoomSettingsScreen extends Component {
     };
     newRoom.members.push(details);
     this.setState({ room: newRoom });
+    const { state } = this.props.navigation;
+    state.params.onPromptSend(`${this.props.user.name} added ${user.name}`);
   };
 
   render() {
@@ -245,6 +252,8 @@ class RoomSettingsScreen extends Component {
               async (buttonIndex) => {
                 if (buttonIndex === 0) {
                   await this.props.leaveRoom(this.state.room.id);
+                  const { state } = this.props.navigation;
+                  state.params.onPromptSend(`${this.props.user.name} left`);
                   this.props.navigation.navigate("MainScreen");
                 }
               }
@@ -327,6 +336,9 @@ class RoomSettingsScreen extends Component {
                 changed: false,
               });
               state.params.updateHeaderComponent();
+              state.params.onPromptSend(
+                `${this.props.user.name} updated the group info`
+              );
             }
           }}
         >

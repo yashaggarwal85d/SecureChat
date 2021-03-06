@@ -20,7 +20,10 @@ export const addMessage = (roomId, message) => {
       var room = newState.rooms[index];
       room.messages.push(message);
       const lastMessage = room.messages.slice(-1)[0];
-      room.lastMessage = lastMessage.message_body;
+
+      if (lastMessage.isImage) room.lastMessage = "Image";
+      else room.lastMessage = lastMessage.message_body;
+
       room.lastTime = lastMessage.timestamp;
     } catch (error) {
       alert(error);
@@ -107,7 +110,10 @@ export const fillData = () => {
             var lastMessage = description;
             var lastTime = room.create_date;
             if (messages[0]) {
-              lastMessage = messages.slice(-1)[0].message_body;
+              const messageObject = messages.slice(-1)[0];
+              if (messageObject.isImage) lastMessage = "Image";
+              else lastMessage = messageObject.message_body;
+
               lastTime = messages.slice(-1)[0].timestamp;
             }
             const readIndex = room.members.find((mem) => mem.id === user.id);
@@ -305,7 +311,10 @@ export const addRoom = (room) => {
       var lastMessage = description;
       var lastTime = room.create_date;
       if (messages[0]) {
-        lastMessage = messages.slice(-1)[0].message_body;
+        const messageObject = messages.slice(-1)[0];
+        if (messageObject.isImage) lastMessage = "Image";
+        else lastMessage = messageObject.message_body;
+
         lastTime = messages.slice(-1)[0].timestamp;
       }
       const readIndex = room.members.find((mem) => mem.id === user.id);
