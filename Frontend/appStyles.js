@@ -265,101 +265,102 @@ export const LightTheme = StyleSheet.create({
   },
 });
 
-export const ToggleSwitchStyle = StyleSheet.create({
-  Toggle: {
-    position: "absolute",
-    left: "63%",
-    bottom: "90%",
-  },
-});
-
 export const DarkTheme = StyleSheet.create({
   appTitle: {
     textTransform: "capitalize",
     fontFamily: "Kamerik-Bold",
     fontSize: 30,
-    color: colors.white,
+    color: colors.grey,
     left: 16,
   },
   HeaderIcon: {
-    color: colors.white,
+    color: colors.grey,
     fontSize: 25,
     marginLeft: 18,
   },
   HeaderContainer: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
     paddingBottom: 45,
     paddingTop: 33,
     elevation: 50,
   },
-  Footer: {
-    backgroundColor: colors.black,
-  },
-  FooterTab: {
-    backgroundColor: colors.black,
-  },
-  FooterActiveTab: {
-    backgroundColor: colors.black,
-    borderBottomColor: colors.white,
-    borderBottomWidth: 3,
-  },
-  FooterActiveIcons: {
-    fontSize: 33,
-    color: colors.white,
-  },
-  FooterIcons: {
-    fontSize: 28,
-    color: colors.LightGrey,
-  },
-
   ListItemStyle: {
     padding: 6,
   },
+  CheckIcon: {
+    color: colors.greencyan,
+    fontSize: 40,
+  },
   FlatListComponent: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
+  },
+  chatListTickName: {
+    fontFamily: "Touche_Semibold",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.dodgerblue,
+  },
+
+  chatListTickNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.MiddleGrey,
+    fontWeight: "bold",
+    paddingLeft: 2.5,
+  },
+  RightArrowContainer: {
+    width: 60,
+    height: 60,
+    // left: "70%",
+    alignContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+    top: "85%",
+    borderRadius: 100,
+    right: "10%",
+    position: "absolute",
+    backgroundColor: colors.dodgerblue,
+  },
+  RightArrow: {
+    fontSize: 40,
+    color: colors.white,
+    marginTop: 10,
   },
 
   chatListName: {
     fontFamily: "Touche_Medium",
     fontSize: 18,
     textTransform: "capitalize",
-    color: colors.LightGrey,
+    color: colors.grey,
   },
   chatListNote: {
     fontFamily: "Roboto_medium",
-    color: colors.grey,
+    color: colors.LightGrey,
     paddingLeft: 2.5,
   },
   chatListActiveName: {
     fontFamily: "Touche_Semibold",
     fontSize: 18,
     textTransform: "capitalize",
-    color: colors.white,
+    color: colors.Shadow,
   },
   chatListActiveNote: {
     fontFamily: "Roboto_medium",
-    color: colors.white,
+    color: colors.grey,
     paddingLeft: 2.5,
     fontWeight: "bold",
   },
   chatListBadge: {
     backgroundColor: colors.dodgerblue,
     height: 20,
-    width: 20,
+    // width: 20,
     marginTop: 5,
   },
   chatListBadgeText: {
     fontFamily: "Roboto_medium",
     fontSize: 12,
   },
-  Toggle: {
-    position: "absolute",
-    left: "63%",
-    bottom: "90%",
-  },
-
   ChatMainContainer: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
   },
   ChatKeyboardAvoidingView: {
     height: 47,
@@ -367,40 +368,34 @@ export const DarkTheme = StyleSheet.create({
     flexDirection: "row",
     margin: 3,
     marginBottom: 7,
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
   },
   ChatInputView: {
     width: "80%",
-    backgroundColor: colors.grey,
+    backgroundColor: colors.DarkWhite,
     borderRadius: 50,
     marginLeft: 5,
     fontSize: 20,
     flexDirection: "row",
   },
   ChatHeaderImage: {
+    right: "70%",
     height: 45,
     width: 45,
     marginTop: 8,
   },
-  ChatInputSmile: {
+  ChatInputCamera: {
     fontSize: 26,
-    marginLeft: 8,
+    marginLeft: 12,
     marginTop: 10,
-    color: colors.DarkWhite,
-  },
-  ChatInputFile: {
-    transform: [{ rotate: "60deg" }],
-    fontSize: 26,
-    right: 12,
-    top: 3,
-    color: colors.DarkWhite,
+    color: colors.black,
   },
   ChatInput: {
     padding: 10,
-    width: "78%",
+    width: "100%",
     fontFamily: "Roboto_medium",
     fontSize: 18,
-    color: colors.DarkWhite,
+    color: colors.grey,
     marginBottom: 2,
   },
   SendButtonView: {
@@ -415,49 +410,63 @@ export const DarkTheme = StyleSheet.create({
     top: 10,
     color: colors.white,
   },
-
   ChatHeaderView: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
   },
   ChatHeaderTitle: {
-    color: colors.white,
+    color: colors.grey,
     fontFamily: "Touche_Medium",
     fontSize: 21,
     marginLeft: 10,
     textTransform: "capitalize",
   },
   ChatHeaderNote: {
-    color: colors.grey,
+    color: colors.LightGrey,
     fontFamily: "Touche_Medium",
     fontSize: 12,
     marginLeft: 12,
     textTransform: "capitalize",
   },
-
+  ChatHeaderNoteOnline: {
+    color: colors.greencyan,
+    fontFamily: "Touche_Semibold",
+    fontSize: 12,
+    marginLeft: 12,
+    textTransform: "capitalize",
+  },
   ChatBubblesList: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
   },
   ChatBubbleView: {
     alignItems: "flex-end",
     alignContent: "flex-end",
     alignSelf: "flex-end",
-    maxWidth: "60%",
     borderRadius: 20,
     padding: 14,
     marginRight: 14,
+    maxWidth: "80%",
     marginTop: 3,
-    backgroundColor: colors.dodgerblue,
+    backgroundColor: colors.BluishGrey,
     flexDirection: "row",
   },
   ChatBubbleText: {
-    color: colors.BluishGrey,
+    color: colors.dodgerblue,
     fontFamily: "Touche_Medium",
     fontSize: 14,
     marginBottom: 3,
+    textAlign: "left",
+    maxWidth: "85%",
   },
   ChatBubbleNote: {
-    color: colors.grey,
+    color: colors.MiddleGrey,
     fontSize: 10,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
+  },
+  ChatBubbleNoteIcon: {
+    color: colors.MiddleGrey,
+    fontSize: 15,
     alignSelf: "flex-end",
     marginLeft: 5,
     fontFamily: "Touche_Medium",
@@ -466,19 +475,28 @@ export const DarkTheme = StyleSheet.create({
     alignItems: "flex-start",
     alignContent: "flex-start",
     alignSelf: "flex-start",
-    maxWidth: "60%",
+    maxWidth: "80%",
     borderRadius: 20,
     padding: 12,
     marginLeft: 14,
     marginTop: 3,
-    backgroundColor: colors.grey,
-    flexDirection: "row",
+    backgroundColor: colors.DarkWhite,
+    flexDirection: "column",
+  },
+  ChatBubbleLeftViewName: {
+    fontFamily: "Touche_Medium",
+    color: colors.dodgerblue,
+    fontSize: 13,
+    textTransform: "capitalize",
+    marginBottom: 5,
   },
   ChatBubbleLeftText: {
-    color: colors.DarkWhite,
+    color: colors.grey,
     fontFamily: "Touche_Medium",
     fontSize: 14,
     marginBottom: 3,
+    textAlign: "left",
+    maxWidth: "92%",
   },
   ChatBubbleLeftNote: {
     color: colors.MiddleGrey,
@@ -486,6 +504,36 @@ export const DarkTheme = StyleSheet.create({
     alignSelf: "flex-end",
     marginLeft: 5,
     fontFamily: "Touche_Medium",
+  },
+  ChatInputSmile: {
+    fontSize: 26,
+    marginLeft: 8,
+    marginTop: 10,
+    color: colors.grey,
+  },
+  PromptMessageView: {
+    padding: 6,
+    flex: 1,
+    maxWidth: "80%",
+    alignSelf: "center",
+  },
+  PromptMessage: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: colors.DarkWhite,
+    color: colors.MiddleGrey,
+    textAlign: "center",
+    textTransform: "capitalize",
+    fontFamily: "Roboto_medium",
+    fontSize: 12,
+  },
+});
+
+export const ToggleSwitchStyle = StyleSheet.create({
+  Toggle: {
+    position: "absolute",
+    left: "63%",
+    bottom: "90%",
   },
 });
 
@@ -616,6 +664,81 @@ export const SettingForm = StyleSheet.create({
 });
 
 export const FloatBarStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  background: {
+    position: "absolute",
+    right: "10%",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 70,
+    height: 70,
+    bottom: "10%",
+  },
+  button0: {
+    position: "absolute",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 55,
+    backgroundColor: colors.black,
+    borderTopLeftRadius: 100,
+    borderTopRightRadius: 100,
+  },
+  button: {
+    position: "absolute",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 55,
+    backgroundColor: colors.black,
+  },
+  button2: {
+    position: "absolute",
+    alignItems: "center",
+    alignSelf: "center",
+    width: 55,
+    height: "100%",
+    backfaceVisibility: "visible",
+    borderBottomRightRadius: 100,
+    borderBottomLeftRadius: 100,
+    backgroundColor: "transparent",
+  },
+  settings: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: 60,
+    color: colors.grey,
+    backgroundColor: colors.black,
+    fontSize: 26,
+    marginTop: 20,
+  },
+  account: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: 60,
+    fontSize: 26,
+    backgroundColor: colors.black,
+    color: colors.grey,
+  },
+  group: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: 60,
+    fontSize: 26,
+    backgroundColor: colors.black,
+    color: colors.grey,
+  },
+  open: {
+    alignItems: "center",
+    alignSelf: "center",
+    height: "150%",
+    fontSize: 55,
+    color: colors.dodgerblue,
+    backgroundColor: colors.white,
+  },
+});
+
+export const DarkFloatBarStyle = StyleSheet.create({
   container: {
     flex: 1,
   },
