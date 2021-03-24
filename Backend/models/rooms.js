@@ -11,14 +11,6 @@ const MessageSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  // isFile: {
-  //   type: Boolean,
-  //   default: false,
-  // },
-  // fileName: {
-  //   type: String,
-  //   default: "File",
-  // },
   sender_id: {
     type: String,
     required: true,
@@ -75,6 +67,10 @@ const RoomSchema = mongoose.Schema({
   profile_pic: {
     type: String,
     default: ProfilePicUrl,
+  },
+  isDark: {
+    type: Boolean,
+    default: false,
   },
 });
 

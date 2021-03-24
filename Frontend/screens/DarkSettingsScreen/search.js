@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View } from "native-base";
 import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../../appStyles";
+import { DarkTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AllUsers } from "../../store/actions/LoginActions";
@@ -44,16 +44,16 @@ class SearchScreen extends Component {
     return (
       <ListItem
         noBorder={true}
-        style={LightTheme.ListItemStyle}
+        style={DarkTheme.ListItemStyle}
         avatar
         onPress={async () => {
           const body = {
+            isDark: true,
             members: [
               {
                 id: itemData.item._id,
               },
             ],
-            isDark: false,
           };
           await this.props.CreateNewRoom(body);
           this.props.navigation.navigate("MainScreen");
@@ -62,10 +62,10 @@ class SearchScreen extends Component {
         <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
         <Body>
-          <Text numberOfLines={1} style={LightTheme.chatListName}>
+          <Text numberOfLines={1} style={DarkTheme.chatListName}>
             {itemData.item.name}
           </Text>
-          <Text numberOfLines={1} style={LightTheme.chatListNote} note>
+          <Text numberOfLines={1} style={DarkTheme.chatListNote} note>
             {itemData.item.status}
           </Text>
         </Body>
@@ -88,12 +88,12 @@ class SearchScreen extends Component {
       if (this.state.text) data = this.state.filteredUsers;
       return (
         <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
-          <View style={LightTheme.ChatInputView}>
-            <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
+          <View style={DarkTheme.ChatInputView}>
+            <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
             <TextInput
               value={this.state.text}
               onChangeText={(text) => this.setText(text)}
-              style={LightTheme.ChatInput}
+              style={DarkTheme.ChatInput}
               placeholder='Search'
               placeholderTextColor='grey'
               underlineColorAndroid='transparent'
@@ -104,18 +104,18 @@ class SearchScreen extends Component {
             data={data}
             renderItem={this.renderGridItem}
             numColumns={1}
-            style={LightTheme.FlatListComponent}
+            style={DarkTheme.FlatListComponent}
           />
         </View>
       );
     } else {
       return (
-        <View style={LightTheme.ChatInputView}>
-          <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
+        <View style={DarkTheme.ChatInputView}>
+          <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
           <TextInput
             value={this.state.text}
             onChangeText={(text) => this.setText(text)}
-            style={LightTheme.ChatInput}
+            style={DarkTheme.ChatInput}
             placeholder='Search'
             placeholderTextColor='grey'
             underlineColorAndroid='transparent'
@@ -132,7 +132,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.room.rooms.filter((room) => room.dark),
     user: state.user,
   };
 };

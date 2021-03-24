@@ -103,7 +103,7 @@ class AddParticipantScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms,
+    rooms: state.room.rooms.filter((room) => !room.dark),
     user: state.user,
   };
 };

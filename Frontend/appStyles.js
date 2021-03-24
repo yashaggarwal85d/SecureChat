@@ -537,6 +537,14 @@ export const ToggleSwitchStyle = StyleSheet.create({
   },
 });
 
+export const ActionButtonStyle = StyleSheet.create({
+  Toggle: {
+    position: "absolute",
+    left: "91%",
+    bottom: "3%",
+  },
+});
+
 export const AuthStyle = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
 import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../../appStyles";
+import { DarkTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as colors from "../../constants/colors";
@@ -21,21 +21,21 @@ class GroupConfirmScreen extends Component {
       <ListItem
         noBorder={true}
         selected={true}
-        style={LightTheme.ListItemStyle}
+        style={DarkTheme.ListItemStyle}
         avatar
       >
         <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
         <Body>
-          <Text numberOfLines={1} style={LightTheme.chatListTickName}>
+          <Text numberOfLines={1} style={DarkTheme.chatListTickName}>
             {itemData.item.name}
           </Text>
-          <Text numberOfLines={1} style={LightTheme.chatListTickNote} note>
+          <Text numberOfLines={1} style={DarkTheme.chatListTickNote} note>
             {itemData.item.description}
           </Text>
         </Body>
         <Right>
-          <MaterialIcons style={LightTheme.CheckIcon} name='check-circle' />
+          <MaterialIcons style={DarkTheme.CheckIcon} name='check-circle' />
         </Right>
       </ListItem>
     );
@@ -52,11 +52,11 @@ class GroupConfirmScreen extends Component {
     if (this.state.name)
       return (
         <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
-          <View style={LightTheme.ChatInputView}>
+          <View style={DarkTheme.ChatInputView}>
             <TextInput
               value={this.state.text}
               onChangeText={(text) => this.setText(text)}
-              style={LightTheme.ChatInput}
+              style={DarkTheme.ChatInput}
               placeholder='Group Name'
               placeholderTextColor='grey'
               underlineColorAndroid='transparent'
@@ -68,17 +68,17 @@ class GroupConfirmScreen extends Component {
             data={state.params.members}
             renderItem={this.renderGridItem}
             numColumns={1}
-            style={LightTheme.FlatListComponent}
+            style={DarkTheme.FlatListComponent}
           />
-          <View style={LightTheme.RightArrowContainer}>
+          <View style={DarkTheme.RightArrowContainer}>
             <MaterialIcons
-              style={LightTheme.RightArrow}
+              style={DarkTheme.RightArrow}
               name='arrow-forward'
               onPress={async () => {
                 var body = {
+                  isDark: true,
                   name: this.state.name,
                   description: "Add a description",
-                  isDark: false,
                   members: [],
                 };
                 state.params.members.forEach((member) => {
@@ -91,6 +91,7 @@ class GroupConfirmScreen extends Component {
                   };
                   body.members.push(id);
                 });
+                console.log(body);
                 await this.props.CreateNewRoom(body);
                 this.props.navigation.navigate("MainScreen");
               }}
@@ -101,11 +102,11 @@ class GroupConfirmScreen extends Component {
     else
       return (
         <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
-          <View style={LightTheme.ChatInputView}>
+          <View style={DarkTheme.ChatInputView}>
             <TextInput
               value={this.state.text}
               onChangeText={(text) => this.setText(text)}
-              style={LightTheme.ChatInput}
+              style={DarkTheme.ChatInput}
               placeholder='Group Name'
               placeholderTextColor='grey'
               underlineColorAndroid='transparent'
@@ -117,7 +118,7 @@ class GroupConfirmScreen extends Component {
             data={state.params.members}
             renderItem={this.renderGridItem}
             numColumns={1}
-            style={LightTheme.FlatListComponent}
+            style={DarkTheme.FlatListComponent}
           />
         </View>
       );
@@ -130,7 +131,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.room.rooms.filter((room) => room.dark),
     user: state.user,
   };
 };

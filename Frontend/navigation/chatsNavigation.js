@@ -9,12 +9,15 @@ import GroupConfirmScreen from "../screens/SettingsScreen/groupConfirm";
 import SettingsScreen from "../screens/SettingsScreen/settings";
 import SearchScreen from "../screens/SettingsScreen/search";
 import RoomSettingsScreen from "../screens/SettingsScreen/roomSetting";
-import { LightTheme } from "../appStyles";
+import { LightTheme, DarkTheme } from "../appStyles";
 import AddParticipantScreen from "../screens/SettingsScreen/addParticipant";
+
+import DarkGroupSearchScreen from "../screens/DarkSettingsScreen/groupSearch";
+import DarkGroupConfirmScreen from "../screens/DarkSettingsScreen/groupConfirm";
+import DarkSearchScreen from "../screens/DarkSettingsScreen/search";
 
 import {
   CardStyleInterpolators,
-  HeaderStyleInterpolators,
   TransitionSpecs,
 } from "react-navigation-stack";
 
@@ -133,6 +136,54 @@ const ChatsNavigator = createStackNavigator({
         close: TransitionSpecs.TransitionIOSSpec,
       },
       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    },
+  },
+
+  DarkGroupSearchScreen: {
+    screen: DarkGroupSearchScreen,
+    navigationOptions: {
+      headerTitle: "Create a Group",
+      headerTitleStyle: DarkTheme.ChatHeaderTitle,
+      animationEnabled: true,
+      cardShadowEnabled: false,
+      gestureDirection: "horizontal",
+      transitionSpec: {
+        open: TransitionSpecs.ScaleFromCenterAndroidSpec,
+        close: TransitionSpecs.FadeOutToBottomAndroidSpec,
+      },
+      cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid,
+    },
+  },
+
+  DarkGroupConfirmScreen: {
+    screen: DarkGroupConfirmScreen,
+    navigationOptions: {
+      headerTitle: "Confirm details",
+      headerTitleStyle: DarkTheme.ChatHeaderTitle,
+      animationEnabled: true,
+      cardShadowEnabled: false,
+      gestureDirection: "vertical",
+      transitionSpec: {
+        open: TransitionSpecs.TransitionIOSSpec,
+        close: TransitionSpecs.TransitionIOSSpec,
+      },
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    },
+  },
+
+  DarkSearchScreen: {
+    screen: DarkSearchScreen,
+    navigationOptions: {
+      headerTitle: "Add User to chat",
+      headerTitleStyle: DarkTheme.ChatHeaderTitle,
+      animationEnabled: true,
+      cardShadowEnabled: false,
+      gestureDirection: "horizontal",
+      transitionSpec: {
+        open: TransitionSpecs.ScaleFromCenterAndroidSpec,
+        close: TransitionSpecs.FadeOutToBottomAndroidSpec,
+      },
+      cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid,
     },
   },
 });

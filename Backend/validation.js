@@ -37,6 +37,7 @@ const roomValidation = (data) => {
       .unique((a, b) => a.id === b.id)
       .required(),
     messages: Joi.array().items(messageSchema).optional(),
+    isDark: Joi.boolean().optional(),
   });
   return Schema.validate(data);
 };

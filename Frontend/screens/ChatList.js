@@ -1,39 +1,27 @@
 import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Right, Text, Badge } from "native-base";
+import {
+  Header,
+  Title,
+  ListItem,
+  Thumbnail,
+  Body,
+  Right,
+  Text,
+  Badge,
+} from "native-base";
 import { FlatList } from "react-native";
-import { connect } from "react-redux";
-import { addMessage } from "../../store/actions/RoomActions";
-import { bindActionCreators } from "redux";
-import { socket } from "../../store/reducers/Socket";
 import moment from "moment";
-
-function sorted(arr) {
-  const sortedArray = arr.sort(function (a, b) {
-    return moment(b.lastTime).unix() - moment(a.lastTime).unix();
-  });
-  return sortedArray;
-}
 
 class ChatScreenComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      rooms: sorted(this.props.rooms),
-    };
   }
-  componentDidMount = () => {
-    socket.on("recieveMessage", async (message, roomId) => {
-      // console.log(message);
-      await this.props.addMessage(roomId, message);
-      this.setState({
-        rooms: sorted(this.props.rooms),
-      });
-    });
-  };
 
   renderGridItem = (itemData) => {
     const time = moment(itemData.item.lastTime).format("h:mm");
-    if (itemData.item.isactive) {
+    const messagesCount =
+      itemData.item.messages.length - itemData.item.lastMessageReadIndex;
+    if (messagesCount && this.props.activeRoom !== itemData.item.id) {
       return (
         <ListItem
           noBorder={true}
@@ -45,8 +33,12 @@ class ChatScreenComponent extends Component {
               params: {
                 id: itemData.item.id,
                 appStyles: this.props.appStyles,
+                UpdateComponent: this.props.updateComponent.bind(this),
+                UpdateActiveRoom: this.props.UpdateActiveRoom.bind(this),
               },
             });
+            this.props.updatelastMessageReadIndex(itemData.item.id);
+            this.props.UpdateActiveRoom(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
@@ -71,7 +63,9 @@ class ChatScreenComponent extends Component {
               {time}
             </Text>
             <Badge style={this.props.appStyles.chatListBadge}>
-              <Text style={this.props.appStyles.chatListBadgeText}>1</Text>
+              <Text style={this.props.appStyles.chatListBadgeText}>
+                {messagesCount}
+              </Text>
             </Badge>
           </Right>
         </ListItem>
@@ -88,8 +82,12 @@ class ChatScreenComponent extends Component {
               params: {
                 id: itemData.item.id,
                 appStyles: this.props.appStyles,
+                UpdateComponent: this.props.updateComponent.bind(this),
+                UpdateActiveRoom: this.props.UpdateActiveRoom.bind(this),
               },
             });
+            this.props.UpdateActiveRoom(itemData.item.id);
+            this.props.updatelastMessageReadIndex(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
@@ -115,31 +113,26 @@ class ChatScreenComponent extends Component {
       );
     }
   };
+
   render() {
     return (
-      <FlatList
-        keyExtractor={(item) => item.id}
-        data={this.state.rooms}
-        renderItem={this.renderGridItem}
-        numColumns={1}
-        style={this.props.appStyles.FlatListComponent}
-      />
+      <>
+        <Header style={this.props.appStyles.HeaderContainer}>
+          <Body>
+            <Title style={this.props.appStyles.appTitle}>Chats</Title>
+          </Body>
+        </Header>
+
+        <FlatList
+          keyExtractor={(item) => item.id}
+          data={this.props.rooms}
+          renderItem={this.renderGridItem}
+          numColumns={1}
+          style={this.props.appStyles.FlatListComponent}
+        />
+      </>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addMessage }, dispatch);
-};
-
-const mapStateToProps = (state) => {
-  return {
-    rooms: state.room.rooms,
-    user: state.user,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChatScreenComponent);
+export default ChatScreenComponent;

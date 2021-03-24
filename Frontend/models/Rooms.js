@@ -21,12 +21,16 @@ class Room {
     this.lastMessageReadIndex = lastMessageReadIndex;
     this.isGroup = isGroup;
     this.creator_id = creator_id;
+    this.dark = false;
   }
   updateLastMessage(message) {
     this.lastMessage = message;
   }
   updateLastTime(time) {
     this.lastTime = time;
+  }
+  updateDark(dark) {
+    this.dark = dark;
   }
 }
 

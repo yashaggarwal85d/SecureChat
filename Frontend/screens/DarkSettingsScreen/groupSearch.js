@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
 import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../../appStyles";
+import { DarkTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as colors from "../../constants/colors";
@@ -43,7 +43,7 @@ class GroupSearchScreen extends Component {
         <ListItem
           noBorder={true}
           selected={true}
-          style={LightTheme.ListItemStyle}
+          style={DarkTheme.ListItemStyle}
           avatar
           onPress={() => {
             filteruser[itemData.index].selected = false;
@@ -56,15 +56,15 @@ class GroupSearchScreen extends Component {
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
-            <Text numberOfLines={1} style={LightTheme.chatListTickName}>
+            <Text numberOfLines={1} style={DarkTheme.chatListTickName}>
               {itemData.item.name}
             </Text>
-            <Text numberOfLines={1} style={LightTheme.chatListTickNote} note>
+            <Text numberOfLines={1} style={DarkTheme.chatListTickNote} note>
               {itemData.item.description}
             </Text>
           </Body>
           <Right>
-            <MaterialIcons style={LightTheme.CheckIcon} name='check-circle' />
+            <MaterialIcons style={DarkTheme.CheckIcon} name='check-circle' />
           </Right>
         </ListItem>
       );
@@ -72,7 +72,7 @@ class GroupSearchScreen extends Component {
       return (
         <ListItem
           noBorder={true}
-          style={LightTheme.ListItemStyle}
+          style={DarkTheme.ListItemStyle}
           avatar
           onPress={() => {
             filteruser[itemData.index].selected = true;
@@ -85,10 +85,10 @@ class GroupSearchScreen extends Component {
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
-            <Text numberOfLines={1} style={LightTheme.chatListName}>
+            <Text numberOfLines={1} style={DarkTheme.chatListName}>
               {itemData.item.name}
             </Text>
-            <Text numberOfLines={1} style={LightTheme.chatListNote} note>
+            <Text numberOfLines={1} style={DarkTheme.chatListNote} note>
               {itemData.item.description}
             </Text>
           </Body>
@@ -110,12 +110,12 @@ class GroupSearchScreen extends Component {
     if (this.state.selectedUsers > 1)
       return (
         <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
-          <View style={LightTheme.ChatInputView}>
-            <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
+          <View style={DarkTheme.ChatInputView}>
+            <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
             <TextInput
               value={this.state.text}
               onChangeText={(text) => this.setText(text)}
-              style={LightTheme.ChatInput}
+              style={DarkTheme.ChatInput}
               placeholder='Search'
               placeholderTextColor='grey'
               underlineColorAndroid='transparent'
@@ -127,18 +127,18 @@ class GroupSearchScreen extends Component {
             data={this.state.filteredUsers}
             renderItem={this.renderGridItem}
             numColumns={1}
-            style={LightTheme.FlatListComponent}
+            style={DarkTheme.FlatListComponent}
           />
-          <View style={LightTheme.RightArrowContainer}>
+          <View style={DarkTheme.RightArrowContainer}>
             <MaterialIcons
-              style={LightTheme.RightArrow}
+              style={DarkTheme.RightArrow}
               name='arrow-forward'
               onPress={() => {
                 const members = this.state.users.filter((user) => {
                   return user.selected;
                 });
                 this.props.navigation.navigate({
-                  routeName: "GroupConfirmScreen",
+                  routeName: "DarkGroupConfirmScreen",
                   params: {
                     members: members,
                   },
@@ -151,12 +151,12 @@ class GroupSearchScreen extends Component {
     else
       return (
         <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
-          <View style={LightTheme.ChatInputView}>
-            <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
+          <View style={DarkTheme.ChatInputView}>
+            <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
             <TextInput
               value={this.state.text}
               onChangeText={(text) => this.setText(text)}
-              style={LightTheme.ChatInput}
+              style={DarkTheme.ChatInput}
               placeholder='Search'
               placeholderTextColor='grey'
               underlineColorAndroid='transparent'
@@ -168,7 +168,7 @@ class GroupSearchScreen extends Component {
             data={this.state.filteredUsers}
             renderItem={this.renderGridItem}
             numColumns={1}
-            style={LightTheme.FlatListComponent}
+            style={DarkTheme.FlatListComponent}
           />
         </View>
       );

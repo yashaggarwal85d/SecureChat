@@ -32,7 +32,7 @@ import {
 } from "../../store/actions/RoomActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { LightTheme, SettingForm } from "../../appStyles";
+import { DarkTheme, SettingForm } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
 import { socket, updateRoomProfilePic } from "../../store/reducers/Socket";
 import * as firebase from "firebase";
@@ -132,7 +132,7 @@ class RoomSettingsScreen extends Component {
     var name = itemData.item.details.name;
     var removeMem = <></>;
     if (itemData.item.details._id === this.state.room.creator_id)
-      admin = <Text style={LightTheme.ChatHeaderNoteOnline}>admin</Text>;
+      admin = <Text style={DarkTheme.ChatHeaderNoteOnline}>admin</Text>;
     if (this.props.user.id === this.state.room.creator_id) {
       removeMem = (
         <Root>
@@ -270,7 +270,7 @@ class RoomSettingsScreen extends Component {
             </Button>
           </Left>
           <Body>
-            <Text style={LightTheme.chatListName}>Leave this group</Text>
+            <Text style={DarkTheme.chatListName}>Leave this group</Text>
           </Body>
           <Right>
             <Icon active name='arrow-forward' />
@@ -310,7 +310,7 @@ class RoomSettingsScreen extends Component {
             </Button>
           </Left>
           <Body>
-            <Text style={LightTheme.chatListName}>Add participants</Text>
+            <Text style={DarkTheme.chatListName}>Add participants</Text>
           </Body>
           <Right>
             <Icon active name='arrow-forward' />
@@ -461,7 +461,7 @@ class RoomSettingsScreen extends Component {
                   </Button>
                 </Left>
                 <Body>
-                  <Text style={LightTheme.chatListName}>Members</Text>
+                  <Text style={DarkTheme.chatListName}>Members</Text>
                 </Body>
                 <Right>{infoArrow}</Right>
               </ListItem>
@@ -493,7 +493,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.room.rooms.filter((room) => room.dark),
     user: state.user,
   };
 };

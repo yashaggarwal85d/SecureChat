@@ -78,12 +78,25 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
   try {
     const members = req.body.members;
     members.push({ id: req.user._id });
-    const room_details = {
-      name: req.body.name,
-      description: req.body.description,
-      creator_id: req.user._id,
-      members: members,
-    };
+    var room_details;
+
+    if (req.body.isDark)
+      room_details = {
+        name: req.body.name,
+        description: req.body.description,
+        creator_id: req.user._id,
+        members: members,
+        isDark: true,
+      };
+    else
+      room_details = {
+        name: req.body.name,
+        description: req.body.description,
+        creator_id: req.user._id,
+        members: members,
+        isDark: false,
+      };
+
     const { error } = roomValidation(room_details);
     if (error) {
       return res.status(400).send(error.details[0].message);
