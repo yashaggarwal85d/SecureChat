@@ -8,6 +8,8 @@ import { store, persistor } from "./store/store";
 import Navigation from "./store/HandlePersist";
 import firebaseConfig from "./constants/firebase";
 import * as firebase from "firebase";
+import { Root } from "native-base";
+import FlashMessage from "react-native-flash-message";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -38,7 +40,10 @@ const App = () => {
         <StatusBar hidden />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <Navigation />
+            <Root>
+              <Navigation />
+              <FlashMessage position='top' />
+            </Root>
           </PersistGate>
         </Provider>
       </>

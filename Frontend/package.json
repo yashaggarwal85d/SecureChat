@@ -27,6 +27,7 @@
     "react-dom": "~16.11.0",
     "react-feather": "^2.0.8",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react-native-flash-message": "^0.1.23",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",

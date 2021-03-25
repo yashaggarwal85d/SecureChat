@@ -91,7 +91,6 @@ class GroupConfirmScreen extends Component {
                   };
                   body.members.push(id);
                 });
-                console.log(body);
                 await this.props.CreateNewRoom(body);
                 this.props.navigation.navigate("MainScreen");
               }}

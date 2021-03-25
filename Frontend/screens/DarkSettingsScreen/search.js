@@ -32,7 +32,7 @@ class SearchScreen extends Component {
   getUsers = async () => {
     const Allusers = await AllUsers(this.props.user.token);
     const CurrentUsers = this.props.rooms.filter((room) => {
-      return !room.isGroup;
+      return !room.isGroup && room.creator_id === this.props.user.id;
     });
     const users = Allusers.filter(
       (a) => !CurrentUsers.some((b) => this.comparator(a, b))

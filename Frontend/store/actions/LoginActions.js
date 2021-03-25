@@ -13,9 +13,9 @@ export const SWITCH_MODE = "SWITCH_MODE";
 export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
 export const UPDATE_NAME_STATUS = "UPDATE_NAME_STATUS";
 import axios from "axios";
-import { exp } from "react-native-reanimated";
 import * as API from "../../constants/APIstore";
-import { socket, logoutSocket } from "../reducers/Socket";
+import { logoutSocket } from "../reducers/Socket";
+import { showMessage } from "react-native-flash-message";
 
 export const updateMode = (mode) => {
   return {
@@ -102,6 +102,12 @@ export const updateNameStatus = (name, status) => {
       };
       dispatch({ type: UPDATE_NAME_STATUS, payload: payload });
     } catch (e) {
+      showMessage({
+        message: `Error`,
+        description: `${e}`,
+        type: "danger",
+        floating: true,
+      });
       console.log(e);
     }
   };
@@ -135,6 +141,12 @@ export const login = () => {
         try {
           dispatch({ type: UPDATE_ALERT, payload: e.response.data });
         } catch (e) {
+          showMessage({
+            message: `Error`,
+            description: `${e}`,
+            type: "danger",
+            floating: true,
+          });
           console.log(e);
         }
       });
@@ -158,13 +170,24 @@ export const signup = () => {
     })
       .then((res) => res.data)
       .then((data) => {
-        alert("Account created successfully , Login to continue");
+        showMessage({
+          message: "Account created",
+          description: "Your account has been created, login to continue",
+          type: "success",
+          floating: true,
+        });
         dispatch({ type: UPDATE_ISAUTH, payload: true });
       })
       .catch((e) => {
         try {
           dispatch({ type: UPDATE_ALERT, payload: e.response.data });
         } catch (e) {
+          showMessage({
+            message: `Error`,
+            description: `${e}`,
+            type: "danger",
+            floating: true,
+          });
           console.log(e);
         }
       });
@@ -183,6 +206,12 @@ export const AllUsers = async (token) => {
     }).then((res) => res.data);
     return data;
   } catch (e) {
+    showMessage({
+      message: `Error`,
+      description: `${e}`,
+      type: "danger",
+      floating: true,
+    });
     console.log(e);
   }
 };

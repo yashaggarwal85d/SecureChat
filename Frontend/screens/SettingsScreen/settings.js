@@ -11,7 +11,6 @@ import {
   Body,
   Right,
   ActionSheet,
-  Root,
   Thumbnail,
   Form,
 } from "native-base";
@@ -163,30 +162,30 @@ class SettingsScreen extends Component {
           <List>
             <ListItem style={{ flexDirection: "column" }}>
               {pic}
-              <TouchableOpacity style={SettingForm.cameraView}>
-                <Root>
-                  <MaterialIcons
-                    onPress={() =>
-                      ActionSheet.show(
-                        {
-                          options: CameraButton,
-                          cancelButtonIndex: 2,
-                          title: "Profile Photo",
-                        },
-                        (buttonIndex) => {
-                          if (buttonIndex === 0) {
-                            this.PickImageFromCamera();
-                          } else if (buttonIndex === 1) {
-                            this.PickImageFromGallery();
-                          }
-                        }
-                      )
+              <TouchableOpacity
+                onPress={() =>
+                  ActionSheet.show(
+                    {
+                      options: CameraButton,
+                      cancelButtonIndex: 2,
+                      title: "Profile Photo",
+                    },
+                    (buttonIndex) => {
+                      if (buttonIndex === 0) {
+                        this.PickImageFromCamera();
+                      } else if (buttonIndex === 1) {
+                        this.PickImageFromGallery();
+                      }
                     }
-                    style={SettingForm.camera}
-                    size={28}
-                    name='photo-camera'
-                  />
-                </Root>
+                  )
+                }
+                style={SettingForm.cameraView}
+              >
+                <MaterialIcons
+                  style={SettingForm.camera}
+                  size={28}
+                  name='photo-camera'
+                />
               </TouchableOpacity>
             </ListItem>
             <ListItem
@@ -250,42 +249,40 @@ class SettingsScreen extends Component {
               </Right>
             </ListItem>
             {info}
-            <Root>
-              <ListItem
-                icon
-                onPress={() =>
-                  ActionSheet.show(
-                    {
-                      options: BUTTONS,
-                      cancelButtonIndex: 1,
-                      title: "Are you sure you want to logout ?",
-                    },
-                    (buttonIndex) => {
-                      if (buttonIndex === 0) {
-                        this.props.logout();
-                        this.props.navigation.navigate("Auth");
-                      }
+            <ListItem
+              icon
+              onPress={() =>
+                ActionSheet.show(
+                  {
+                    options: BUTTONS,
+                    cancelButtonIndex: 1,
+                    title: "Are you sure you want to logout ?",
+                  },
+                  (buttonIndex) => {
+                    if (buttonIndex === 0) {
+                      this.props.logout();
+                      this.props.navigation.navigate("Auth");
                     }
-                  )
-                }
-              >
-                <Left>
-                  <Button style={{ backgroundColor: colors.red }}>
-                    <AntDesign
-                      name='logout'
-                      size={18}
-                      style={{ color: colors.white }}
-                    />
-                  </Button>
-                </Left>
-                <Body>
-                  <Text style={LightTheme.chatListName}>Log Out</Text>
-                </Body>
-                <Right>
-                  <Icon active name='arrow-forward' />
-                </Right>
-              </ListItem>
-            </Root>
+                  }
+                )
+              }
+            >
+              <Left>
+                <Button style={{ backgroundColor: colors.red }}>
+                  <AntDesign
+                    name='logout'
+                    size={18}
+                    style={{ color: colors.white }}
+                  />
+                </Button>
+              </Left>
+              <Body>
+                <Text style={LightTheme.chatListName}>Log Out</Text>
+              </Body>
+              <Right>
+                <Icon active name='arrow-forward' />
+              </Right>
+            </ListItem>
           </List>
         </Content>
       </Container>

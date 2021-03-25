@@ -317,7 +317,9 @@ module.exports = (io) => {
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
               if (mem.id === memberId) {
-                socket.to(ConnectedUsers[mem.id]).emit("removeRoom", room.id);
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit("removeRoom", room.id, room.name);
               } else {
                 socket
                   .to(ConnectedUsers[mem.id])

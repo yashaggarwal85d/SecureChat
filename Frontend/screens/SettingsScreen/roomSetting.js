@@ -12,10 +12,10 @@ import {
   Body,
   Right,
   ActionSheet,
-  Root,
   Thumbnail,
   Form,
   Badge,
+  View,
 } from "native-base";
 import { FlatList } from "react-native";
 import { TextInput, TouchableOpacity, ProgressBarAndroid } from "react-native";
@@ -36,6 +36,7 @@ import { LightTheme, SettingForm } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
 import { socket, updateRoomProfilePic } from "../../store/reducers/Socket";
 import * as firebase from "firebase";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 var BUTTONS = [
   { text: "Yes", icon: "remove", iconColor: colors.red },
@@ -98,7 +99,11 @@ class RoomSettingsScreen extends Component {
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
+      showMessage({
+        message: `Sorry, we need camera permissions to make this work!`,
+        type: "danger",
+        floating: true,
+      });
       return;
     }
     let result = await ImagePicker.launchCameraAsync({
@@ -114,7 +119,11 @@ class RoomSettingsScreen extends Component {
   async PickImageFromGallery() {
     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+      showMessage({
+        message: `Sorry, we need camera roll permissions to make this work!`,
+        type: "danger",
+        floating: true,
+      });
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -135,50 +144,45 @@ class RoomSettingsScreen extends Component {
       admin = <Text style={LightTheme.ChatHeaderNoteOnline}>admin</Text>;
     if (this.props.user.id === this.state.room.creator_id) {
       removeMem = (
-        <Root>
-          <TouchableOpacity
-            onPress={() =>
-              ActionSheet.show(
-                {
-                  options: BUTTONS,
-                  cancelButtonIndex: 1,
-                  title: `Are you sure you want to remove ${name} from the group ?`,
-                },
-                async (buttonIndex) => {
-                  if (buttonIndex === 0) {
-                    await this.props.RemoveMember(
-                      this.state.room.id,
-                      itemData.item.details._id
-                    );
-                    var newRoom = this.state.room;
-                    var filteredMem = this.state.room.members.filter(
-                      (member) => {
-                        return !member.blocked;
-                      }
-                    );
-                    newRoom.members = filteredMem;
-                    var index = newRoom.members.findIndex(
-                      (member) =>
-                        member.details._id === itemData.item.details._id
-                    );
-                    newRoom.members[index].blocked = true;
-                    this.setState({
-                      room: newRoom,
-                    });
-                    const { state } = this.props.navigation;
-                    state.params.onPromptSend(
-                      `${this.props.user.name} removed ${itemData.item.details.name}`
-                    );
-                  }
+        <TouchableOpacity
+          onPress={() =>
+            ActionSheet.show(
+              {
+                options: BUTTONS,
+                cancelButtonIndex: 1,
+                title: `Are you sure you want to remove ${name} from the group ?`,
+              },
+              async (buttonIndex) => {
+                if (buttonIndex === 0) {
+                  await this.props.RemoveMember(
+                    this.state.room.id,
+                    itemData.item.details._id
+                  );
+                  var newRoom = this.state.room;
+                  var filteredMem = this.state.room.members.filter((member) => {
+                    return !member.blocked;
+                  });
+                  newRoom.members = filteredMem;
+                  var index = newRoom.members.findIndex(
+                    (member) => member.details._id === itemData.item.details._id
+                  );
+                  newRoom.members[index].blocked = true;
+                  this.setState({
+                    room: newRoom,
+                  });
+                  const { state } = this.props.navigation;
+                  state.params.onPromptSend(
+                    `${this.props.user.name} removed ${itemData.item.details.name}`
+                  );
                 }
-              )
-            }
-          >
-            <Badge>
-              <Text>Remove</Text>
-            </Badge>
-          </TouchableOpacity>
-        </Root>
+              }
+            )
+          }
+        >
+          <Badge>
+            <Text>Remove</Text>
+          </Badge>
+        </TouchableOpacity>
       );
     }
 
@@ -238,45 +242,46 @@ class RoomSettingsScreen extends Component {
       );
     }
     var leaveButton = (
-      <Root>
-        <ListItem
-          icon
-          noBorder={true}
-          onPress={() =>
-            ActionSheet.show(
-              {
-                options: BUTTONS,
-                cancelButtonIndex: 1,
-                title: `Are you sure you want to leave ${this.state.room.name} ?`,
-              },
-              async (buttonIndex) => {
-                if (buttonIndex === 0) {
-                  await this.props.leaveRoom(this.state.room.id);
-                  const { state } = this.props.navigation;
-                  state.params.onPromptSend(`${this.props.user.name} left`);
-                  this.props.navigation.navigate("MainScreen");
-                }
+      <ListItem
+        icon
+        noBorder={true}
+        onPress={() =>
+          ActionSheet.show(
+            {
+              options: BUTTONS,
+              cancelButtonIndex: 1,
+              title: `Are you sure you want to leave ${this.state.room.name} ?`,
+            },
+            async (buttonIndex) => {
+              if (buttonIndex === 0) {
+                await this.props.leaveRoom(
+                  this.state.room.id,
+                  this.state.room.name
+                );
+                const { state } = this.props.navigation;
+                state.params.onPromptSend(`${this.props.user.name} left`);
+                this.props.navigation.navigate("MainScreen");
               }
-            )
-          }
-        >
-          <Left>
-            <Button style={{ backgroundColor: colors.red }}>
-              <AntDesign
-                name='logout'
-                size={18}
-                style={{ color: colors.white }}
-              />
-            </Button>
-          </Left>
-          <Body>
-            <Text style={LightTheme.chatListName}>Leave this group</Text>
-          </Body>
-          <Right>
-            <Icon active name='arrow-forward' />
-          </Right>
-        </ListItem>
-      </Root>
+            }
+          )
+        }
+      >
+        <Left>
+          <Button style={{ backgroundColor: colors.red }}>
+            <AntDesign
+              name='logout'
+              size={18}
+              style={{ color: colors.white }}
+            />
+          </Button>
+        </Left>
+        <Body>
+          <Text style={LightTheme.chatListName}>Leave this group</Text>
+        </Body>
+        <Right>
+          <Icon active name='arrow-forward' />
+        </Right>
+      </ListItem>
     );
     var f = 0;
     for (const member of this.state.room.members) {
@@ -324,7 +329,11 @@ class RoomSettingsScreen extends Component {
           style={SettingForm.button}
           onPress={async () => {
             if (!this.state.name || !this.state.status) {
-              alert("Name or description cant be empty");
+              showMessage({
+                message: `Name or description cant be empty`,
+                type: "danger",
+                floating: true,
+              });
             } else {
               const { state } = this.props.navigation;
               await this.props.updateNameDescription(
@@ -381,30 +390,30 @@ class RoomSettingsScreen extends Component {
             <List>
               <ListItem style={{ flexDirection: "column" }}>
                 {pic}
-                <TouchableOpacity style={SettingForm.cameraView}>
-                  <Root>
-                    <MaterialIcons
-                      onPress={() =>
-                        ActionSheet.show(
-                          {
-                            options: CameraButton,
-                            cancelButtonIndex: 2,
-                            title: "Profile Photo",
-                          },
-                          (buttonIndex) => {
-                            if (buttonIndex === 0) {
-                              this.PickImageFromCamera();
-                            } else if (buttonIndex === 1) {
-                              this.PickImageFromGallery();
-                            }
-                          }
-                        )
+                <TouchableOpacity
+                  onPress={() =>
+                    ActionSheet.show(
+                      {
+                        options: CameraButton,
+                        cancelButtonIndex: 2,
+                        title: "Profile Photo",
+                      },
+                      (buttonIndex) => {
+                        if (buttonIndex === 0) {
+                          this.PickImageFromCamera();
+                        } else if (buttonIndex === 1) {
+                          this.PickImageFromGallery();
+                        }
                       }
-                      style={SettingForm.camera}
-                      size={28}
-                      name='photo-camera'
-                    />
-                  </Root>
+                    )
+                  }
+                  style={SettingForm.cameraView}
+                >
+                  <MaterialIcons
+                    style={SettingForm.camera}
+                    size={28}
+                    name='photo-camera'
+                  />
                 </TouchableOpacity>
               </ListItem>
               <ListItem

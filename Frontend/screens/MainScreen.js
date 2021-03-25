@@ -28,6 +28,8 @@ import ChatListScreen from "./ChatList";
 import moment from "moment";
 import ActionButton from "../components/FloatBar";
 import DarkActionButton from "../components/FloatBarDark";
+import FlashMessage from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 
 function sorted(arr) {
   const sortedArray = arr.sort(function (a, b) {
@@ -94,8 +96,13 @@ class MainApp extends Component {
       await this.props.updateRoom(roomId, members);
       this.updateComponent();
     });
-    socket.on("removeRoom", async (roomId) => {
+    socket.on("removeRoom", async (roomId, roomName) => {
       await this.props.removeRoom(roomId);
+      showMessage({
+        message: `You are no longer a participant of ${roomName}`,
+        type: "danger",
+        floating: true,
+      });
       this.updateComponent();
     });
     socket.on("update_profile", async (roomId, url) => {
@@ -108,6 +115,14 @@ class MainApp extends Component {
   };
 
   SwitchToLight() {
+    showMessage({
+      message: "Private mode",
+      description: "You are visible to all",
+      type: "info",
+      floating: true,
+      color: colors.white,
+      backgroundColor: colors.dodgerblue,
+    });
     setTimeout(() => {
       StatusBar.setBarStyle("dark-content");
       StatusBar.setBackgroundColor(colors.white);
@@ -115,6 +130,14 @@ class MainApp extends Component {
   }
 
   SwitchToDark() {
+    showMessage({
+      message: "Anonymous mode",
+      description: "You entered in anonymous mode",
+      type: "info",
+      floating: true,
+      color: colors.white,
+      backgroundColor: colors.dodgerblue,
+    });
     setTimeout(() => {
       StatusBar.setBarStyle("light-content");
       StatusBar.setBackgroundColor(colors.black);
@@ -165,6 +188,9 @@ class MainApp extends Component {
     }
     return (
       <Container>
+        <View>
+          <FlashMessage position='top' />
+        </View>
         {screen_div}
         <View style={ToggleSwitchStyle.Toggle}>
           <ToggleSwitch

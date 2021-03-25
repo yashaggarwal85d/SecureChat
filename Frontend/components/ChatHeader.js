@@ -9,7 +9,13 @@ export default class ChatHeader extends Component {
   constructor(props) {
     super(props);
     var secondUser = null;
-    if (!this.props.room.isGroup) {
+    if (
+      !this.props.room.isGroup &&
+      !(
+        this.props.room.dark &&
+        this.props.room.creator_id !== this.props.user.id
+      )
+    ) {
       this.props.room.members.forEach((member) => {
         if (this.props.user.id !== member.id) {
           secondUser = member.id;
