@@ -1,5 +1,12 @@
 import React from "react";
-import { View, TextInput, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  Image,
+  StatusBar,
+} from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
@@ -10,6 +17,7 @@ import {
 } from "../../store/actions/LoginActions";
 import { fillData } from "../../store/actions/RoomActions";
 import { AuthStyle } from "../../appStyles";
+import { Container } from "native-base";
 
 class Login extends React.Component {
   constructor(props) {
@@ -19,6 +27,7 @@ class Login extends React.Component {
       Passalert: "",
       alert: "",
       valid: false,
+      loading: false,
     };
   }
   EmailValid = (e) => {
@@ -54,6 +63,7 @@ class Login extends React.Component {
   async handleLogin() {
     try {
       if (this.checkValid()) {
+        this.setState({ loading: true });
         await this.props.login();
         if (
           this.props.user.id &&
@@ -68,6 +78,7 @@ class Login extends React.Component {
           });
           this.props.updateAlert(null);
         }
+        this.setState({ loading: false });
       }
     } catch (e) {
       this.setState({
@@ -82,46 +93,74 @@ class Login extends React.Component {
   }
 
   render() {
-    return (
-      <View style={AuthStyle.container}>
-        <Text style={AuthStyle.Heading}>Welcome back.</Text>
-        <TextInput
-          style={AuthStyle.inputBox}
-          value={this.props.user.email}
-          onChangeText={(email) => this.props.updateEmail(email)}
-          placeholder='Email'
-          autoCapitalize='none'
-          autoCompleteType='off'
-          onChange={(e) => this.EmailValid(e.nativeEvent.text)}
-        />
-        <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
-        <TextInput
-          style={AuthStyle.inputBox}
-          value={this.props.user.password}
-          onChangeText={(password) => this.props.updatePassword(password)}
-          placeholder='Password'
-          secureTextEntry={true}
-          onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
-          autoCompleteType='off'
-        />
-        <Text style={AuthStyle.AlertText}>{this.state.Passalert}</Text>
-        <TouchableOpacity
-          style={AuthStyle.button}
-          onPress={() => this.handleLogin()}
-        >
-          <Text style={AuthStyle.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <Text style={AuthStyle.AlertText}>{this.state.alert}</Text>
-        <View style={{ flexDirection: "row", paddingTop: 10 }}>
-          <Text style={AuthStyle.Text}>Don't have an account yet? </Text>
-          <Text
-            style={AuthStyle.TextButton}
-            onPress={() => this.handleNavigation()}
+    if (this.state.loading) {
+      return (
+        <>
+          <StatusBar hidden />
+          <Container
+            style={{
+              backgroundColor: "black",
+              alignItems: "center",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
           >
-            Sign up
-          </Text>
+            <Image
+              source={require(`../../assets/darkLoader.gif`)}
+              style={{
+                height: "60%",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            />
+          </Container>
+        </>
+      );
+    }
+    return (
+      <>
+        <StatusBar hidden />
+        <View style={AuthStyle.container}>
+          <Text style={AuthStyle.Heading}>Welcome back.</Text>
+          <TextInput
+            style={AuthStyle.inputBox}
+            value={this.props.user.email}
+            onChangeText={(email) => this.props.updateEmail(email)}
+            placeholder='Email'
+            autoCapitalize='none'
+            autoCompleteType='off'
+            onChange={(e) => this.EmailValid(e.nativeEvent.text)}
+          />
+          <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
+          <TextInput
+            style={AuthStyle.inputBox}
+            value={this.props.user.password}
+            onChangeText={(password) => this.props.updatePassword(password)}
+            placeholder='Password'
+            secureTextEntry={true}
+            onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
+            autoCompleteType='off'
+          />
+          <Text style={AuthStyle.AlertText}>{this.state.Passalert}</Text>
+          <TouchableOpacity
+            style={AuthStyle.button}
+            onPress={() => this.handleLogin()}
+          >
+            <Text style={AuthStyle.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <Text style={AuthStyle.AlertText}>{this.state.alert}</Text>
+          <View style={{ flexDirection: "row", paddingTop: 10 }}>
+            <Text style={AuthStyle.Text}>Don't have an account yet? </Text>
+            <Text
+              style={AuthStyle.TextButton}
+              onPress={() => this.handleNavigation()}
+            >
+              Sign up
+            </Text>
+          </View>
         </View>
-      </View>
+      </>
     );
   }
 }

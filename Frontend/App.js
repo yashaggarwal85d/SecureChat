@@ -17,6 +17,7 @@ const fetchFonts = () => {
     "Kamerik-Bold": require("./assets/fonts/Kamerik-Bold.ttf"),
     Touche_Semibold: require("./assets/fonts/Touche-Semibold.ttf"),
     Touche_Medium: require("./assets/fonts/Touche_Medium.ttf"),
+    Touche_Bold: require("./assets/fonts/Touche_Bold.ttf"),
   });
 };
 

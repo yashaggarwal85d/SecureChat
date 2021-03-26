@@ -11,6 +11,7 @@ import {
   updateIsAuth,
 } from "../../store/actions/LoginActions";
 import { AuthStyle } from "../../appStyles";
+import { StatusBar } from "react-native";
 
 class Signup extends React.Component {
   constructor(props) {
@@ -106,62 +107,70 @@ class Signup extends React.Component {
 
   render() {
     return (
-      <View style={AuthStyle.container}>
-        <Text style={AuthStyle.Heading}>Create Account</Text>
-        <TextInput
-          style={AuthStyle.inputBox}
-          value={this.props.user.name}
-          onChangeText={(name) => this.props.updateName(name)}
-          placeholder='Full Name'
-          onChange={(e) => this.NameValid(e.nativeEvent.text)}
-          autoCompleteType='off'
-        />
-        <Text style={AuthStyle.AlertText}>{this.state.Namealert}</Text>
-        <TextInput
-          style={AuthStyle.inputBox}
-          value={this.props.user.email}
-          onChangeText={(email) => this.props.updateEmail(email)}
-          placeholder='Email'
-          autoCapitalize='none'
-          onChange={(e) => this.EmailValid(e.nativeEvent.text)}
-          autoCompleteType='off'
-        />
-        <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
-        <TextInput
-          style={AuthStyle.inputBox}
-          value={this.props.user.password}
-          onChangeText={(password) => this.props.updatePassword(password)}
-          placeholder='Password'
-          secureTextEntry={true}
-          onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
-          onEndEditing={() => this.ConfirmPassValid(this.state.confirmPass)}
-          autoCompleteType='off'
-        />
-        <Text style={AuthStyle.AlertText}>{this.state.Passalert}</Text>
-        <TextInput
-          style={AuthStyle.inputBox}
-          value={this.confirmPass}
-          placeholder='Confirm Password'
-          onChangeText={(password) => this.setState({ confirmPass: password })}
-          secureTextEntry={true}
-          onChange={(e) => this.ConfirmPassValid(e.nativeEvent.text)}
-          autoCompleteType='off'
-        />
-        <Text style={AuthStyle.AlertText}>{this.state.Confirmalert}</Text>
-        <TouchableOpacity style={AuthStyle.button} onPress={this.handleSignUp}>
-          <Text style={AuthStyle.buttonText}>Signup</Text>
-        </TouchableOpacity>
-        <Text style={AuthStyle.AlertText}>{this.state.alert}</Text>
-        <View style={{ flexDirection: "row", paddingTop: 10 }}>
-          <Text style={AuthStyle.Text}>Already have an account yet? </Text>
-          <Text
-            style={AuthStyle.TextButton}
-            onPress={() => this.props.navigation.navigate("Login")}
+      <>
+        <StatusBar hidden />
+        <View style={AuthStyle.container}>
+          <Text style={AuthStyle.Heading}>Create Account</Text>
+          <TextInput
+            style={AuthStyle.inputBox}
+            value={this.props.user.name}
+            onChangeText={(name) => this.props.updateName(name)}
+            placeholder='Full Name'
+            onChange={(e) => this.NameValid(e.nativeEvent.text)}
+            autoCompleteType='off'
+          />
+          <Text style={AuthStyle.AlertText}>{this.state.Namealert}</Text>
+          <TextInput
+            style={AuthStyle.inputBox}
+            value={this.props.user.email}
+            onChangeText={(email) => this.props.updateEmail(email)}
+            placeholder='Email'
+            autoCapitalize='none'
+            onChange={(e) => this.EmailValid(e.nativeEvent.text)}
+            autoCompleteType='off'
+          />
+          <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
+          <TextInput
+            style={AuthStyle.inputBox}
+            value={this.props.user.password}
+            onChangeText={(password) => this.props.updatePassword(password)}
+            placeholder='Password'
+            secureTextEntry={true}
+            onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
+            onEndEditing={() => this.ConfirmPassValid(this.state.confirmPass)}
+            autoCompleteType='off'
+          />
+          <Text style={AuthStyle.AlertText}>{this.state.Passalert}</Text>
+          <TextInput
+            style={AuthStyle.inputBox}
+            value={this.confirmPass}
+            placeholder='Confirm Password'
+            onChangeText={(password) =>
+              this.setState({ confirmPass: password })
+            }
+            secureTextEntry={true}
+            onChange={(e) => this.ConfirmPassValid(e.nativeEvent.text)}
+            autoCompleteType='off'
+          />
+          <Text style={AuthStyle.AlertText}>{this.state.Confirmalert}</Text>
+          <TouchableOpacity
+            style={AuthStyle.button}
+            onPress={this.handleSignUp}
           >
-            Login
-          </Text>
+            <Text style={AuthStyle.buttonText}>Signup</Text>
+          </TouchableOpacity>
+          <Text style={AuthStyle.AlertText}>{this.state.alert}</Text>
+          <View style={{ flexDirection: "row", paddingTop: 10 }}>
+            <Text style={AuthStyle.Text}>Already have an account yet? </Text>
+            <Text
+              style={AuthStyle.TextButton}
+              onPress={() => this.props.navigation.navigate("Login")}
+            >
+              Login
+            </Text>
+          </View>
         </View>
-      </View>
+      </>
     );
   }
 }

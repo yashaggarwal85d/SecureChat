@@ -12,7 +12,9 @@ import {
   ChatMainNavigator,
 } from "../navigation/chatsNavigation";
 import React, { Component } from "react";
-import { Text } from "react-native";
+import { View, Image } from "react-native";
+import { Container } from "native-base";
+import { StatusBar } from "react-native";
 
 class Navigation extends Component {
   constructor(props) {
@@ -50,8 +52,58 @@ class Navigation extends Component {
     }
   };
   render() {
-    if (this.state.loaded == false) return <Text>hey</Text>;
-    else return <this.state.Authstate />;
+    if (this.state.loaded == false) {
+      var image = <></>;
+      if (this.props.user.mode === "light") {
+        image = (
+          <Container
+            style={{
+              backgroundColor: "white",
+              alignItems: "center",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <Image
+              source={require(`../assets/lightLoader.gif`)}
+              style={{
+                height: "60%",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            />
+          </Container>
+        );
+      } else {
+        var image = (
+          <Container
+            style={{
+              backgroundColor: "black",
+              alignItems: "center",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <Image
+              source={require(`../assets/darkLoader.gif`)}
+              style={{
+                height: "60%",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            />
+          </Container>
+        );
+      }
+      return (
+        <>
+          <StatusBar hidden />
+          {image}
+        </>
+      );
+    } else return <this.state.Authstate />;
   }
 }
 

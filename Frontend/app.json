@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "whatsappclone",
-    "slug": "whatsappclone",
+    "name": "Chat",
+    "slug": "Chat",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

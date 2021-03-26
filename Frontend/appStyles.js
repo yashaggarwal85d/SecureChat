@@ -38,7 +38,7 @@ export const LightTheme = StyleSheet.create({
   },
 
   chatListTickNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.MiddleGrey,
     fontWeight: "bold",
     paddingLeft: 2.5,
@@ -69,7 +69,7 @@ export const LightTheme = StyleSheet.create({
     color: colors.grey,
   },
   chatListNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.LightGrey,
     paddingLeft: 2.5,
   },
@@ -80,7 +80,7 @@ export const LightTheme = StyleSheet.create({
     color: colors.Shadow,
   },
   chatListActiveNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.grey,
     paddingLeft: 2.5,
     fontWeight: "bold",
@@ -92,7 +92,7 @@ export const LightTheme = StyleSheet.create({
     marginTop: 5,
   },
   chatListBadgeText: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 12,
   },
   ChatMainContainer: {
@@ -133,7 +133,7 @@ export const LightTheme = StyleSheet.create({
   ChatInput: {
     padding: 10,
     width: "100%",
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 18,
     color: colors.grey,
     marginBottom: 2,
@@ -264,7 +264,7 @@ export const LightTheme = StyleSheet.create({
     color: colors.MiddleGrey,
     textAlign: "center",
     textTransform: "capitalize",
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 12,
   },
   SettingsinputBox: {
@@ -274,7 +274,7 @@ export const LightTheme = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 2,
     borderBottomColor: colors.dodgerblue,
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
   },
   SettingsText: {
     alignSelf: "flex-start",
@@ -283,7 +283,7 @@ export const LightTheme = StyleSheet.create({
     fontSize: 15,
   },
   SettingsmemberListNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.LightGrey,
     paddingLeft: 2.5,
   },
@@ -332,7 +332,7 @@ export const DarkTheme = StyleSheet.create({
   },
 
   chatListTickNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.MiddleGrey,
     fontWeight: "bold",
     paddingLeft: 2.5,
@@ -363,7 +363,7 @@ export const DarkTheme = StyleSheet.create({
     color: colors.LightGrey,
   },
   chatListNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.grey,
     paddingLeft: 2.5,
   },
@@ -374,7 +374,7 @@ export const DarkTheme = StyleSheet.create({
     color: colors.DarkWhite,
   },
   chatListActiveNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.MiddleGrey,
     paddingLeft: 2.5,
     fontWeight: "bold",
@@ -385,7 +385,7 @@ export const DarkTheme = StyleSheet.create({
     marginTop: 5,
   },
   chatListBadgeText: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 12,
   },
   ChatMainContainer: {
@@ -426,7 +426,7 @@ export const DarkTheme = StyleSheet.create({
   ChatInput: {
     padding: 10,
     width: "100%",
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 18,
     color: colors.DarkWhite,
     marginBottom: 2,
@@ -557,7 +557,7 @@ export const DarkTheme = StyleSheet.create({
     color: colors.grey,
     textAlign: "center",
     textTransform: "capitalize",
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 12,
   },
   SettingsinputBox: {
@@ -568,7 +568,7 @@ export const DarkTheme = StyleSheet.create({
     borderBottomWidth: 2,
     color: colors.LightGrey,
     borderBottomColor: colors.dodgerblue,
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
   },
   SettingsText: {
     alignSelf: "flex-start",
@@ -577,7 +577,7 @@ export const DarkTheme = StyleSheet.create({
     fontSize: 15,
   },
   SettingsmemberListNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.grey,
     paddingLeft: 2.5,
   },
@@ -628,7 +628,7 @@ export const AuthStyle = StyleSheet.create({
     borderRadius: 20,
     textAlign: "left",
     color: colors.white,
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
   },
   button: {
     alignItems: "center",
@@ -665,7 +665,7 @@ export const AuthStyle = StyleSheet.create({
 
 export const SettingForm = StyleSheet.create({
   memberListNote: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     color: colors.LightGrey,
     paddingLeft: 2.5,
   },
@@ -680,7 +680,7 @@ export const SettingForm = StyleSheet.create({
     borderRadius: 100,
   },
   info: {
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
     fontSize: 16,
     padding: 12,
   },
@@ -705,7 +705,7 @@ export const SettingForm = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 2,
     borderBottomColor: colors.dodgerblue,
-    fontFamily: "Roboto_medium",
+    fontFamily: "Touche_Medium",
   },
   button: {
     alignSelf: "center",
