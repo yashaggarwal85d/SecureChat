@@ -51,7 +51,7 @@ class GroupConfirmScreen extends Component {
     const { state } = this.props.navigation;
     if (this.state.name)
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={DarkTheme.ChatInputViewContainer}>
           <View style={DarkTheme.ChatInputView}>
             <TextInput
               value={this.state.text}
@@ -100,7 +100,7 @@ class GroupConfirmScreen extends Component {
       );
     else
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={DarkTheme.ChatInputViewContainer}>
           <View style={DarkTheme.ChatInputView}>
             <TextInput
               value={this.state.text}

@@ -87,7 +87,7 @@ class SearchScreen extends Component {
       var data = this.state.users;
       if (this.state.text) data = this.state.filteredUsers;
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={LightTheme.ChatInputViewContainer}>
           <View style={LightTheme.ChatInputView}>
             <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
             <TextInput

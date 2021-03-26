@@ -135,7 +135,14 @@ class ChatBubble extends Component {
     }
   };
   render() {
-    this.messages = this.props.messages.slice().reverse();
+    if (this.props.dark) {
+      this.messages = this.props.messages
+        .filter((message) => !message.isPrompt)
+        .slice()
+        .reverse();
+    } else {
+      this.messages = this.props.messages.slice().reverse();
+    }
     const imagesObj = this.props.messages.filter((msg) => {
       return msg.isImage;
     });

@@ -13,6 +13,7 @@ import {
   ActionSheet,
   Thumbnail,
   Form,
+  Root,
 } from "native-base";
 import { TextInput, TouchableOpacity, ProgressBarAndroid } from "react-native";
 import * as colors from "../../constants/colors";
@@ -157,134 +158,136 @@ class SettingsScreen extends Component {
       );
     }
     return (
-      <Container>
-        <Content>
-          <List>
-            <ListItem style={{ flexDirection: "column" }}>
-              {pic}
-              <TouchableOpacity
+      <Container style={{ backgroundColor: colors.ghostwhite }}>
+        <Root>
+          <Content>
+            <List>
+              <ListItem style={{ flexDirection: "column" }}>
+                {pic}
+                <TouchableOpacity
+                  onPress={() =>
+                    ActionSheet.show(
+                      {
+                        options: CameraButton,
+                        cancelButtonIndex: 2,
+                        title: "Profile Photo",
+                      },
+                      (buttonIndex) => {
+                        if (buttonIndex === 0) {
+                          this.PickImageFromCamera();
+                        } else if (buttonIndex === 1) {
+                          this.PickImageFromGallery();
+                        }
+                      }
+                    )
+                  }
+                  style={SettingForm.cameraView}
+                >
+                  <MaterialIcons
+                    style={SettingForm.camera}
+                    size={28}
+                    name='photo-camera'
+                  />
+                </TouchableOpacity>
+              </ListItem>
+              <ListItem
+                style={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Form>
+                  <Text style={SettingForm.Text}>Name : </Text>
+                  <TextInput
+                    numberOfLines={1}
+                    style={SettingForm.inputBox}
+                    value={this.state.name}
+                    onChangeText={(text) =>
+                      this.setState({
+                        name: text,
+                        changed: true,
+                      })
+                    }
+                  />
+                  <Text style={SettingForm.Text}>Status : </Text>
+                  <TextInput
+                    multiline={true}
+                    style={SettingForm.inputBox}
+                    value={this.state.status}
+                    onChangeText={(text) =>
+                      this.setState({
+                        status: text,
+                        changed: true,
+                      })
+                    }
+                  />
+                </Form>
+                {button}
+              </ListItem>
+
+              <ListItem
+                icon
+                noBorder={true}
+                onPress={() => {
+                  if (this.state.infoClicked)
+                    this.setState({ infoClicked: false });
+                  else this.setState({ infoClicked: true });
+                }}
+              >
+                <Left>
+                  <Button style={{ backgroundColor: colors.dodgerblue }}>
+                    <AntDesign
+                      name='info'
+                      size={18}
+                      style={{ color: colors.white }}
+                    />
+                  </Button>
+                </Left>
+                <Body>
+                  <Text style={LightTheme.chatListName}>App Info</Text>
+                </Body>
+                <Right>
+                  <Icon active name='arrow-forward' />
+                </Right>
+              </ListItem>
+              {info}
+              <ListItem
+                icon
                 onPress={() =>
                   ActionSheet.show(
                     {
-                      options: CameraButton,
-                      cancelButtonIndex: 2,
-                      title: "Profile Photo",
+                      options: BUTTONS,
+                      cancelButtonIndex: 1,
+                      title: "Are you sure you want to logout ?",
                     },
                     (buttonIndex) => {
                       if (buttonIndex === 0) {
-                        this.PickImageFromCamera();
-                      } else if (buttonIndex === 1) {
-                        this.PickImageFromGallery();
+                        this.props.logout();
+                        this.props.navigation.navigate("Auth");
                       }
                     }
                   )
                 }
-                style={SettingForm.cameraView}
               >
-                <MaterialIcons
-                  style={SettingForm.camera}
-                  size={28}
-                  name='photo-camera'
-                />
-              </TouchableOpacity>
-            </ListItem>
-            <ListItem
-              style={{
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Form>
-                <Text style={SettingForm.Text}>Name : </Text>
-                <TextInput
-                  numberOfLines={1}
-                  style={SettingForm.inputBox}
-                  value={this.state.name}
-                  onChangeText={(text) =>
-                    this.setState({
-                      name: text,
-                      changed: true,
-                    })
-                  }
-                />
-                <Text style={SettingForm.Text}>Status : </Text>
-                <TextInput
-                  multiline={true}
-                  style={SettingForm.inputBox}
-                  value={this.state.status}
-                  onChangeText={(text) =>
-                    this.setState({
-                      status: text,
-                      changed: true,
-                    })
-                  }
-                />
-              </Form>
-              {button}
-            </ListItem>
-
-            <ListItem
-              icon
-              noBorder={true}
-              onPress={() => {
-                if (this.state.infoClicked)
-                  this.setState({ infoClicked: false });
-                else this.setState({ infoClicked: true });
-              }}
-            >
-              <Left>
-                <Button style={{ backgroundColor: colors.dodgerblue }}>
-                  <AntDesign
-                    name='info'
-                    size={18}
-                    style={{ color: colors.white }}
-                  />
-                </Button>
-              </Left>
-              <Body>
-                <Text style={LightTheme.chatListName}>App Info</Text>
-              </Body>
-              <Right>
-                <Icon active name='arrow-forward' />
-              </Right>
-            </ListItem>
-            {info}
-            <ListItem
-              icon
-              onPress={() =>
-                ActionSheet.show(
-                  {
-                    options: BUTTONS,
-                    cancelButtonIndex: 1,
-                    title: "Are you sure you want to logout ?",
-                  },
-                  (buttonIndex) => {
-                    if (buttonIndex === 0) {
-                      this.props.logout();
-                      this.props.navigation.navigate("Auth");
-                    }
-                  }
-                )
-              }
-            >
-              <Left>
-                <Button style={{ backgroundColor: colors.red }}>
-                  <AntDesign
-                    name='logout'
-                    size={18}
-                    style={{ color: colors.white }}
-                  />
-                </Button>
-              </Left>
-              <Body>
-                <Text style={LightTheme.chatListName}>Log Out</Text>
-              </Body>
-              <Right>
-                <Icon active name='arrow-forward' />
-              </Right>
-            </ListItem>
-          </List>
-        </Content>
+                <Left>
+                  <Button style={{ backgroundColor: colors.red }}>
+                    <AntDesign
+                      name='logout'
+                      size={18}
+                      style={{ color: colors.white }}
+                    />
+                  </Button>
+                </Left>
+                <Body>
+                  <Text style={LightTheme.chatListName}>Log Out</Text>
+                </Body>
+                <Right>
+                  <Icon active name='arrow-forward' />
+                </Right>
+              </ListItem>
+            </List>
+          </Content>
+        </Root>
       </Container>
     );
   }

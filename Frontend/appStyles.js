@@ -15,7 +15,7 @@ export const LightTheme = StyleSheet.create({
     marginLeft: 18,
   },
   HeaderContainer: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.ghostwhite,
     paddingBottom: 45,
     paddingTop: 33,
     elevation: 50,
@@ -28,7 +28,7 @@ export const LightTheme = StyleSheet.create({
     fontSize: 40,
   },
   FlatListComponent: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.ghostwhite,
   },
   chatListTickName: {
     fontFamily: "Touche_Semibold",
@@ -114,6 +114,7 @@ export const LightTheme = StyleSheet.create({
     fontSize: 20,
     flexDirection: "row",
   },
+  ChatInputViewContainer: { flex: 1, backgroundColor: colors.DarkWhite },
   ChatHeaderImage: {
     right: "70%",
     height: 45,
@@ -124,6 +125,9 @@ export const LightTheme = StyleSheet.create({
     fontSize: 26,
     marginLeft: 12,
     marginTop: 10,
+    color: colors.black,
+  },
+  ChatInputCameraIcon: {
     color: colors.black,
   },
   ChatInput: {
@@ -147,7 +151,7 @@ export const LightTheme = StyleSheet.create({
     color: colors.white,
   },
   ChatHeaderView: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.ghostwhite,
   },
   ChatHeaderTitle: {
     color: colors.grey,
@@ -262,6 +266,32 @@ export const LightTheme = StyleSheet.create({
     textTransform: "capitalize",
     fontFamily: "Roboto_medium",
     fontSize: 12,
+  },
+  SettingsinputBox: {
+    maxWidth: "90%",
+    margin: 10,
+    padding: 12,
+    fontSize: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.dodgerblue,
+    fontFamily: "Roboto_medium",
+  },
+  SettingsText: {
+    alignSelf: "flex-start",
+    color: colors.black,
+    fontFamily: "Touche_Semibold",
+    fontSize: 15,
+  },
+  SettingsmemberListNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.LightGrey,
+    paddingLeft: 2.5,
+  },
+  SettingsmemberListName: {
+    fontFamily: "Touche_Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.grey,
   },
 });
 
@@ -270,16 +300,16 @@ export const DarkTheme = StyleSheet.create({
     textTransform: "capitalize",
     fontFamily: "Kamerik-Bold",
     fontSize: 30,
-    color: colors.grey,
+    color: colors.white,
     left: 16,
   },
   HeaderIcon: {
-    color: colors.grey,
+    color: colors.white,
     fontSize: 25,
     marginLeft: 18,
   },
   HeaderContainer: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
     paddingBottom: 45,
     paddingTop: 33,
     elevation: 50,
@@ -292,7 +322,7 @@ export const DarkTheme = StyleSheet.create({
     fontSize: 40,
   },
   FlatListComponent: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
   },
   chatListTickName: {
     fontFamily: "Touche_Semibold",
@@ -330,29 +360,28 @@ export const DarkTheme = StyleSheet.create({
     fontFamily: "Touche_Medium",
     fontSize: 18,
     textTransform: "capitalize",
-    color: colors.grey,
+    color: colors.LightGrey,
   },
   chatListNote: {
     fontFamily: "Roboto_medium",
-    color: colors.LightGrey,
+    color: colors.grey,
     paddingLeft: 2.5,
   },
   chatListActiveName: {
     fontFamily: "Touche_Semibold",
     fontSize: 18,
     textTransform: "capitalize",
-    color: colors.Shadow,
+    color: colors.DarkWhite,
   },
   chatListActiveNote: {
     fontFamily: "Roboto_medium",
-    color: colors.grey,
+    color: colors.MiddleGrey,
     paddingLeft: 2.5,
     fontWeight: "bold",
   },
   chatListBadge: {
     backgroundColor: colors.dodgerblue,
     height: 20,
-    // width: 20,
     marginTop: 5,
   },
   chatListBadgeText: {
@@ -360,7 +389,7 @@ export const DarkTheme = StyleSheet.create({
     fontSize: 12,
   },
   ChatMainContainer: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
   },
   ChatKeyboardAvoidingView: {
     height: 47,
@@ -368,11 +397,12 @@ export const DarkTheme = StyleSheet.create({
     flexDirection: "row",
     margin: 3,
     marginBottom: 7,
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
   },
+  ChatInputViewContainer: { flex: 1, backgroundColor: colors.Shadow },
   ChatInputView: {
     width: "80%",
-    backgroundColor: colors.DarkWhite,
+    backgroundColor: colors.Shadow,
     borderRadius: 50,
     marginLeft: 5,
     fontSize: 20,
@@ -388,14 +418,17 @@ export const DarkTheme = StyleSheet.create({
     fontSize: 26,
     marginLeft: 12,
     marginTop: 10,
-    color: colors.black,
+    color: colors.dodgerblue,
+  },
+  ChatInputCameraIcon: {
+    color: colors.dodgerblue,
   },
   ChatInput: {
     padding: 10,
     width: "100%",
     fontFamily: "Roboto_medium",
     fontSize: 18,
-    color: colors.grey,
+    color: colors.DarkWhite,
     marginBottom: 2,
   },
   SendButtonView: {
@@ -411,17 +444,17 @@ export const DarkTheme = StyleSheet.create({
     color: colors.white,
   },
   ChatHeaderView: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
   },
   ChatHeaderTitle: {
-    color: colors.grey,
+    color: colors.white,
     fontFamily: "Touche_Medium",
     fontSize: 21,
     marginLeft: 10,
     textTransform: "capitalize",
   },
   ChatHeaderNote: {
-    color: colors.LightGrey,
+    color: colors.grey,
     fontFamily: "Touche_Medium",
     fontSize: 12,
     marginLeft: 12,
@@ -435,7 +468,7 @@ export const DarkTheme = StyleSheet.create({
     textTransform: "capitalize",
   },
   ChatBubblesList: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
   },
   ChatBubbleView: {
     alignItems: "flex-end",
@@ -446,11 +479,11 @@ export const DarkTheme = StyleSheet.create({
     marginRight: 14,
     maxWidth: "80%",
     marginTop: 3,
-    backgroundColor: colors.BluishGrey,
+    backgroundColor: colors.indigo,
     flexDirection: "row",
   },
   ChatBubbleText: {
-    color: colors.dodgerblue,
+    color: colors.BluishGrey,
     fontFamily: "Touche_Medium",
     fontSize: 14,
     marginBottom: 3,
@@ -480,7 +513,7 @@ export const DarkTheme = StyleSheet.create({
     padding: 12,
     marginLeft: 14,
     marginTop: 3,
-    backgroundColor: colors.DarkWhite,
+    backgroundColor: colors.Shadow,
     flexDirection: "column",
   },
   ChatBubbleLeftViewName: {
@@ -491,7 +524,7 @@ export const DarkTheme = StyleSheet.create({
     marginBottom: 5,
   },
   ChatBubbleLeftText: {
-    color: colors.grey,
+    color: colors.MiddleGrey,
     fontFamily: "Touche_Medium",
     fontSize: 14,
     marginBottom: 3,
@@ -499,7 +532,7 @@ export const DarkTheme = StyleSheet.create({
     maxWidth: "92%",
   },
   ChatBubbleLeftNote: {
-    color: colors.MiddleGrey,
+    color: colors.grey,
     fontSize: 10,
     alignSelf: "flex-end",
     marginLeft: 5,
@@ -509,7 +542,7 @@ export const DarkTheme = StyleSheet.create({
     fontSize: 26,
     marginLeft: 8,
     marginTop: 10,
-    color: colors.grey,
+    color: colors.dodgerblue,
   },
   PromptMessageView: {
     padding: 6,
@@ -520,12 +553,39 @@ export const DarkTheme = StyleSheet.create({
   PromptMessage: {
     padding: 10,
     borderRadius: 10,
-    backgroundColor: colors.DarkWhite,
-    color: colors.MiddleGrey,
+    backgroundColor: colors.Shadow,
+    color: colors.grey,
     textAlign: "center",
     textTransform: "capitalize",
     fontFamily: "Roboto_medium",
     fontSize: 12,
+  },
+  SettingsinputBox: {
+    maxWidth: "90%",
+    margin: 10,
+    padding: 12,
+    fontSize: 16,
+    borderBottomWidth: 2,
+    color: colors.LightGrey,
+    borderBottomColor: colors.dodgerblue,
+    fontFamily: "Roboto_medium",
+  },
+  SettingsText: {
+    alignSelf: "flex-start",
+    color: colors.DarkWhite,
+    fontFamily: "Touche_Semibold",
+    fontSize: 15,
+  },
+  SettingsmemberListNote: {
+    fontFamily: "Roboto_medium",
+    color: colors.grey,
+    paddingLeft: 2.5,
+  },
+  SettingsmemberListName: {
+    fontFamily: "Touche_Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
+    color: colors.DarkWhite,
   },
 });
 
@@ -540,7 +600,7 @@ export const ToggleSwitchStyle = StyleSheet.create({
 export const ActionButtonStyle = StyleSheet.create({
   Toggle: {
     position: "absolute",
-    left: "91%",
+    left: "88%",
     bottom: "3%",
   },
 });
@@ -689,7 +749,7 @@ export const FloatBarStyle = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: 55,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     borderTopLeftRadius: 100,
     borderTopRightRadius: 100,
   },
@@ -698,7 +758,7 @@ export const FloatBarStyle = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: 55,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
   },
   button2: {
     position: "absolute",
@@ -716,7 +776,7 @@ export const FloatBarStyle = StyleSheet.create({
     alignSelf: "center",
     height: 60,
     color: colors.grey,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     fontSize: 26,
     marginTop: 20,
   },
@@ -725,7 +785,7 @@ export const FloatBarStyle = StyleSheet.create({
     alignSelf: "center",
     height: 60,
     fontSize: 26,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     color: colors.grey,
   },
   group: {
@@ -733,7 +793,7 @@ export const FloatBarStyle = StyleSheet.create({
     alignSelf: "center",
     height: 60,
     fontSize: 26,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     color: colors.grey,
   },
   open: {
@@ -742,7 +802,7 @@ export const FloatBarStyle = StyleSheet.create({
     height: "150%",
     fontSize: 55,
     color: colors.dodgerblue,
-    backgroundColor: colors.white,
+    backgroundColor: colors.ghostwhite,
   },
 });
 
@@ -764,7 +824,7 @@ export const DarkFloatBarStyle = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: 55,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     borderTopLeftRadius: 100,
     borderTopRightRadius: 100,
   },
@@ -773,7 +833,7 @@ export const DarkFloatBarStyle = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: 55,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
   },
   button2: {
     position: "absolute",
@@ -791,7 +851,7 @@ export const DarkFloatBarStyle = StyleSheet.create({
     alignSelf: "center",
     height: 60,
     color: colors.grey,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     fontSize: 26,
     marginTop: 20,
   },
@@ -800,7 +860,7 @@ export const DarkFloatBarStyle = StyleSheet.create({
     alignSelf: "center",
     height: 60,
     fontSize: 26,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     color: colors.grey,
   },
   group: {
@@ -808,7 +868,7 @@ export const DarkFloatBarStyle = StyleSheet.create({
     alignSelf: "center",
     height: 60,
     fontSize: 26,
-    backgroundColor: colors.black,
+    backgroundColor: colors.Shadow,
     color: colors.grey,
   },
   open: {
@@ -817,6 +877,6 @@ export const DarkFloatBarStyle = StyleSheet.create({
     height: "150%",
     fontSize: 55,
     color: colors.dodgerblue,
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
   },
 });

@@ -121,11 +121,11 @@ class MainApp extends Component {
       type: "info",
       floating: true,
       color: colors.white,
-      backgroundColor: colors.dodgerblue,
+      backgroundColor: colors.darkBlue,
     });
     setTimeout(() => {
       StatusBar.setBarStyle("dark-content");
-      StatusBar.setBackgroundColor(colors.white);
+      StatusBar.setBackgroundColor(colors.ghostwhite);
     });
   }
 
@@ -136,7 +136,7 @@ class MainApp extends Component {
       type: "info",
       floating: true,
       color: colors.white,
-      backgroundColor: colors.dodgerblue,
+      backgroundColor: colors.indigo,
     });
     setTimeout(() => {
       StatusBar.setBarStyle("light-content");

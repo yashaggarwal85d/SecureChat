@@ -157,6 +157,7 @@ class PresentChatScreen extends React.Component {
           appStyles={state.params.appStyles}
           isGroup={this.state.room.isGroup}
           members={this.state.room.members}
+          dark={this.state.room.dark}
         />
         {progress}
         <ChatFooter

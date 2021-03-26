@@ -150,7 +150,7 @@ class GroupSearchScreen extends Component {
       );
     else
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={LightTheme.ChatInputViewContainer}>
           <View style={LightTheme.ChatInputView}>
             <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
             <TextInput

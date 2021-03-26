@@ -109,7 +109,7 @@ class GroupSearchScreen extends Component {
   render() {
     if (this.state.selectedUsers > 1)
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={DarkTheme.ChatInputViewContainer}>
           <View style={DarkTheme.ChatInputView}>
             <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
             <TextInput
@@ -150,7 +150,7 @@ class GroupSearchScreen extends Component {
       );
     else
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={DarkTheme.ChatInputViewContainer}>
           <View style={DarkTheme.ChatInputView}>
             <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
             <TextInput

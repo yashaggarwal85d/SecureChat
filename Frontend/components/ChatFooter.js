@@ -130,6 +130,7 @@ class ChatFooter extends Component {
                   )
                 }
                 size={26}
+                style={this.props.appStyles.ChatInputCameraIcon}
                 name='photo-camera'
               />
             </Root>

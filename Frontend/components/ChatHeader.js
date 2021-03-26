@@ -73,6 +73,7 @@ export default class ChatHeader extends Component {
                 updateHeaderComponent: this.updateHeaderComponent.bind(this),
                 room: this.state.room,
                 onPromptSend: this.props.onPromptSend,
+                appStyles: this.props.appStyles,
               },
             });
           }}

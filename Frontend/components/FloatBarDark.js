@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Animated, TouchableWithoutFeedback, Alert } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FloatBarStyle } from "../appStyles";
+import { DarkFloatBarStyle } from "../appStyles";
 
 export default class ActionButton extends Component {
   constructor(props) {
@@ -58,16 +58,16 @@ export default class ActionButton extends Component {
     };
 
     return (
-      <View style={FloatBarStyle.container}>
-        <Animated.View style={[FloatBarStyle.background]}>
+      <View style={DarkFloatBarStyle.container}>
+        <Animated.View style={[DarkFloatBarStyle.background]}>
           <TouchableWithoutFeedback
             onPress={() =>
               this.props.navigation.navigate("DarkGroupSearchScreen")
             }
           >
-            <Animated.View style={[FloatBarStyle.button0, settingStyle]}>
+            <Animated.View style={[DarkFloatBarStyle.button0, settingStyle]}>
               <MaterialCommunityIcons
-                style={FloatBarStyle.settings}
+                style={DarkFloatBarStyle.settings}
                 name='account-multiple-plus'
               />
             </Animated.View>
@@ -75,17 +75,17 @@ export default class ActionButton extends Component {
           <TouchableWithoutFeedback
             onPress={() => this.props.navigation.navigate("DarkSearchScreen")}
           >
-            <Animated.View style={[FloatBarStyle.button, peopleStyle]}>
+            <Animated.View style={[DarkFloatBarStyle.button, peopleStyle]}>
               <MaterialCommunityIcons
-                style={FloatBarStyle.account}
+                style={DarkFloatBarStyle.account}
                 name='account-plus'
               />
             </Animated.View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => this.toggleOpen()}>
-            <Animated.View style={[FloatBarStyle.button2]}>
+            <Animated.View style={[DarkFloatBarStyle.button2]}>
               <MaterialCommunityIcons
-                style={FloatBarStyle.open}
+                style={DarkFloatBarStyle.open}
                 name={this.state.icon}
               />
             </Animated.View>
