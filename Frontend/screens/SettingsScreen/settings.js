@@ -29,6 +29,7 @@ import { SettingForm, LightTheme } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
 import * as firebase from "firebase";
 import { updateProfilePic } from "../../store/reducers/Socket";
+import { showMessage } from "react-native-flash-message";
 
 var BUTTONS = [
   { text: "Yes", icon: "open", iconColor: colors.greencyan },
@@ -70,7 +71,11 @@ class SettingsScreen extends Component {
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
+      showMessage({
+        message: `Sorry, we need camera permissions to make this work!`,
+        type: "danger",
+        floating: true,
+      });
       return;
     }
     let result = await ImagePicker.launchCameraAsync({
@@ -86,7 +91,11 @@ class SettingsScreen extends Component {
   async PickImageFromGallery() {
     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+      showMessage({
+        message: `Sorry, we need camera roll permissions to make this work!`,
+        type: "danger",
+        floating: true,
+      });
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({

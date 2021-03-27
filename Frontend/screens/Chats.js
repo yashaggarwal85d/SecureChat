@@ -45,7 +45,6 @@ class PresentChatScreen extends React.Component {
     socket.on("removeRoom", async (roomId) => {
       if (roomId === this.state.room.id) {
         this.props.navigation.navigate("MainScreen");
-        alert(`you have been remove from ${this.state.room.name}`);
       }
     });
   };

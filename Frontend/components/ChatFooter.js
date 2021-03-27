@@ -89,7 +89,7 @@ class ChatFooter extends Component {
   // }
 
   async handleSend() {
-    if (this.state.message) {
+    if (this.state.message.trim()) {
       this.props.onSend(this.state.message.trim());
       this.setState({ message: null });
     }
