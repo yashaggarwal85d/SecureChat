@@ -25,4 +25,5 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => console.log("db active")
 );
-server.listen(3000);
+var PORT = process.env.PORT || 3000;
+server.listen(PORT);
