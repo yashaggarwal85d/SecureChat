@@ -53,6 +53,13 @@ module.exports = (io) => {
           socket.emit("error", "Access Denied");
         } else {
           const room = await Room.findById(roomId);
+          if (!room.name) {
+            room.members.forEach((mem) => {
+              if (ConnectedUsers[mem.id] && !mem.blocked) {
+                socket.to(ConnectedUsers[mem.id]).emit("bluetick", roomId);
+              }
+            });
+          }
           const MessageNum = room.messages.length;
           const UpdatedRoom = await Room.updateOne(
             { _id: roomId, "members.id": verifiedId._id },

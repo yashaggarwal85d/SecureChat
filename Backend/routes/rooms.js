@@ -5,6 +5,7 @@ const Room = require("../models/rooms");
 const AuthTokenVerification = require("./TokenVerify");
 const { roomValidation } = require("../validation");
 const RoomMemberVerification = require("./RoomMemberVerify");
+const RandomUserNames = require("../NamesList");
 
 router.get("/all", AuthTokenVerification, async (req, res) => {
   try {
@@ -16,14 +17,21 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
     const rooms = [];
 
     for (const roomid of rooms_id) {
-      const room = await Room.findById(roomid);
+      var room = await Room.findById(roomid);
       if (room.name) {
         for (const member of room.members) {
-          if (member.id === req.user._id && !member.blocked) {
-            rooms.push(room);
+          if (member.id === req.user._id) {
+            if (!member.blocked) rooms.push(room);
+            break;
           }
         }
       } else {
+        if (room.isDark && room.creator_id === req.user._id) {
+          for (var member of room.members) {
+            const details = await User.findById(member.id);
+            member["details"] = details;
+          }
+        }
         rooms.push(room);
       }
     }
@@ -79,32 +87,43 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
     const members = req.body.members;
     members.push({ id: req.user._id });
     var room_details;
+    var isdark;
 
-    if (req.body.isDark)
-      room_details = {
-        name: req.body.name,
-        description: req.body.description,
-        creator_id: req.user._id,
-        members: members,
-        isDark: true,
-      };
-    else
-      room_details = {
-        name: req.body.name,
-        description: req.body.description,
-        creator_id: req.user._id,
-        members: members,
-        isDark: false,
-      };
+    if (req.body.isDark) {
+      for (const member of members) {
+        var username =
+          RandomUserNames[Math.floor(Math.random() * RandomUserNames.length)];
+        var user = await User.findById(member.id);
+        member["details"] = {
+          _id: member.id,
+          name: username,
+          status: `hi, i am ${username}`,
+        };
+      }
+      isdark = true;
+    } else {
+      for (const member of members) {
+        var user = await User.findById(member.id);
+        member["details"] = user;
+      }
+      isdark = false;
+    }
+
+    room_details = {
+      name: req.body.name,
+      description: req.body.description,
+      creator_id: req.user._id,
+      members: members,
+      isDark: isdark,
+    };
 
     const { error } = roomValidation(room_details);
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
-
     const room = new Room(room_details);
-
     const Savedroom = await room.save();
+
     for (const member of members) {
       const UpdatedUser = await User.updateMany(
         {
@@ -185,6 +204,21 @@ router.patch("/AddMember/:RoomId", RoomMemberVerification, async (req, res) => {
           });
         }
       }
+      var userdetails;
+
+      if (room.isDark) {
+        var username =
+          RandomUserNames[Math.floor(Math.random() * RandomUserNames.length)];
+        userdetails = {
+          _id: member_id,
+          name: username,
+          profile_pic:
+            "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+          status: `hi, i am ${username}`,
+        };
+      } else {
+        userdetails = await User.findById(member_id);
+      }
       const updatedRoom = await Room.updateMany(
         {
           _id: req.params.RoomId,
@@ -193,6 +227,7 @@ router.patch("/AddMember/:RoomId", RoomMemberVerification, async (req, res) => {
           $push: {
             members: {
               id: member_id,
+              details: userdetails,
             },
           },
         }

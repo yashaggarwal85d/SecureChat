@@ -77,6 +77,7 @@ export const fillData = () => {
           "Content-Type": "application/json",
         },
       }).then((res) => res.data);
+
       if (data) {
         var rooms = [];
         for (const room of data) {
@@ -85,102 +86,23 @@ export const fillData = () => {
             var profile_pic = "";
             var description = "";
             var isGroup = false;
-            if (room.isDark && room.creator_id !== user.id) {
-              if (!room.name) {
-                for (var member of room.members) {
-                  if (member.id != user.id) {
-                    const user2 = await axios({
-                      method: "GET",
-                      url:
-                        "https://randomuser.me/api/?inc=name&nat=us,fr,au,ca,ch,dk,nl",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                    }).then((res) => res.data.results[0].name);
-                    roomName = user2.first + " " + user2.last;
-                    profile_pic =
-                      "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80";
-                    description = `hi, i am ${roomName}`;
-                    isGroup = false;
-                    member["details"] = {
-                      _id: member.id,
-                      name: roomName,
-                      profile_pic: profile_pic,
-                      status: description,
-                    };
-                  }
-                }
-              } else {
-                roomName = room.name;
-                profile_pic = room.profile_pic;
-                description = room.description;
-                isGroup = true;
-                for (var member of room.members) {
-                  if (member.id === user.id) {
-                    member["details"] = {
-                      _id: user.id,
-                      name: user.name,
-                      profile_pic: user.profile_pic,
-                      status: user.status,
-                    };
-                  } else {
-                    const user2 = await axios({
-                      method: "GET",
-                      url:
-                        "https://randomuser.me/api/?inc=name&nat=us,fr,au,ca,ch,dk,nl",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                    }).then((res) => res.data.results[0].name);
-                    member["details"] = {
-                      _id: member.id,
-                      name: user2.first + " " + user2.last,
-                      profile_pic:
-                        "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
-                      status: `hi, i am ${user2.first + " " + user2.last}`,
-                    };
-                  }
+
+            if (!room.name) {
+              for (var member of room.members) {
+                if (member.id != user.id) {
+                  roomName = member.details.name;
+                  profile_pic = member.details.profile_pic;
+                  description = member.details.status;
+                  isGroup = false;
                 }
               }
             } else {
-              if (!room.name) {
-                for (var member of room.members) {
-                  if (member.id != user.id) {
-                    const user2 = await axios({
-                      method: "GET",
-                      url: API.USERBASEAPI + `/${member.id}`,
-                      headers: {
-                        "auth-token": user.token,
-                        "Content-Type": "application/json",
-                      },
-                    }).then((res) => res.data);
-                    delete user2.password;
-                    member["details"] = user2;
-                    roomName = user2.name;
-                    profile_pic = user2.profile_pic;
-                    description = user2.status;
-                    isGroup = false;
-                  }
-                }
-              } else {
-                roomName = room.name;
-                profile_pic = room.profile_pic;
-                description = room.description;
-                isGroup = true;
-                for (var member of room.members) {
-                  const user2 = await axios({
-                    method: "GET",
-                    url: API.USERBASEAPI + `/${member.id}`,
-                    headers: {
-                      "auth-token": user.token,
-                      "Content-Type": "application/json",
-                    },
-                  }).then((res) => res.data);
-                  delete user2.password;
-                  member["details"] = user2;
-                }
-              }
+              roomName = room.name;
+              profile_pic = room.profile_pic;
+              description = room.description;
+              isGroup = true;
             }
+
             const messages = room.messages;
             var lastMessage = description;
             var lastTime = room.create_date;
@@ -389,102 +311,23 @@ export const addRoom = (room) => {
       var profile_pic = "";
       var description = "";
       var isGroup = false;
-      if (room.isDark && room.creator_id !== user.id) {
-        if (!room.name) {
-          for (var member of room.members) {
-            if (member.id != user.id) {
-              const user2 = await axios({
-                method: "GET",
-                url:
-                  "https://randomuser.me/api/?inc=name&nat=us,fr,au,ca,ch,dk,nl",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }).then((res) => res.data.results[0].name);
-              roomName = user2.first + " " + user2.last;
-              profile_pic =
-                "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80";
-              description = `hi, i am ${roomName}`;
-              isGroup = false;
-              member["details"] = {
-                _id: member.id,
-                name: roomName,
-                profile_pic: profile_pic,
-                status: description,
-              };
-            }
-          }
-        } else {
-          roomName = room.name;
-          profile_pic = room.profile_pic;
-          description = room.description;
-          isGroup = true;
-          for (var member of room.members) {
-            if (member.id === user.id) {
-              member["details"] = {
-                _id: user.id,
-                name: user.name,
-                profile_pic: user.profile_pic,
-                status: user.status,
-              };
-            } else {
-              const user2 = await axios({
-                method: "GET",
-                url:
-                  "https://randomuser.me/api/?inc=name&nat=us,fr,au,ca,ch,dk,nl",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }).then((res) => res.data.results[0].name);
-              member["details"] = {
-                _id: member.id,
-                name: user2.first + " " + user2.last,
-                profile_pic:
-                  "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
-                status: `hi, i am ${user2.first + " " + user2.last}`,
-              };
-            }
+
+      if (!room.name) {
+        for (var member of room.members) {
+          if (member.id != user.id) {
+            roomName = member.details.name;
+            profile_pic = member.details.profile_pic;
+            description = member.details.status;
+            isGroup = false;
           }
         }
       } else {
-        if (!room.name) {
-          for (var member of room.members) {
-            if (member.id != user.id) {
-              const user2 = await axios({
-                method: "GET",
-                url: API.USERBASEAPI + `/${member.id}`,
-                headers: {
-                  "auth-token": user.token,
-                  "Content-Type": "application/json",
-                },
-              }).then((res) => res.data);
-              delete user2.password;
-              member["details"] = user2;
-              roomName = user2.name;
-              profile_pic = user2.profile_pic;
-              description = user2.status;
-              isGroup = false;
-            }
-          }
-        } else {
-          roomName = room.name;
-          profile_pic = room.profile_pic;
-          description = room.description;
-          isGroup = true;
-          for (var member of room.members) {
-            const user2 = await axios({
-              method: "GET",
-              url: API.USERBASEAPI + `/${member.id}`,
-              headers: {
-                "auth-token": user.token,
-                "Content-Type": "application/json",
-              },
-            }).then((res) => res.data);
-            delete user2.password;
-            member["details"] = user2;
-          }
-        }
+        roomName = room.name;
+        profile_pic = room.profile_pic;
+        description = room.description;
+        isGroup = true;
       }
+
       const messages = room.messages;
       var lastMessage = description;
       var lastTime = room.create_date;

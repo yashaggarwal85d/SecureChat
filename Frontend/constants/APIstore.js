@@ -1,4 +1,6 @@
-export const BASEAPI = "https://project-x2.herokuapp.com";
+export const LOCALBASEAPI = "http://192.168.1.8:3000";
+export const SERVERBASEAPI = "https://project-x2.herokuapp.com";
+export const BASEAPI = LOCALBASEAPI;
 export const USERBASEAPI = BASEAPI + "/users";
 export const LOGINAPI = USERBASEAPI + "/login";
 export const SIGNUPAPI = USERBASEAPI + "/register";
@@ -14,3 +16,4 @@ export const LEAVEROOM = ROOMBASEAPI + "/leave";
 export const REMOVEMEMBER = ROOMBASEAPI + "/RemoveMember";
 export const ADDMEMBER = ROOMBASEAPI + "/AddMember";
 export const UPDATEPROFILEPIC = USERBASEAPI + "/profile_pic";
+export const CHECKUSERCONTACTS = USERBASEAPI + "/CheckContacts";

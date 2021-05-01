@@ -143,6 +143,7 @@ class RoomSettingsScreen extends Component {
   renderGridItem = (itemData) => {
     var admin = <></>;
     var name = itemData.item.details.name;
+    var status = itemData.item.details.status;
     var removeMem = <></>;
     const { state } = this.props.navigation;
     if (itemData.item.details._id === this.state.room.creator_id)
@@ -198,6 +199,7 @@ class RoomSettingsScreen extends Component {
     if (itemData.item.details._id === this.props.user.id) {
       removeMem = <></>;
       name = "You";
+      status = this.props.user.status;
     }
     return (
       <ListItem noBorder={true} style={{ padding: 6 }} avatar>
@@ -215,7 +217,7 @@ class RoomSettingsScreen extends Component {
             style={state.params.appStyles.SettingsmemberListNote}
             note
           >
-            {itemData.item.details.status}
+            {status}
           </Text>
         </Body>
         <Right>

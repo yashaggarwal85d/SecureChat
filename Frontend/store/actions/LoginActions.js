@@ -1,4 +1,4 @@
-export const UPDATE_EMAIL = "UPDATE_EMAIL";
+export const UPDATE_PHONE = "UPDATE_PHONE";
 export const UPDATE_NAME = "UPDATE_NAME";
 export const UPDATE_PASSWORD = "UPDATE_PASSWORD";
 export const UPDATE_ALERT = "UPDATE_ALERT";
@@ -59,10 +59,10 @@ export const updatetoken = (token) => {
   };
 };
 
-export const updateEmail = (email) => {
+export const updatePhone = (phone) => {
   return {
-    type: UPDATE_EMAIL,
-    payload: email,
+    type: UPDATE_PHONE,
+    payload: phone,
   };
 };
 
@@ -123,7 +123,7 @@ export const login = () => {
         "Content-Type": "application/json",
       },
       data: {
-        email: user.email,
+        phone: user.phone,
         password: user.password,
       },
     })
@@ -155,7 +155,7 @@ export const login = () => {
 
 export const signup = () => {
   return async (dispatch, getState) => {
-    const { name, email, password } = getState().user;
+    const { name, phone, password } = getState().user;
     const data = await axios({
       method: "POST",
       url: API.SIGNUPAPI,
@@ -164,7 +164,7 @@ export const signup = () => {
       },
       data: {
         name: name,
-        email: email,
+        phone: phone,
         password: password,
       },
     })
@@ -205,6 +205,38 @@ export const AllUsers = async (token) => {
       },
     }).then((res) => res.data);
     return data;
+  } catch (e) {
+    showMessage({
+      message: `Error`,
+      description: `${e}`,
+      type: "danger",
+      floating: true,
+    });
+    console.log(e);
+  }
+};
+
+export const CheckUserContacts = async (token, PhoneNumbers) => {
+  try {
+    const data = await axios({
+      method: "POST",
+      url: API.CHECKUSERCONTACTS,
+      headers: {
+        "auth-token": token,
+        "Content-Type": "application/json",
+      },
+      data: {
+        PhoneNumbers: PhoneNumbers,
+      },
+    }).then((res) => res.data);
+    if (data.success)
+      showMessage({
+        message: `Contacts Updated`,
+        description: `${data.message}`,
+        type: "success",
+        floating: true,
+      });
+    return data.contacts;
   } catch (e) {
     showMessage({
       message: `Error`,

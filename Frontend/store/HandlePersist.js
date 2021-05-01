@@ -1,7 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
-  updateEmail,
+  updatePhone,
   updatePassword,
   login,
   updateAlert,
@@ -12,7 +12,7 @@ import {
   ChatMainNavigator,
 } from "../navigation/chatsNavigation";
 import React, { Component } from "react";
-import { View, Image } from "react-native";
+import { Image } from "react-native";
 import { Container } from "native-base";
 import { StatusBar } from "react-native";
 
@@ -41,7 +41,7 @@ class Navigation extends Component {
     if (
       !this.props.user ||
       !this.props.user.password ||
-      !this.props.user.email
+      !this.props.user.phone
     ) {
       this.setState({ loaded: true, Authstate: AuthMainNavigator });
     } else if (this.props.user.token) {
@@ -109,7 +109,7 @@ class Navigation extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { updateEmail, updatePassword, login, updateAlert, fillData },
+    { updatePhone, updatePassword, login, updateAlert, fillData },
     dispatch
   );
 };

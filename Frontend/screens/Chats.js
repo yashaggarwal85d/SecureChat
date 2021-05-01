@@ -151,6 +151,7 @@ class PresentChatScreen extends React.Component {
         />
         <ChatBubbles
           {...this.props}
+          roomId={this.state.room.id}
           messages={this.state.room.messages}
           userId={this.props.user.id}
           appStyles={state.params.appStyles}

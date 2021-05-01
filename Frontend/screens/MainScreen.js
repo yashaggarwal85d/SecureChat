@@ -12,7 +12,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ToggleSwitch from "../components/ToggleSwitch";
 import { connect } from "react-redux";
 import { JoinRooms } from "../store/reducers/Socket";
-import { updateMode } from "../store/actions/LoginActions";
+import { updateMode, CheckUserContacts } from "../store/actions/LoginActions";
 import { bindActionCreators } from "redux";
 import {
   addMessage,
@@ -22,6 +22,7 @@ import {
   updateRoom,
   removeRoom,
   updateRoomProfile,
+  CreateNewRoom,
 } from "../store/actions/RoomActions";
 import { socket } from "../store/reducers/Socket";
 import ChatListScreen from "./ChatList";
@@ -30,6 +31,7 @@ import ActionButton from "../components/FloatBar";
 import DarkActionButton from "../components/FloatBarDark";
 import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
+import * as Contacts from "expo-contacts";
 
 function sorted(arr) {
   const sortedArray = arr.sort(function (a, b) {
@@ -56,6 +58,66 @@ class MainApp extends Component {
 
     this.SwitchThemeFunction(this.state.theme);
     JoinRooms(this.props.user.token);
+    this.processContacts();
+  }
+
+  comparator = (a, b) => {
+    return a === b;
+  };
+
+  async processContacts() {
+    const { status } = await Contacts.requestPermissionsAsync();
+    if (status === "granted") {
+      const { data } = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.PhoneNumbers],
+      });
+      var addedContacts = [];
+      for (const room of this.props.rooms) {
+        if (!room.isGroup && !room.isDark) {
+          for (const member of room.members) {
+            if (member.id !== this.props.user.id)
+              addedContacts.push(member.details.phone);
+          }
+        }
+      }
+
+      var PhoneNumbers = [];
+      for (var field of data) {
+        const phnoArray = field.phoneNumbers;
+        if (phnoArray)
+          for (var Phone of phnoArray) {
+            var pattern = new RegExp(/^\+(?:[0-9] ?){10,14}[0-9]$/);
+            var PhoneNumber = Phone.number.replace(/ /g, "");
+            if (PhoneNumber[0] != "+") {
+              if (PhoneNumber[0] == 0) {
+                PhoneNumber = PhoneNumber.substring(1);
+              }
+              PhoneNumber =
+                this.props.user.phone.substring(
+                  0,
+                  this.props.user.phone.length - 10
+                ) + PhoneNumber;
+            }
+            if (
+              pattern.test(PhoneNumber) &&
+              PhoneNumber != this.props.user.phone
+            ) {
+              PhoneNumbers.push(PhoneNumber);
+            }
+          }
+      }
+      PhoneNumbers = PhoneNumbers.filter(
+        (a) => !addedContacts.some((b) => this.comparator(a, b))
+      );
+
+      const contacts = await CheckUserContacts(
+        this.props.user.token,
+        PhoneNumbers
+      );
+      for (const contact of contacts) {
+        await this.props.CreateNewRoom(contact);
+      }
+    }
   }
 
   updateComponent = async () => {
@@ -224,6 +286,7 @@ const mapDispatchToProps = (dispatch) => {
       removeRoom,
       updateRoomProfile,
       updateMode,
+      CreateNewRoom,
     },
     dispatch
   );

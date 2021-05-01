@@ -26,6 +26,7 @@
     "react-dom": "~16.11.0",
     "react-feather": "^2.0.8",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react-native-country-picker-modal": "^2.0.0",
     "react-native-facebook-keyframes": "^1.0.1",
     "react-native-flash-message": "^0.1.23",
     "react-native-gesture-handler": "~1.6.0",
@@ -47,7 +48,8 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^3.1.1",
-    "styled-components": "^5.2.0"
+    "styled-components": "^5.2.0",
+    "expo-contacts": "~8.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

@@ -10,35 +10,35 @@ import {
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
-  updateEmail,
+  updatePhone,
   updatePassword,
   login,
   updateAlert,
 } from "../../store/actions/LoginActions";
 import { fillData } from "../../store/actions/RoomActions";
 import { AuthStyle } from "../../appStyles";
-import { Container } from "native-base";
+import { Button, Container } from "native-base";
+import CountryPicker, { DARK_THEME } from "react-native-country-picker-modal";
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Emailalert: "",
+      Phonealert: "",
       Passalert: "",
       alert: "",
       valid: false,
       loading: false,
+      callingCode: "+91",
     };
   }
-  EmailValid = (e) => {
-    var pattern = new RegExp(
-      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
-    );
+  PhoneValid = (e) => {
+    var pattern = new RegExp(/^\+(?:[0-9] ?){10,14}[0-9]$/);
     if (!pattern.test(e)) {
-      this.setState({ Emailalert: "Please enter a valid email address" });
+      this.setState({ Phonealert: "Please enter a valid phone address" });
       this.setState({ valid: false });
     } else {
-      this.setState({ Emailalert: "" });
+      this.setState({ Phonealert: "" });
       this.setState({ valid: true });
     }
   };
@@ -54,9 +54,9 @@ class Login extends React.Component {
   };
 
   checkValid() {
-    this.EmailValid(this.props.user.email);
+    this.PhoneValid(this.props.user.phone);
     this.PasswordValid(this.props.user.password);
-    if (!this.props.user.email || !this.props.user.password) return false;
+    if (!this.props.user.phone || !this.props.user.password) return false;
     return this.state.valid;
   }
 
@@ -88,7 +88,7 @@ class Login extends React.Component {
   }
 
   handleNavigation() {
-    this.setState({ Emailalert: "", Passalert: "", alert: "" });
+    this.setState({ Phonealert: "", Passalert: "", alert: "" });
     this.props.navigation.navigate("SignUp");
   }
 
@@ -123,16 +123,47 @@ class Login extends React.Component {
         <StatusBar hidden />
         <View style={AuthStyle.container}>
           <Text style={AuthStyle.Heading}>Welcome back.</Text>
-          <TextInput
-            style={AuthStyle.inputBox}
-            value={this.props.user.email}
-            onChangeText={(email) => this.props.updateEmail(email)}
-            placeholder='Email'
-            autoCapitalize='none'
-            autoCompleteType='off'
-            onChange={(e) => this.EmailValid(e.nativeEvent.text)}
+          <View style={{ ...AuthStyle.inputBox, flexDirection: "row" }}>
+            <Button
+              style={AuthStyle.countryCodeButton}
+              onPress={() => this.setState({ countryPicker: true })}
+            >
+              <Text style={AuthStyle.countryCodeButtonText}>
+                {this.state.callingCode}
+              </Text>
+            </Button>
+            <TextInput
+              style={AuthStyle.inputBoxText}
+              value={this.props.user.phone.replace(this.state.callingCode, "")}
+              onChangeText={(phone) =>
+                this.props.updatePhone(this.state.callingCode + phone)
+              }
+              placeholder='Phone'
+              autoCapitalize='none'
+              onChange={(e) =>
+                this.PhoneValid(this.state.callingCode + e.nativeEvent.text)
+              }
+              autoCompleteType='off'
+            />
+          </View>
+          <CountryPicker
+            theme={DARK_THEME}
+            visible={this.state.countryPicker}
+            withCallingCode={true}
+            withEmoji={true}
+            withFilter={true}
+            withFlag={true}
+            containerButtonStyle={{ display: "none" }}
+            onSelect={(code) => {
+              var callcode = "+" + code.callingCode[0];
+              this.props.updatePhone(
+                this.props.user.phone.replace(this.state.callingCode, callcode)
+              );
+              this.setState({ callingCode: callcode });
+            }}
+            onClose={() => this.setState({ countryPicker: false })}
           />
-          <Text style={AuthStyle.AlertText}>{this.state.Emailalert}</Text>
+          <Text style={AuthStyle.AlertText}>{this.state.Phonealert}</Text>
           <TextInput
             style={AuthStyle.inputBox}
             value={this.props.user.password}
@@ -167,7 +198,7 @@ class Login extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { updateEmail, updatePassword, login, updateAlert, fillData },
+    { updatePhone, updatePassword, login, updateAlert, fillData },
     dispatch
   );
 };

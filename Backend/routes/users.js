@@ -57,7 +57,7 @@ router.patch("/update", AuthTokenVerification, async (req, res) => {
       {
         $set: {
           name: req.body.name || user.name,
-          email: req.body.email || user.email,
+          phone: req.body.phone || user.phone,
           password: hashedPassword || user.password,
           status: req.body.status || user.status,
         },
@@ -77,11 +77,13 @@ router.post("/register", async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
-  const emailExist = await User.findOne({
-    email: req.body.email,
+  const phoneExist = await User.findOne({
+    phone: req.body.phone,
   });
-  if (emailExist) {
-    return res.status(400).send("Account with this email already exists");
+  if (phoneExist) {
+    return res
+      .status(400)
+      .send("Account with this Phone number already exists");
   }
 
   //hashing the send password
@@ -90,7 +92,7 @@ router.post("/register", async (req, res) => {
 
   const user = new User({
     name: req.body.name,
-    email: req.body.email,
+    phone: req.body.phone,
     password: hashedPassword,
   });
 
@@ -111,16 +113,18 @@ router.post("/login", async (req, res) => {
   }
 
   const user = await User.findOne({
-    email: req.body.email,
+    phone: req.body.phone,
   });
   if (!user) {
-    return res.status(400).send("Account with this email does not exists");
+    return res
+      .status(400)
+      .send("Account with this Phone number does not exists");
   }
 
   //comparing the send password
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass) {
-    return res.status(400).send("Email or Password is incorrect");
+    return res.status(400).send("Phone or Password is incorrect");
   }
 
   const token = JWT.sign(
@@ -136,6 +140,40 @@ router.post("/login", async (req, res) => {
     profile_pic: user.profile_pic,
     status: user.status,
   });
+});
+
+router.post("/CheckContacts", AuthTokenVerification, async (req, res) => {
+  var f = 0;
+  var contacts = [];
+  for (const number of req.body.PhoneNumbers) {
+    const user = await User.findOne({
+      phone: number,
+    });
+    if (user) {
+      f = f + 1;
+      var body = {
+        members: [
+          {
+            id: user._id,
+          },
+        ],
+        isDark: false,
+      };
+      contacts.push(body);
+    }
+  }
+  if (f) {
+    res.json({
+      success: true,
+      message: `${f} new contacts added`,
+      contacts: contacts,
+    });
+  } else {
+    res.json({
+      success: false,
+    });
+  }
+  console.log(f);
 });
 
 module.exports = router;

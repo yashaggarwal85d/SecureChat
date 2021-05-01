@@ -9,11 +9,11 @@ const UserSchema = mongoose.Schema({
     min: 5,
     max: 100,
   },
-  email: {
+  phone: {
     type: String,
     required: true,
-    min: 6,
-    max: 255,
+    min: 13,
+    max: 20,
   },
   password: {
     type: String,

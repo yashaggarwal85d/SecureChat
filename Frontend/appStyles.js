@@ -211,6 +211,13 @@ export const LightTheme = StyleSheet.create({
     marginLeft: 5,
     fontFamily: "Touche_Medium",
   },
+  ChatBubbleNoteIconBlue: {
+    color: colors.dodgerblue,
+    fontSize: 16,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
+  },
   ChatBubbleLeftView: {
     alignItems: "flex-start",
     alignContent: "flex-start",
@@ -504,6 +511,13 @@ export const DarkTheme = StyleSheet.create({
     marginLeft: 5,
     fontFamily: "Touche_Medium",
   },
+  ChatBubbleNoteIconBlue: {
+    color: colors.dodgerblue,
+    fontSize: 16,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    fontFamily: "Touche_Medium",
+  },
   ChatBubbleLeftView: {
     alignItems: "flex-start",
     alignContent: "flex-start",
@@ -626,6 +640,20 @@ export const AuthStyle = StyleSheet.create({
     borderColor: colors.grey,
     borderWidth: 2,
     borderRadius: 20,
+    textAlign: "left",
+    color: colors.white,
+    fontFamily: "Touche_Medium",
+  },
+  countryCodeButton: {
+    padding: 8,
+    marginRight: 10,
+    borderRadius: 10,
+    backgroundColor: colors.dodgerblue,
+    color: colors.white,
+  },
+  countryCodeButtonText: { color: colors.white, fontFamily: "Touche_Medium" },
+  inputBoxText: {
+    width: "85%",
     textAlign: "left",
     color: colors.white,
     fontFamily: "Touche_Medium",

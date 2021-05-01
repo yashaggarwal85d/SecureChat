@@ -13,6 +13,7 @@ class ChatBubble extends Component {
     this.state = {
       sent: false,
       visible: false,
+      read: false,
     };
   }
 
@@ -23,6 +24,19 @@ class ChatBubble extends Component {
     socket.on("confirmSend", async (message, roomId) => {
       this.setState({ sent: true });
     });
+    socket.on("bluetick", async (roomId) => {
+      if (roomId === this.props.roomId) {
+        this.setState({ read: true });
+        this.markRead();
+      }
+    });
+  }
+
+  markRead() {
+    for (var message of this.messages) {
+      message.read = true;
+    }
+    this.setState({ read: false });
   }
 
   renderGridItem = (itemData) => {
@@ -63,16 +77,29 @@ class ChatBubble extends Component {
           itemData.item._id = true;
           this.setState({ sent: false });
         }
-        return (
-          <View style={this.props.appStyles.ChatBubbleView}>
-            {message_body}
-            <Text style={this.props.appStyles.ChatBubbleNote}>{time}</Text>
-            <MaterialCommunityIcons
-              name={icon}
-              style={this.props.appStyles.ChatBubbleNoteIcon}
-            />
-          </View>
-        );
+        if (itemData.item.read) {
+          return (
+            <View style={this.props.appStyles.ChatBubbleView}>
+              {message_body}
+              <Text style={this.props.appStyles.ChatBubbleNote}>{time}</Text>
+              <MaterialCommunityIcons
+                name={icon}
+                style={this.props.appStyles.ChatBubbleNoteIconBlue}
+              />
+            </View>
+          );
+        } else {
+          return (
+            <View style={this.props.appStyles.ChatBubbleView}>
+              {message_body}
+              <Text style={this.props.appStyles.ChatBubbleNote}>{time}</Text>
+              <MaterialCommunityIcons
+                name={icon}
+                style={this.props.appStyles.ChatBubbleNoteIcon}
+              />
+            </View>
+          );
+        }
       } else {
         var message_body = (
           <Text style={this.props.appStyles.ChatBubbleLeftText}>
@@ -135,11 +162,26 @@ class ChatBubble extends Component {
     }
   };
   render() {
+    var readIndex = 0;
     if (this.props.dark) {
       this.messages = this.props.messages
         .filter((message) => !message.isPrompt)
         .slice()
         .reverse();
+    } else if (!this.props.isGroup) {
+      for (var member of this.props.members) {
+        if (member.id !== this.props.userId)
+          readIndex = member.lastMessageReadIndex;
+      }
+
+      this.messages = this.props.messages.slice();
+      for (var message of this.messages) {
+        if (readIndex !== 0) {
+          message.read = true;
+          readIndex--;
+        }
+      }
+      this.messages.reverse();
     } else {
       this.messages = this.props.messages.slice().reverse();
     }

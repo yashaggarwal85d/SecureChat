@@ -84,7 +84,7 @@ class GroupConfirmScreen extends Component {
                 state.params.members.forEach((member) => {
                   var userId;
                   member.members.forEach((mem) => {
-                    if (mem.details) userId = mem.details._id;
+                    if (mem.id !== this.props.user.id) userId = mem.details._id;
                   });
                   const id = {
                     id: userId,
