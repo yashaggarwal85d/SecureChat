@@ -1,11 +1,6 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  updatePhone,
-  updatePassword,
-  login,
-  updateAlert,
-} from "./actions/LoginActions";
+import { login } from "./actions/LoginActions";
 import { fillData } from "./actions/RoomActions";
 import {
   AuthMainNavigator,
@@ -41,7 +36,7 @@ class Navigation extends Component {
     if (
       !this.props.user ||
       !this.props.user.password ||
-      !this.props.user.phone
+      !this.props.user.token
     ) {
       this.setState({ loaded: true, Authstate: AuthMainNavigator });
     } else if (this.props.user.token) {
@@ -108,10 +103,7 @@ class Navigation extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    { updatePhone, updatePassword, login, updateAlert, fillData },
-    dispatch
-  );
+  return bindActionCreators({ login, fillData }, dispatch);
 };
 
 const mapStateToProps = (state) => {

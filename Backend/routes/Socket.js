@@ -270,7 +270,13 @@ module.exports = (io) => {
         if (!verifiedId) {
           socket.emit("error", "Access Denied");
         } else {
-          const room = await Room.findById(roomId);
+          var room = await Room.findById(roomId);
+          if (room.isDark && !room.name && room.creator_id === verifiedId._id) {
+            for (var member of room.members) {
+              const details = await User.findById(member.id);
+              member["details"] = details;
+            }
+          }
           socket.emit("addRoom", room);
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {

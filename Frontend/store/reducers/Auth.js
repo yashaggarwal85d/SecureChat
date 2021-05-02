@@ -2,6 +2,7 @@ import {
   LOGIN,
   SIGNUP,
   UPDATE_ALERT,
+  UPDATE_EMAIL,
   UPDATE_PHONE,
   UPDATE_NAME,
   UPDATE_PASSWORD,
@@ -18,6 +19,7 @@ import {
 const AuthInitialState = {
   id: "",
   name: "",
+  email: "",
   phone: "",
   password: "",
   isauth: false,
@@ -45,6 +47,8 @@ const AuthReducer = (state = AuthInitialState, action) => {
       return { ...state, token: action.payload };
     case UPDATE_NAME:
       return { ...state, name: action.payload };
+    case UPDATE_EMAIL:
+      return { ...state, email: action.payload };
     case UPDATE_PHONE:
       return { ...state, phone: action.payload };
     case UPDATE_PASSWORD:
