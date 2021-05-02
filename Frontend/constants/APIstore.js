@@ -1,6 +1,6 @@
 export const LOCALBASEAPI = "http://192.168.1.8:3000";
 export const SERVERBASEAPI = "https://project-x2.herokuapp.com";
-export const BASEAPI = LOCALBASEAPI;
+export const BASEAPI = SERVERBASEAPI;
 export const USERBASEAPI = BASEAPI + "/users";
 export const LOGINAPI = USERBASEAPI + "/login";
 export const SIGNUPAPI = USERBASEAPI + "/register";
