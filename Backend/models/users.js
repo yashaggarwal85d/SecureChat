@@ -32,6 +32,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     default: "Hello there",
   },
+  NotificationToken: {
+    type: String,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model("user", UserSchema);
