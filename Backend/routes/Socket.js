@@ -110,7 +110,7 @@ module.exports = (io) => {
             }
             const user2 = await User.findById(mem.id);
             const NotificationToken = user2.NotificationToken;
-            if (NotificationToken && user2._id!==user._id)
+            if (NotificationToken && user2._id !== user._id)
               sendNotification(NotificationToken, `${user.name}`, messageBody);
           });
         }
@@ -146,7 +146,7 @@ module.exports = (io) => {
             }
           );
           socket.emit("confirmSend", message, roomId);
-          room.members.forEach((mem) => {
+          room.members.forEach(async (mem) => {
             if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
@@ -154,7 +154,7 @@ module.exports = (io) => {
             }
             const user2 = await User.findById(mem.id);
             const NotificationToken = user2.NotificationToken;
-            if (NotificationToken && user2._id!==user._id)
+            if (NotificationToken && user2._id !== user._id)
               sendNotification(NotificationToken, `${user.name}`, messageBody);
           });
         }
@@ -191,7 +191,7 @@ module.exports = (io) => {
             }
           );
           socket.emit("confirmSend", message, roomId);
-          room.members.forEach((mem) => {
+          room.members.forEach(async (mem) => {
             if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
@@ -199,9 +199,9 @@ module.exports = (io) => {
             }
             const user2 = await User.findById(mem.id);
             const NotificationToken = user2.NotificationToken;
-            if (NotificationToken && user2._id!==user._id)
+            if (NotificationToken && user2._id !== user._id)
               sendNotification(NotificationToken, `${user.name}`, "📷 Image");
-           });
+          });
         }
       } catch (e) {
         console.log(e);
