@@ -110,7 +110,7 @@ module.exports = (io) => {
             }
             const user2 = await User.findById(mem.id);
             const NotificationToken = user2.NotificationToken;
-            if (NotificationToken)
+            if (NotificationToken && user2._id!==user._id)
               sendNotification(NotificationToken, `${user.name}`, messageBody);
           });
         }
@@ -122,6 +122,7 @@ module.exports = (io) => {
     socket.on("addPrompt", async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const user = await User.findById(verifiedId._id);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
@@ -151,6 +152,10 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
+            const user2 = await User.findById(mem.id);
+            const NotificationToken = user2.NotificationToken;
+            if (NotificationToken && user2._id!==user._id)
+              sendNotification(NotificationToken, `${user.name}`, messageBody);
           });
         }
       } catch (e) {
@@ -162,6 +167,7 @@ module.exports = (io) => {
     socket.on("addImage", async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const user = await User.findById(verifiedId._id);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
@@ -191,7 +197,11 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-          });
+            const user2 = await User.findById(mem.id);
+            const NotificationToken = user2.NotificationToken;
+            if (NotificationToken && user2._id!==user._id)
+              sendNotification(NotificationToken, `${user.name}`, "📷 Image");
+           });
         }
       } catch (e) {
         console.log(e);
