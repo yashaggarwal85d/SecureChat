@@ -108,10 +108,16 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-            const user2 = await User.findById(mem.id);
-            const NotificationToken = user2.NotificationToken;
-            if (NotificationToken && user2._id !== user._id)
-              sendNotification(NotificationToken, `${user.name}`, messageBody);
+            if (mem.id != user._id) {
+              const user2 = await User.findById(mem.id);
+              const NotificationToken = user2.NotificationToken;
+              if (NotificationToken)
+                sendNotification(
+                  NotificationToken,
+                  `${user.name}`,
+                  messageBody
+                );
+            }
           });
         }
       } catch (e) {
@@ -152,10 +158,16 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-            const user2 = await User.findById(mem.id);
-            const NotificationToken = user2.NotificationToken;
-            if (NotificationToken && user2._id !== user._id)
-              sendNotification(NotificationToken, `${user.name}`, messageBody);
+            if (mem.id != user._id) {
+              const user2 = await User.findById(mem.id);
+              const NotificationToken = user2.NotificationToken;
+              if (NotificationToken)
+                sendNotification(
+                  NotificationToken,
+                  `${user.name}`,
+                  messageBody
+                );
+            }
           });
         }
       } catch (e) {
@@ -197,10 +209,12 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-            const user2 = await User.findById(mem.id);
-            const NotificationToken = user2.NotificationToken;
-            if (NotificationToken && user2._id !== user._id)
-              sendNotification(NotificationToken, `${user.name}`, "📷 Image");
+            if (mem.id != user._id) {
+              const user2 = await User.findById(mem.id);
+              const NotificationToken = user2.NotificationToken;
+              if (NotificationToken)
+                sendNotification(NotificationToken, `${user.name}`, "📷 Image");
+            }
           });
         }
       } catch (e) {

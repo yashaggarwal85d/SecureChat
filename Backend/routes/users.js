@@ -173,7 +173,6 @@ router.post("/CheckContacts", AuthTokenVerification, async (req, res) => {
       success: false,
     });
   }
-  console.log(f);
 });
 
 module.exports = router;

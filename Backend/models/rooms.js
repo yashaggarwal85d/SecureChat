@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const ProfilePicUrl =
-  "https://www.nicepng.com/png/detail/131-1318812_avatar-group-icon.png";
+  "https://firebasestorage.googleapis.com/v0/b/projectx2-82350.appspot.com/o/imageedit_4_3895064561.png?alt=media&token=04122313-6fc6-4886-9bcf-cd0f7a79326f";
 
 const MemberPic =
-  "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80";
+  "https://firebasestorage.googleapis.com/v0/b/projectx2-82350.appspot.com/o/photo-1511367461989-f85a21fda167.jpg?alt=media&token=440a8317-9fa1-428f-bb3c-17f0189ed0e2";
 
 const MessageSchema = mongoose.Schema({
   isPrompt: {
