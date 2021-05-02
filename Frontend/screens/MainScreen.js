@@ -11,8 +11,15 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ToggleSwitch from "../components/ToggleSwitch";
 import { connect } from "react-redux";
-import { JoinRooms } from "../store/reducers/Socket";
-import { updateMode, CheckUserContacts } from "../store/actions/LoginActions";
+import {
+  JoinRooms,
+  registerForPushNotifications,
+} from "../store/reducers/Socket";
+import {
+  updateMode,
+  CheckUserContacts,
+  updateNotificationToken,
+} from "../store/actions/LoginActions";
 import { bindActionCreators } from "redux";
 import {
   addMessage,
@@ -32,6 +39,8 @@ import DarkActionButton from "../components/FloatBarDark";
 import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
 import * as Contacts from "expo-contacts";
+import { Notifications } from "expo";
+import * as Permissions from "expo-permissions";
 
 function sorted(arr) {
   const sortedArray = arr.sort(function (a, b) {
@@ -59,10 +68,36 @@ class MainApp extends Component {
     this.SwitchThemeFunction(this.state.theme);
     JoinRooms(this.props.user.token);
     this.processContacts();
+    if (!this.props.user.NotificationToken)
+      this.registerForPushNotificationsAsync();
   }
 
   comparator = (a, b) => {
     return a === b;
+  };
+
+  registerForPushNotificationsAsync = async () => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== "granted") {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    if (finalStatus !== "granted") {
+      return;
+    }
+    try {
+      let token = await Notifications.getExpoPushTokenAsync();
+      registerForPushNotifications(this.props.user.token, token);
+      this.props.updateNotificationToken(token);
+      console.log(token);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   async processContacts() {
@@ -287,6 +322,7 @@ const mapDispatchToProps = (dispatch) => {
       updateRoomProfile,
       updateMode,
       CreateNewRoom,
+      updateNotificationToken,
     },
     dispatch
   );

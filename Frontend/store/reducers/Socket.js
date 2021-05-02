@@ -7,6 +7,10 @@ export const JoinRooms = (token) => {
   return socket.emit("connectedUser", token);
 };
 
+export const registerForPushNotifications = (token, NotificationToken) => {
+  return socket.emit("registerForPushNotifications", token, NotificationToken);
+};
+
 export const SendMessage = (roomId, token, message) => {
   return socket.emit("message", roomId, token, message);
 };

@@ -9,6 +9,7 @@ export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 export const SIGNUP = "SIGNUP";
 export const UPDATE_PIC = "UPDATE_PIC";
+export const UPDATE_NOTTOKEN = "UPDATE_NOTTOKEN";
 export const SWITCH_MODE = "SWITCH_MODE";
 export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
 export const UPDATE_NAME_STATUS = "UPDATE_NAME_STATUS";
@@ -28,6 +29,13 @@ export const updateProfile = (profile_pic) => {
   return {
     type: UPDATE_PIC,
     payload: profile_pic,
+  };
+};
+
+export const updateNotificationToken = (token) => {
+  return {
+    type: UPDATE_NOTTOKEN,
+    payload: token,
   };
 };
 

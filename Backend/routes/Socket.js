@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/users");
 const Room = require("../models/rooms");
 const JWT = require("jsonwebtoken");
+const sendNotification = require("./sendNotification");
 
 var ConnectedUsers = {};
 
@@ -78,6 +79,7 @@ module.exports = (io) => {
     socket.on("message", async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const user = await User.findById(verifiedId._id);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
@@ -100,12 +102,16 @@ module.exports = (io) => {
             }
           );
           socket.emit("confirmSend", message, roomId);
-          room.members.forEach((mem) => {
+          room.members.forEach(async (mem) => {
             if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
+            const user2 = await User.findById(mem.id);
+            const NotificationToken = user2.NotificationToken;
+            if (NotificationToken)
+              sendNotification(NotificationToken, `${user.name}`, messageBody);
           });
         }
       } catch (e) {
@@ -412,6 +418,26 @@ module.exports = (io) => {
         socket.emit("error", e);
       }
     });
+
+    socket.on(
+      "registerForPushNotifications",
+      async (token, NotificationToken) => {
+        try {
+          const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+          const UpdatedUser = await User.updateOne(
+            { _id: verifiedId._id },
+            {
+              $set: {
+                NotificationToken: NotificationToken,
+              },
+            }
+          );
+        } catch (e) {
+          console.log(e);
+          socket.emit("error", e);
+        }
+      }
+    );
 
     socket.on("logout", async () => {
       try {

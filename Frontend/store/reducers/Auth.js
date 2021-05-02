@@ -9,6 +9,7 @@ import {
   UPDATE_TOKEN,
   UPDATE_ID,
   UPDATE_PIC,
+  UPDATE_NOTTOKEN,
   SWITCH_MODE,
   LOGOUT,
   UPDATE_NAME_STATUS,
@@ -24,6 +25,7 @@ const AuthInitialState = {
   alert: null,
   profile_pic: "",
   mode: "light",
+  NotificationToken: null,
   status: "",
 };
 
@@ -49,6 +51,8 @@ const AuthReducer = (state = AuthInitialState, action) => {
       return { ...state, password: action.payload };
     case UPDATE_PIC:
       return { ...state, profile_pic: action.payload };
+    case UPDATE_NOTTOKEN:
+      return { ...state, NotificationToken: action.payload };
     case UPDATE_NAME_STATUS:
       return {
         ...state,
