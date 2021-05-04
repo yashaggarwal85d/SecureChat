@@ -89,8 +89,7 @@ class MainApp extends Component {
     if (finalStatus !== "granted") {
       showMessage({
         message: "Contacts permission denied",
-        description:
-          "We need permissions to sync you to other users in your contacts",
+        description: "We need permissions to sync your contacts",
         type: "danger",
         floating: true,
       });
@@ -156,6 +155,7 @@ class MainApp extends Component {
           PhoneNumbers
         );
         for (const contact of contacts) {
+          // console.log(contact);
           await this.props.CreateNewRoom(contact);
         }
       }
@@ -212,6 +212,7 @@ class MainApp extends Component {
       this.updateComponent();
     });
     socket.on("update_profile", async (roomId, url) => {
+      console.log("hey");
       await this.props.updateRoomProfile(roomId, url);
       this.updateComponent();
     });

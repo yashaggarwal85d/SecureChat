@@ -5,6 +5,7 @@ import moment from "moment";
 import { socket } from "../store/reducers/Socket";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import ImageViewer from "react-native-image-zoom-viewer";
+import * as color from "../constants/colors";
 
 class ChatBubble extends Component {
   constructor(props) {
@@ -61,9 +62,14 @@ class ChatBubble extends Component {
           message_body = (
             <TouchableOpacity onPress={() => this.setState({ visible: true })}>
               <Image
-                style={{ width: 200, height: 200 }}
+                style={{
+                  width: 200,
+                  maxHeight: 400,
+                  minHeight: 200,
+                  resizeMode: "contain",
+                }}
                 source={{
-                  uri: itemData.item.message_body,
+                  uri: itemData.item.ImageData,
                 }}
               />
             </TouchableOpacity>
@@ -110,9 +116,14 @@ class ChatBubble extends Component {
           message_body = (
             <TouchableOpacity onPress={() => this.setState({ visible: true })}>
               <Image
-                style={{ width: 200, height: 200 }}
+                style={{
+                  width: 200,
+                  maxHeight: 400,
+                  minHeight: 200,
+                  resizeMode: "contain",
+                }}
                 source={{
-                  uri: itemData.item.message_body,
+                  uri: itemData.item.ImageData,
                 }}
               />
             </TouchableOpacity>
@@ -191,7 +202,7 @@ class ChatBubble extends Component {
     const indexInit = imagesObj.length - 1;
     const images = [];
     for (const img of imagesObj) {
-      images.push({ url: img.message_body });
+      images.push({ url: img.ImageData });
     }
     return (
       <>
@@ -204,11 +215,7 @@ class ChatBubble extends Component {
           style={this.props.appStyles.ChatBubblesList}
         />
         <Modal visible={this.state.visible} transparent={true}>
-          <Header
-            style={{
-              backgroundColor: "black",
-            }}
-          >
+          <Header style={this.props.appStyles.FlatListComponent}>
             <Left>
               <Button
                 icon
@@ -217,12 +224,15 @@ class ChatBubble extends Component {
                   this.setState({ visible: false });
                 }}
               >
-                <MaterialIcons color='white' name='arrow-back' size={22} />
+                <MaterialIcons color={color.grey} name='arrow-back' size={22} />
               </Button>
             </Left>
             <Body />
           </Header>
           <ImageViewer
+            backgroundColor={
+              this.props.appStyles.FlatListComponent.backgroundColor
+            }
             useNativeDriver={true}
             index={indexInit}
             imageUrls={images}

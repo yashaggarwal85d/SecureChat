@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput } from "react-native";
+import { FlatList, TextInput, TouchableOpacity } from "react-native";
 import { DarkTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as colors from "../../constants/colors";
 
 class GroupSearchScreen extends Component {
   constructor(props) {
@@ -129,23 +128,22 @@ class GroupSearchScreen extends Component {
             numColumns={1}
             style={DarkTheme.FlatListComponent}
           />
-          <View style={DarkTheme.RightArrowContainer}>
-            <MaterialIcons
-              style={DarkTheme.RightArrow}
-              name='arrow-forward'
-              onPress={() => {
-                const members = this.state.users.filter((user) => {
-                  return user.selected;
-                });
-                this.props.navigation.navigate({
-                  routeName: "DarkGroupConfirmScreen",
-                  params: {
-                    members: members,
-                  },
-                });
-              }}
-            />
-          </View>
+          <TouchableOpacity
+            style={DarkTheme.RightArrowContainer}
+            onPress={() => {
+              const members = this.state.users.filter((user) => {
+                return user.selected;
+              });
+              this.props.navigation.navigate({
+                routeName: "DarkGroupConfirmScreen",
+                params: {
+                  members: members,
+                },
+              });
+            }}
+          >
+            <MaterialIcons style={DarkTheme.RightArrow} name='arrow-forward' />
+          </TouchableOpacity>
         </View>
       );
     else

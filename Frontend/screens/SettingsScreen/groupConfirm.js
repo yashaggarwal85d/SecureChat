@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput } from "react-native";
+import { FlatList, TextInput, TouchableOpacity } from "react-native";
 import { LightTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as colors from "../../constants/colors";
 import { bindActionCreators } from "redux";
 import { CreateNewRoom } from "../../store/actions/RoomActions";
+import { showMessage } from "react-native-flash-message";
 
 class GroupConfirmScreen extends Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class GroupConfirmScreen extends Component {
     const { state } = this.props.navigation;
     if (this.state.name)
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={LightTheme.ChatInputViewContainer}>
           <View style={LightTheme.ChatInputView}>
             <TextInput
               value={this.state.text}
@@ -70,37 +70,42 @@ class GroupConfirmScreen extends Component {
             numColumns={1}
             style={LightTheme.FlatListComponent}
           />
-          <View style={LightTheme.RightArrowContainer}>
-            <MaterialIcons
-              style={LightTheme.RightArrow}
-              name='arrow-forward'
-              onPress={async () => {
-                var body = {
-                  name: this.state.name,
-                  description: "Add a description",
-                  isDark: false,
-                  members: [],
-                };
-                state.params.members.forEach((member) => {
-                  var userId;
-                  member.members.forEach((mem) => {
-                    if (mem.id !== this.props.user.id) userId = mem.details._id;
-                  });
-                  const id = {
-                    id: userId,
-                  };
-                  body.members.push(id);
+          <TouchableOpacity
+            style={LightTheme.RightArrowContainer}
+            onPress={async () => {
+              var body = {
+                name: this.state.name,
+                description: "Add a description",
+                isDark: false,
+                members: [],
+              };
+              state.params.members.forEach((member) => {
+                var userId;
+                member.members.forEach((mem) => {
+                  if (mem.id !== this.props.user.id) userId = mem.details._id;
                 });
-                await this.props.CreateNewRoom(body);
-                this.props.navigation.navigate("MainScreen");
-              }}
-            />
-          </View>
+                const id = {
+                  id: userId,
+                };
+                body.members.push(id);
+              });
+              this.props.CreateNewRoom(body);
+              showMessage({
+                message: `Group Created`,
+                description: "Your group is created please wait",
+                type: "success",
+                floating: true,
+              });
+              this.props.navigation.navigate("MainScreen");
+            }}
+          >
+            <MaterialIcons style={LightTheme.RightArrow} name='arrow-forward' />
+          </TouchableOpacity>
         </View>
       );
     else
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={LightTheme.ChatInputViewContainer}>
           <View style={LightTheme.ChatInputView}>
             <TextInput
               value={this.state.text}

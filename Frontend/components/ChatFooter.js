@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { Root, View, ActionSheet } from "native-base";
-import { TextInput, TouchableOpacity } from "react-native";
+import { TextInput, TouchableOpacity, ImageEditor } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as colors from "../constants/colors";
-// import * as DocumentPicker from "expo-document-picker";
-import * as firebase from "firebase";
-import moment from "moment";
+import { resizeFunc } from "../store/actions/LoginActions";
 
 var CameraButton = [
   { text: "Camera", icon: "camera", iconColor: colors.black },
@@ -23,21 +21,10 @@ class ChatFooter extends Component {
     };
   }
 
-  uploadImage = async (uri) => {
+  uploadImage = async (result) => {
     this.props.updateLoader(true);
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    var ref = firebase
-      .storage()
-      .ref()
-      .child(
-        `rooms/images/${this.props.room.id}/${
-          this.props.user.id
-        }/${moment.now()}`
-      );
-    await ref.put(blob);
-    const url = await ref.getDownloadURL();
-    this.props.onImageSend(url);
+    const data = await resizeFunc(result);
+    this.props.onImageSend("data:image/png;base64," + data);
   };
 
   async PickImageFromCamera() {
@@ -51,7 +38,7 @@ class ChatFooter extends Component {
       quality: 1,
     });
     if (!result.cancelled) {
-      this.uploadImage(result.uri);
+      this.uploadImage(result);
     }
   }
 
@@ -61,12 +48,13 @@ class ChatFooter extends Component {
       alert("Sorry, we need camera roll permissions to make this work!");
       return;
     }
+    ImagePicker.MediaTypeOptions;
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 1,
     });
     if (!result.cancelled) {
-      this.uploadImage(result.uri);
+      this.uploadImage(result);
     }
   }
 

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput } from "react-native";
+import { FlatList, TextInput, TouchableOpacity } from "react-native";
 import { DarkTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as colors from "../../constants/colors";
 import { bindActionCreators } from "redux";
 import { CreateNewRoom } from "../../store/actions/RoomActions";
+import { showMessage } from "react-native-flash-message";
 
 class GroupConfirmScreen extends Component {
   constructor(props) {
@@ -70,32 +70,37 @@ class GroupConfirmScreen extends Component {
             numColumns={1}
             style={DarkTheme.FlatListComponent}
           />
-          <View style={DarkTheme.RightArrowContainer}>
-            <MaterialIcons
-              style={DarkTheme.RightArrow}
-              name='arrow-forward'
-              onPress={async () => {
-                var body = {
-                  isDark: true,
-                  name: this.state.name,
-                  description: "Add a description",
-                  members: [],
-                };
-                state.params.members.forEach((member) => {
-                  var userId;
-                  member.members.forEach((mem) => {
-                    if (mem.id !== this.props.user.id) userId = mem.details._id;
-                  });
-                  const id = {
-                    id: userId,
-                  };
-                  body.members.push(id);
+          <TouchableOpacity
+            style={DarkTheme.RightArrowContainer}
+            onPress={async () => {
+              var body = {
+                isDark: true,
+                name: this.state.name,
+                description: "Add a description",
+                members: [],
+              };
+              state.params.members.forEach((member) => {
+                var userId;
+                member.members.forEach((mem) => {
+                  if (mem.id !== this.props.user.id) userId = mem.details._id;
                 });
-                await this.props.CreateNewRoom(body);
-                this.props.navigation.navigate("MainScreen");
-              }}
-            />
-          </View>
+                const id = {
+                  id: userId,
+                };
+                body.members.push(id);
+              });
+              this.props.CreateNewRoom(body);
+              showMessage({
+                message: `Group Created`,
+                description: "Your group is created please wait",
+                type: "success",
+                floating: true,
+              });
+              this.props.navigation.navigate("MainScreen");
+            }}
+          >
+            <MaterialIcons style={DarkTheme.RightArrow} name='arrow-forward' />
+          </TouchableOpacity>
         </View>
       );
     else

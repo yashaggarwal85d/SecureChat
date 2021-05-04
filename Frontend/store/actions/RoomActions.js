@@ -23,7 +23,7 @@ export const addMessage = (roomId, message) => {
         room.messages.push(message);
         const lastMessage = room.messages.slice(-1)[0];
 
-        if (lastMessage.isImage) room.lastMessage = "Image";
+        if (lastMessage.isImage) room.lastMessage = "📷 Image";
         else room.lastMessage = lastMessage.message_body;
 
         room.lastTime = lastMessage.timestamp;
@@ -108,7 +108,7 @@ export const fillData = () => {
             var lastTime = room.create_date;
             if (messages[0]) {
               const messageObject = messages.slice(-1)[0];
-              if (messageObject.isImage) lastMessage = "Image";
+              if (messageObject.isImage) lastMessage = "📷 Image";
               else lastMessage = messageObject.message_body;
 
               lastTime = messages.slice(-1)[0].timestamp;
@@ -333,7 +333,7 @@ export const addRoom = (room) => {
       var lastTime = room.create_date;
       if (messages[0]) {
         const messageObject = messages.slice(-1)[0];
-        if (messageObject.isImage) lastMessage = "Image";
+        if (messageObject.isImage) lastMessage = "📷 Image";
         else lastMessage = messageObject.message_body;
 
         lastTime = messages.slice(-1)[0].timestamp;
@@ -430,6 +430,7 @@ export const updateRoom = (roomId, members) => {
 export const updateRoomProfile = (roomId, url) => {
   return async (dispatch, getState) => {
     try {
+      console.log("hello there");
       var newState = getState().room;
       const index = newState.rooms.findIndex((room) => room.id == roomId);
       if (index !== -1) {

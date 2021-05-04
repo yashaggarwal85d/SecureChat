@@ -108,7 +108,7 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-            if (mem.id != user._id) {
+            if (!room.isDark && mem.id != user._id) {
               const user2 = await User.findById(mem.id);
               const NotificationToken = user2.NotificationToken;
               if (NotificationToken)
@@ -158,7 +158,7 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-            if (mem.id != user._id) {
+            if (!room.isDark && mem.id != user._id) {
               const user2 = await User.findById(mem.id);
               const NotificationToken = user2.NotificationToken;
               if (NotificationToken)
@@ -176,7 +176,7 @@ module.exports = (io) => {
       }
     });
 
-    socket.on("addImage", async (roomId, token, messageBody) => {
+    socket.on("addImage", async (roomId, token, ImageData) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
@@ -191,7 +191,8 @@ module.exports = (io) => {
           const message = {
             isImage: true,
             sender_id: verifiedId._id,
-            message_body: messageBody,
+            message_body: "📷 Image",
+            ImageData: ImageData,
           };
           const room = await Room.findById(roomId);
           const UpdatedRoom = await Room.updateOne(
@@ -209,7 +210,7 @@ module.exports = (io) => {
                 .to(ConnectedUsers[mem.id])
                 .emit("recieveMessage", message, roomId);
             }
-            if (mem.id != user._id) {
+            if (!room.isDark && mem.id != user._id) {
               const user2 = await User.findById(mem.id);
               const NotificationToken = user2.NotificationToken;
               if (NotificationToken)
@@ -223,54 +224,19 @@ module.exports = (io) => {
       }
     });
 
-    // socket.on("addFile", async (roomId, token, messageBody, FileName) => {
-    //   try {
-    //     const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
-    //     const room = await Room.findById(roomId);
-    //     var f = 0;
-    //     for (const member of room.members) {
-    //       if (member.id === verifiedId._id && !member.blocked) f = 1;
-    //     }
-    //     if (!verifiedId && f) {
-    //       socket.emit("error", "Access Denied");
-    //     } else {
-    //       const message = {
-    //         isFile: true,
-    //         fileName: FileName,
-    //         sender_id: verifiedId._id,
-    //         message_body: messageBody,
-    //       };
-    //       const room = await Room.findById(roomId);
-    //       const UpdatedRoom = await Room.updateOne(
-    //         { _id: roomId },
-    //         {
-    //           $push: {
-    //             messages: message,
-    //           },
-    //         }
-    //       );
-    //       socket.emit("confirmSend", message, roomId);
-    //       room.members.forEach((mem) => {
-    //         if (ConnectedUsers[mem.id] && !mem.blocked) {
-    //           socket
-    //             .to(ConnectedUsers[mem.id])
-    //             .emit("recieveMessage", message, roomId);
-    //         }
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.log(e);
-    //     socket.emit("error", e);
-    //   }
-    // });
-
     socket.on("newGroup", async (token, roomId) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         if (!verifiedId) {
           socket.emit("error", "Access Denied");
         } else {
-          var room = await Room.findById(roomId);
+          const OriginalRoom = await Room.findById(roomId);
+          var room = OriginalRoom;
+          room.members.forEach((mem) => {
+            if (ConnectedUsers[mem.id]) {
+              socket.to(ConnectedUsers[mem.id]).emit("addRoom", OriginalRoom);
+            }
+          });
           if (room.isDark && !room.name && room.creator_id === verifiedId._id) {
             for (var member of room.members) {
               const details = await User.findById(member.id);
@@ -278,11 +244,6 @@ module.exports = (io) => {
             }
           }
           socket.emit("addRoom", room);
-          room.members.forEach((mem) => {
-            if (ConnectedUsers[mem.id]) {
-              socket.to(ConnectedUsers[mem.id]).emit("addRoom", room);
-            }
-          });
         }
       } catch (e) {
         console.log(e);
@@ -384,6 +345,7 @@ module.exports = (io) => {
           socket.emit("error", "Access Denied");
         } else {
           const user = await User.findById(verifiedId._id);
+          user.profile_pic = url;
           const UpdatedUser = await User.updateMany(
             {
               _id: user._id,
@@ -395,9 +357,19 @@ module.exports = (io) => {
             }
           );
           const rooms_id = user.rooms_id;
-
           for (const roomid of rooms_id) {
             const room = await Room.findById(roomid);
+            const UpdatedRoom = await Room.updateMany(
+              {
+                _id: room._id,
+                "members.id": user._id,
+              },
+              {
+                $set: {
+                  "members.$.details": user,
+                },
+              }
+            );
             if (!room.name) {
               for (const member of room.members) {
                 if (ConnectedUsers[member.id]) {

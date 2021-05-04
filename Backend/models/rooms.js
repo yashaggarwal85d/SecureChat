@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-const ProfilePicUrl =
-  "https://firebasestorage.googleapis.com/v0/b/projectx2-82350.appspot.com/o/imageedit_4_3895064561.png?alt=media&token=04122313-6fc6-4886-9bcf-cd0f7a79326f";
+const DefaultImageBuffers = require("../DefaultImageBuffers");
 
-const MemberPic =
-  "https://firebasestorage.googleapis.com/v0/b/projectx2-82350.appspot.com/o/photo-1511367461989-f85a21fda167.jpg?alt=media&token=440a8317-9fa1-428f-bb3c-17f0189ed0e2";
+const ProfilePicUrl = DefaultImageBuffers.defaultGroupPic;
+const MemberPic = DefaultImageBuffers.defaultProfilePic;
 
 const MessageSchema = mongoose.Schema({
   isPrompt: {
@@ -13,6 +12,10 @@ const MessageSchema = mongoose.Schema({
   isImage: {
     type: Boolean,
     default: false,
+  },
+  ImageData: {
+    type: String,
+    default: null,
   },
   sender_id: {
     type: String,

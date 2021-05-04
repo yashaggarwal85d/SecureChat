@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const ProfilePicUrl =
-  "https://firebasestorage.googleapis.com/v0/b/projectx2-82350.appspot.com/o/photo-1511367461989-f85a21fda167.jpg?alt=media&token=440a8317-9fa1-428f-bb3c-17f0189ed0e2";
+const DefaultImageBuffers = require("../DefaultImageBuffers");
+
+const ProfilePicUrl = DefaultImageBuffers.defaultProfilePic;
 
 const UserSchema = mongoose.Schema({
   name: {

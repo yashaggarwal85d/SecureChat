@@ -22,12 +22,12 @@ import {
   logout,
   updateNameStatus,
   updateProfile,
+  resizeFunc,
 } from "../../store/actions/LoginActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { SettingForm, LightTheme } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
-import * as firebase from "firebase";
 import { updateProfilePic } from "../../store/reducers/Socket";
 import { showMessage } from "react-native-flash-message";
 
@@ -55,13 +55,10 @@ class SettingsScreen extends Component {
     };
   }
 
-  uploadImage = async (uri) => {
+  uploadImage = async (result) => {
     this.setState({ loader: true });
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    var ref = firebase.storage().ref().child(`images/${this.props.user.id}`);
-    await ref.put(blob);
-    const url = await ref.getDownloadURL();
+    const data = await resizeFunc(result);
+    const url = "data:image/png;base64," + data;
     this.setState({ profile_pic: url });
     await this.props.updateProfile(url);
     await updateProfilePic(this.props.user.token, url);
@@ -84,7 +81,7 @@ class SettingsScreen extends Component {
       quality: 1,
     });
     if (!result.cancelled) {
-      this.uploadImage(result.uri);
+      this.uploadImage(result);
     }
   }
 
@@ -104,8 +101,15 @@ class SettingsScreen extends Component {
       quality: 1,
     });
     if (!result.cancelled) {
-      this.uploadImage(result.uri);
+      this.uploadImage(result);
     }
+  }
+
+  checkNameStatus(name, status) {
+    var NamePattern = new RegExp(/^[a-zA-Z]{2,40}( [a-zA-Z]{2,40})+$/);
+    if (NamePattern.test(name) && status) {
+      return true;
+    } else return false;
   }
 
   render() {
@@ -130,15 +134,23 @@ class SettingsScreen extends Component {
         <TouchableOpacity
           style={SettingForm.button}
           onPress={async () => {
-            await this.props.updateNameStatus(
-              this.state.name,
-              this.state.status
-            );
-            this.setState({
-              name: this.props.user.name,
-              status: this.props.user.status,
-              changed: false,
-            });
+            if (this.checkNameStatus(this.state.name, this.state.status)) {
+              await this.props.updateNameStatus(
+                this.state.name,
+                this.state.status
+              );
+              this.setState({
+                name: this.props.user.name,
+                status: this.props.user.status,
+                changed: false,
+              });
+            } else {
+              showMessage({
+                message: `Name or Status Invalid`,
+                type: "danger",
+                floating: true,
+              });
+            }
           }}
         >
           <Text style={SettingForm.buttonText}>Save</Text>

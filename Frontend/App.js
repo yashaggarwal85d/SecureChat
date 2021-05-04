@@ -6,12 +6,12 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store";
 import Navigation from "./store/HandlePersist";
-import firebaseConfig from "./constants/firebase";
-import * as firebase from "firebase";
 import { Root } from "native-base";
 import FlashMessage from "react-native-flash-message";
+import * as ScreenCapture from "expo-screen-capture";
 
-const fetchFonts = () => {
+const fetchFonts = async () => {
+  await ScreenCapture.preventScreenCaptureAsync();
   return Font.loadAsync({
     Roboto_medium: require("./assets/fonts/Roboto-Medium.ttf"),
     "Kamerik-Bold": require("./assets/fonts/Kamerik-Bold.ttf"),
@@ -20,10 +20,6 @@ const fetchFonts = () => {
     Touche_Bold: require("./assets/fonts/Touche_Bold.ttf"),
   });
 };
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -53,10 +49,3 @@ const App = () => {
 };
 
 export default App;
-
-//For web compatibility
-
-// Install the react-native-keyboard-aware-scroll-view package into your node_modules with yarn on npm
-// Navigate to native base/dist/src/basic and open Content.js
-// Find var _reactNativeKeyboardAwareScrollView=require('@codler/react-native-keyboard-aware-scroll-view')
-// Change this to var _reactNativeKeyboardAwareScrollView=require('react-native-keyboard-aware-scroll-view') (remove the @codler)

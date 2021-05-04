@@ -18,6 +18,7 @@ import axios from "axios";
 import * as API from "../../constants/APIstore";
 import { logoutSocket } from "../reducers/Socket";
 import { showMessage } from "react-native-flash-message";
+import * as ImageManipulator from "expo-image-manipulator";
 
 export const updateMode = (mode) => {
   return {
@@ -246,6 +247,48 @@ export const CheckUserContacts = async (token, PhoneNumbers) => {
         floating: true,
       });
     return data.contacts;
+  } catch (e) {
+    showMessage({
+      message: `Error`,
+      description: `${e}`,
+      type: "danger",
+      floating: true,
+    });
+    console.log(e);
+  }
+};
+
+export const resizeFunc = async (result) => {
+  try {
+    var actualHeight = result.height;
+    var actualWidth = result.width;
+    var maxHeight = 600;
+    var maxWidth = 800;
+    var imgRatio = actualWidth / actualHeight;
+    var maxRatio = maxWidth / maxHeight;
+
+    if (actualHeight > maxHeight || actualWidth > maxWidth) {
+      if (imgRatio < maxRatio) {
+        //adjust width according to maxHeight
+        imgRatio = maxHeight / actualHeight;
+        actualWidth = imgRatio * actualWidth;
+        actualHeight = maxHeight;
+      } else if (imgRatio > maxRatio) {
+        //adjust height according to maxWidth
+        imgRatio = maxWidth / actualWidth;
+        actualHeight = imgRatio * actualHeight;
+        actualWidth = maxWidth;
+      } else {
+        actualHeight = maxHeight;
+        actualWidth = maxWidth;
+      }
+    }
+    const manipResult = await ImageManipulator.manipulateAsync(
+      result.uri,
+      [{ resize: { width: actualWidth, height: actualHeight } }],
+      { compress: 0.5, base64: true, format: ImageManipulator.SaveFormat.PNG }
+    );
+    return manipResult.base64;
   } catch (e) {
     showMessage({
       message: `Error`,

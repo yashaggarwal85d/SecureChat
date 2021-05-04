@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput } from "react-native";
+import { FlatList, TextInput, TouchableOpacity } from "react-native";
 import { LightTheme } from "../../appStyles";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -109,7 +109,7 @@ class GroupSearchScreen extends Component {
   render() {
     if (this.state.selectedUsers > 1)
       return (
-        <View style={{ flex: 1, backgroundColor: colors.DarkWhite }}>
+        <View style={LightTheme.ChatInputViewContainer}>
           <View style={LightTheme.ChatInputView}>
             <MaterialIcons name='search' style={LightTheme.ChatInputSmile} />
             <TextInput
@@ -129,23 +129,22 @@ class GroupSearchScreen extends Component {
             numColumns={1}
             style={LightTheme.FlatListComponent}
           />
-          <View style={LightTheme.RightArrowContainer}>
-            <MaterialIcons
-              style={LightTheme.RightArrow}
-              name='arrow-forward'
-              onPress={() => {
-                const members = this.state.users.filter((user) => {
-                  return user.selected;
-                });
-                this.props.navigation.navigate({
-                  routeName: "GroupConfirmScreen",
-                  params: {
-                    members: members,
-                  },
-                });
-              }}
-            />
-          </View>
+          <TouchableOpacity
+            style={LightTheme.RightArrowContainer}
+            onPress={() => {
+              const members = this.state.users.filter((user) => {
+                return user.selected;
+              });
+              this.props.navigation.navigate({
+                routeName: "GroupConfirmScreen",
+                params: {
+                  members: members,
+                },
+              });
+            }}
+          >
+            <MaterialIcons style={LightTheme.RightArrow} name='arrow-forward' />
+          </TouchableOpacity>
         </View>
       );
     else

@@ -97,8 +97,9 @@ class PresentChatScreen extends React.Component {
     const messageObject = {
       isImage: true,
       sender_id: this.props.user.id,
-      message_body: message,
+      message_body: "📷 Image",
       timer: true,
+      ImageData: message,
     };
     this.updateImageState(messageObject);
   }

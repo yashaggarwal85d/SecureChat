@@ -29,12 +29,12 @@ import {
   updateRoom,
   updateRoomProfile,
 } from "../../store/actions/RoomActions";
+import { resizeFunc } from "../../store/actions/LoginActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { SettingForm } from "../../appStyles";
 import * as ImagePicker from "expo-image-picker";
 import { socket, updateRoomProfilePic } from "../../store/reducers/Socket";
-import * as firebase from "firebase";
 import { showMessage } from "react-native-flash-message";
 
 var BUTTONS = [
@@ -76,17 +76,11 @@ class RoomSettingsScreen extends Component {
     });
   };
 
-  uploadImage = async (uri) => {
+  uploadImage = async (result) => {
     this.setState({ loader: true });
     const { state } = this.props.navigation;
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    var ref = firebase
-      .storage()
-      .ref()
-      .child(`Groupimages/${this.state.room.id}`);
-    await ref.put(blob);
-    const url = await ref.getDownloadURL();
+    const data = await resizeFunc(result);
+    const url = "data:image/png;base64," + data;
     this.setState({ profile_pic: url });
     await this.props.updateRoomProfile(this.state.room.id, url);
     await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
@@ -116,7 +110,7 @@ class RoomSettingsScreen extends Component {
       quality: 1,
     });
     if (!result.cancelled) {
-      this.uploadImage(result.uri);
+      this.uploadImage(result);
     }
   }
 
@@ -136,7 +130,7 @@ class RoomSettingsScreen extends Component {
       quality: 1,
     });
     if (!result.cancelled) {
-      this.uploadImage(result.uri);
+      this.uploadImage(result);
     }
   }
 
