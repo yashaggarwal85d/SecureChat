@@ -18,7 +18,6 @@ import { Button } from "native-base";
 class Signup extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.user);
     this.state = {
       confirmPass: "",
       Phonealert: "",
@@ -107,6 +106,10 @@ class Signup extends React.Component {
     }
   };
 
+  handleNavigation(){
+    this.props.navigation.navigate("Login");
+  }
+
   render() {
     return (
       <>
@@ -118,6 +121,7 @@ class Signup extends React.Component {
             value={this.props.user.name}
             onChangeText={(name) => this.props.updateName(name)}
             placeholder='Full Name'
+            placeholderTextColor='grey'
             onChange={(e) => this.NameValid(e.nativeEvent.text)}
             autoCompleteType='off'
           />
@@ -137,8 +141,10 @@ class Signup extends React.Component {
               onChangeText={(phone) =>
                 this.props.updatePhone(this.state.callingCode + phone)
               }
-              placeholder='Phone'
+              placeholder='Phone number'
+              placeholderTextColor='grey'
               autoCapitalize='none'
+              keyboardType='number-pad'
               onChange={(e) =>
                 this.PhoneValid(this.state.callingCode + e.nativeEvent.text)
               }
@@ -168,6 +174,7 @@ class Signup extends React.Component {
             value={this.props.user.password}
             onChangeText={(password) => this.props.updatePassword(password)}
             placeholder='Password'
+            placeholderTextColor='grey'
             secureTextEntry={true}
             onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
             onEndEditing={() => this.ConfirmPassValid(this.state.confirmPass)}
@@ -178,6 +185,7 @@ class Signup extends React.Component {
             style={AuthStyle.inputBox}
             value={this.confirmPass}
             placeholder='Confirm Password'
+            placeholderTextColor='grey'
             onChangeText={(password) =>
               this.setState({ confirmPass: password })
             }
@@ -197,7 +205,7 @@ class Signup extends React.Component {
             <Text style={AuthStyle.Text}>Already have an account yet? </Text>
             <Text
               style={AuthStyle.TextButton}
-              onPress={() => this.props.navigation.navigate("Login")}
+              onPress={() => this.handleNavigation()}
             >
               Login
             </Text>

@@ -1,26 +1,25 @@
-import React, { Component } from "react";
-import { Container } from "native-base";
-import * as colors from "../constants/colors";
-import { StatusBar, Animated, View } from "react-native";
+import React, { Component } from 'react';
+import * as colors from '../constants/colors';
+import { StatusBar, Animated, View, ImageBackground } from 'react-native';
 import {
   ToggleSwitchStyle,
   ActionButtonStyle,
   LightTheme,
   DarkTheme,
-} from "../appStyles";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ToggleSwitch from "../components/ToggleSwitch";
-import { connect } from "react-redux";
+} from '../appStyles';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ToggleSwitch from '../components/ToggleSwitch';
+import { connect } from 'react-redux';
 import {
   JoinRooms,
   registerForPushNotifications,
-} from "../store/reducers/Socket";
+} from '../store/reducers/Socket';
 import {
   updateMode,
   CheckUserContacts,
   updateNotificationToken,
-} from "../store/actions/LoginActions";
-import { bindActionCreators } from "redux";
+} from '../store/actions/LoginActions';
+import { bindActionCreators } from 'redux';
 import {
   addMessage,
   updatelastMessageReadIndex,
@@ -30,17 +29,15 @@ import {
   removeRoom,
   updateRoomProfile,
   CreateNewRoom,
-} from "../store/actions/RoomActions";
-import { socket } from "../store/reducers/Socket";
-import ChatListScreen from "./ChatList";
-import moment from "moment";
-import ActionButton from "../components/FloatBar";
-import DarkActionButton from "../components/FloatBarDark";
-import FlashMessage from "react-native-flash-message";
-import { showMessage } from "react-native-flash-message";
-import * as Contacts from "expo-contacts";
-import { Notifications } from "expo";
-import * as Permissions from "expo-permissions";
+} from '../store/actions/RoomActions';
+import { socket } from '../store/reducers/Socket';
+import ChatListScreen from './ChatList';
+import moment from 'moment';
+import ActionButton from '../components/FloatBar';
+import DarkActionButton from '../components/FloatBarDark';
+import { showMessage } from 'react-native-flash-message';
+import * as Contacts from 'expo-contacts';
+import * as Notifications from 'expo-notifications';
 
 function sorted(arr) {
   const sortedArray = arr.sort(function (a, b) {
@@ -55,7 +52,7 @@ class MainApp extends Component {
   constructor(props) {
     super(props);
     var defaultActiveIndex;
-    if (this.props.user.mode === "light") defaultActiveIndex = 0;
+    if (this.props.user.mode === 'light') defaultActiveIndex = 0;
     else defaultActiveIndex = 1;
     this.state = {
       defaultActiveIndex: defaultActiveIndex,
@@ -64,7 +61,11 @@ class MainApp extends Component {
       activeRoom: null,
     };
 
-    this.SwitchThemeFunction(this.state.theme);
+    if (this.state.theme == 'light') {
+      this.SwitchToLight();
+    } else if (this.state.theme == 'dark') {
+      this.SwitchToDark();
+    }
     JoinRooms(this.props.user.token);
     this.processContacts();
     if (!this.props.user.NotificationToken)
@@ -76,26 +77,25 @@ class MainApp extends Component {
   };
 
   registerForPushNotificationsAsync = async () => {
-    const { status: existingStatus } = await Permissions.getAsync(
-      Permissions.NOTIFICATIONS
-    );
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
-    if (existingStatus !== "granted") {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
 
-    if (finalStatus !== "granted") {
+    if (finalStatus !== 'granted') {
       showMessage({
-        message: "Contacts permission denied",
-        description: "We need permissions to sync your contacts",
-        type: "danger",
+        message: 'Contacts permission denied',
+        description: 'We need permissions to sync your contacts',
+        type: 'danger',
         floating: true,
       });
     }
     try {
-      let token = await Notifications.getExpoPushTokenAsync();
+      let token = (await Notifications.getExpoPushTokenAsync()).data;
       registerForPushNotifications(this.props.user.token, token);
       this.props.updateNotificationToken(token);
       console.log(token);
@@ -107,7 +107,7 @@ class MainApp extends Component {
   async processContacts() {
     try {
       const { status } = await Contacts.requestPermissionsAsync();
-      if (status === "granted") {
+      if (status === 'granted') {
         const { data } = await Contacts.getContactsAsync({
           fields: [Contacts.Fields.PhoneNumbers],
         });
@@ -127,8 +127,8 @@ class MainApp extends Component {
           if (phnoArray)
             for (var Phone of phnoArray) {
               var pattern = new RegExp(/^\+(?:[0-9] ?){10,14}[0-9]$/);
-              var PhoneNumber = Phone.number.replace(/ /g, "");
-              if (PhoneNumber[0] != "+") {
+              var PhoneNumber = Phone.number.replace(/ /g, '');
+              if (PhoneNumber[0] != '+') {
                 if (PhoneNumber[0] == 0) {
                   PhoneNumber = PhoneNumber.substring(1);
                 }
@@ -180,7 +180,7 @@ class MainApp extends Component {
   };
 
   filterRooms = (mode) => {
-    if (mode === "dark") {
+    if (mode === 'dark') {
       const darkRooms = this.state.rooms.filter((room) => room.dark);
       return darkRooms;
     } else {
@@ -190,63 +190,63 @@ class MainApp extends Component {
   };
 
   componentDidMount = () => {
-    socket.on("recieveMessage", (message, roomId) => {
+    socket.on('recieveMessage', (message, roomId) => {
       this.props.addMessage(roomId, message);
       this.updateComponent();
     });
-    socket.on("addRoom", async (room) => {
+    socket.on('addRoom', async (room) => {
       await this.props.addRoom(room);
       this.updateComponent();
     });
-    socket.on("updateRoom", async (roomId, members) => {
+    socket.on('updateRoom', async (roomId, members) => {
       await this.props.updateRoom(roomId, members);
       this.updateComponent();
     });
-    socket.on("removeRoom", async (roomId, roomName) => {
+    socket.on('removeRoom', async (roomId, roomName) => {
       await this.props.removeRoom(roomId);
       showMessage({
         message: `You are no longer a participant of ${roomName}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       this.updateComponent();
     });
-    socket.on("update_profile", async (roomId, url) => {
-      console.log("hey");
+    socket.on('update_profile', async (roomId, url) => {
+      console.log('hey');
       await this.props.updateRoomProfile(roomId, url);
       this.updateComponent();
     });
-    setTimeout(() => {
-      StatusBar.setHidden(false);
-    });
+    // setTimeout(() => {
+    //   StatusBar.setHidden(false);
+    // });
   };
 
   SwitchToLight() {
     showMessage({
-      message: "Private mode",
-      description: "You are visible to all",
-      type: "info",
+      message: 'Private mode',
+      description: 'You are visible to all',
+      type: 'info',
       floating: true,
       color: colors.white,
       backgroundColor: colors.darkBlue,
     });
     setTimeout(() => {
-      StatusBar.setBarStyle("dark-content");
+      StatusBar.setBarStyle('dark-content');
       StatusBar.setBackgroundColor(colors.ghostwhite);
     });
   }
 
   SwitchToDark() {
     showMessage({
-      message: "Anonymous mode",
-      description: "You entered in anonymous mode",
-      type: "info",
+      message: 'Anonymous mode',
+      description: 'You entered in anonymous mode',
+      type: 'info',
       floating: true,
       color: colors.white,
       backgroundColor: colors.indigo,
     });
     setTimeout(() => {
-      StatusBar.setBarStyle("light-content");
+      StatusBar.setBarStyle('light-content');
       StatusBar.setBackgroundColor(colors.black);
     });
   }
@@ -256,9 +256,9 @@ class MainApp extends Component {
     this.setState({
       theme: currentTheme,
     });
-    if (currentTheme == "light") {
+    if (currentTheme == 'light') {
       this.SwitchToLight();
-    } else if (currentTheme == "dark") {
+    } else if (currentTheme == 'dark') {
       this.SwitchToDark();
     }
   }
@@ -266,12 +266,13 @@ class MainApp extends Component {
   render() {
     var screen_div;
     var float_div;
-    if (this.state.theme === "light") {
+    if (this.state.theme === 'light') {
       screen_div = (
         <ChatListScreen
-          rooms={this.filterRooms("light")}
+          rooms={this.filterRooms('light')}
           activeRoom={this.state.activeRoom}
           appStyles={LightTheme}
+          mode={0}
           UpdateActiveRoom={this.UpdateActiveRoom.bind(this)}
           updateComponent={this.updateComponent.bind(this)}
           updatelastMessageReadIndex={this.props.updatelastMessageReadIndex}
@@ -279,12 +280,13 @@ class MainApp extends Component {
         />
       );
       float_div = <ActionButton navigation={this.props.navigation} />;
-    } else if (this.state.theme === "dark") {
+    } else if (this.state.theme === 'dark') {
       screen_div = (
         <ChatListScreen
-          rooms={this.filterRooms("dark")}
+          rooms={this.filterRooms('dark')}
           activeRoom={this.state.activeRoom}
           appStyles={DarkTheme}
+          mode={1}
           UpdateActiveRoom={this.UpdateActiveRoom.bind(this)}
           updateComponent={this.updateComponent.bind(this)}
           updatelastMessageReadIndex={this.props.updatelastMessageReadIndex}
@@ -294,21 +296,18 @@ class MainApp extends Component {
       float_div = <DarkActionButton navigation={this.props.navigation} />;
     }
     return (
-      <Container>
-        <View>
-          <FlashMessage position='top' />
-        </View>
+      <>
         {screen_div}
         <View style={ToggleSwitchStyle.Toggle}>
           <ToggleSwitch
-            onLeftState={() => this.SwitchThemeFunction("light")}
-            onRightState={() => this.SwitchThemeFunction("dark")}
+            onLeftState={() => this.SwitchThemeFunction('light')}
+            onRightState={() => this.SwitchThemeFunction('dark')}
             AnimatedIcon={AnimatedIcon}
             defaultActiveIndex={this.state.defaultActiveIndex}
           />
         </View>
         <View style={ActionButtonStyle.Toggle}>{float_div}</View>
-      </Container>
+      </>
     );
   }
 }

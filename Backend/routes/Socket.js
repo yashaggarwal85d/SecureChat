@@ -359,6 +359,8 @@ module.exports = (io) => {
           const rooms_id = user.rooms_id;
           for (const roomid of rooms_id) {
             const room = await Room.findById(roomid);
+            if(room.isDark)
+            continue;
             const UpdatedRoom = await Room.updateMany(
               {
                 _id: room._id,

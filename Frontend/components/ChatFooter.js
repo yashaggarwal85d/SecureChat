@@ -9,7 +9,7 @@ import { resizeFunc } from "../store/actions/LoginActions";
 
 var CameraButton = [
   { text: "Camera", icon: "camera", iconColor: colors.black },
-  { text: "Gallery", icon: "photos", iconColor: colors.dodgerblue },
+  { text: "Gallery", icon: "images", iconColor: colors.dodgerblue },
   { text: "Cancel", icon: "close", iconColor: colors.red },
 ];
 

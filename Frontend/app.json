@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "HelloThere",
-    "slug": "HelloThere",
-    "version": "1.1.0",
+    "name": "SecureChat",
+    "slug": "SecureChat",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/splash.png",
     "splash": {
@@ -17,14 +17,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "a.pk"
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splash.png",
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "android": {
-      "package": "a.pk"
     }
   }
 }

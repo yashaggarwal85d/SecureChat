@@ -1,11 +1,18 @@
-import React, { Component } from "react";
-import { Text, View, Left, Header, Button, Body } from "native-base";
-import { FlatList, Image, TouchableOpacity, Modal } from "react-native";
-import moment from "moment";
-import { socket } from "../store/reducers/Socket";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import ImageViewer from "react-native-image-zoom-viewer";
-import * as color from "../constants/colors";
+import React, { Component } from 'react';
+import { Text, View, Left, Header, Button, Body } from 'native-base';
+import {
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Modal,
+  ImageBackground,
+} from 'react-native';
+import moment from 'moment';
+import { socket } from '../store/reducers/Socket';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import * as color from '../constants/colors';
+import { ImageBg } from '../appStyles';
 
 class ChatBubble extends Component {
   constructor(props) {
@@ -19,13 +26,13 @@ class ChatBubble extends Component {
   }
 
   componentDidMount() {
-    socket.on("disconnect", () => {
+    socket.on('disconnect', () => {
       this.setState({ sent: false });
     });
-    socket.on("confirmSend", async (message, roomId) => {
+    socket.on('confirmSend', async (message, roomId) => {
       this.setState({ sent: true });
     });
-    socket.on("bluetick", async (roomId) => {
+    socket.on('bluetick', async (roomId) => {
       if (roomId === this.props.roomId) {
         this.setState({ read: true });
         this.markRead();
@@ -50,9 +57,9 @@ class ChatBubble extends Component {
         </View>
       );
     } else {
-      const time = moment(itemData.item.timestamp).format("h:mm");
+      const time = moment(itemData.item.timestamp).format('h:mm');
       if (itemData.item.sender_id === this.props.userId) {
-        var icon = "clock-outline";
+        var icon = 'clock-outline';
         var message_body = (
           <Text style={this.props.appStyles.ChatBubbleText}>
             {itemData.item.message_body}
@@ -66,7 +73,7 @@ class ChatBubble extends Component {
                   width: 200,
                   maxHeight: 400,
                   minHeight: 200,
-                  resizeMode: "contain",
+                  resizeMode: 'contain',
                 }}
                 source={{
                   uri: itemData.item.ImageData,
@@ -77,9 +84,9 @@ class ChatBubble extends Component {
         }
 
         if (itemData.item._id) {
-          icon = "check-all";
+          icon = 'check-all';
         } else if (this.state.sent) {
-          icon = "check-all";
+          icon = 'check-all';
           itemData.item._id = true;
           this.setState({ sent: false });
         }
@@ -120,7 +127,7 @@ class ChatBubble extends Component {
                   width: 200,
                   maxHeight: 400,
                   minHeight: 200,
-                  resizeMode: "contain",
+                  resizeMode: 'contain',
                 }}
                 source={{
                   uri: itemData.item.ImageData,
@@ -149,7 +156,7 @@ class ChatBubble extends Component {
               <Text style={this.props.appStyles.ChatBubbleLeftViewName}>
                 {name}
               </Text>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: 'row' }}>
                 {message_body}
                 <Text style={this.props.appStyles.ChatBubbleLeftNote}>
                   {time}
@@ -160,7 +167,7 @@ class ChatBubble extends Component {
         } else {
           return (
             <View style={this.props.appStyles.ChatBubbleLeftView}>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: 'row' }}>
                 {message_body}
                 <Text style={this.props.appStyles.ChatBubbleLeftNote}>
                   {time}
@@ -174,11 +181,13 @@ class ChatBubble extends Component {
   };
   render() {
     var readIndex = 0;
+    var source = require(`../assets/Background.jpg`);
     if (this.props.dark) {
       this.messages = this.props.messages
         .filter((message) => !message.isPrompt)
         .slice()
         .reverse();
+      source = require(`../assets/DarkBackground.jpg`);
     } else if (!this.props.isGroup) {
       for (var member of this.props.members) {
         if (member.id !== this.props.userId)
@@ -208,7 +217,7 @@ class ChatBubble extends Component {
       <>
         <FlatList
           inverted
-          keyExtractor={(item, index) => "key" + index}
+          keyExtractor={(item, index) => 'key' + index}
           data={this.messages}
           renderItem={this.renderGridItem}
           numColumns={1}

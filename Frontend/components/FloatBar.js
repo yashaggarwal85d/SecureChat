@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Animated, TouchableWithoutFeedback, Alert } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons,MaterialIcons } from "@expo/vector-icons";
 import { FloatBarStyle } from "../appStyles";
 
 export default class ActionButton extends Component {
@@ -76,7 +76,7 @@ export default class ActionButton extends Component {
             onPress={() => this.props.navigation.navigate("SettingsScreen")}
           >
             <Animated.View style={[FloatBarStyle.button0, settingStyle]}>
-              <MaterialCommunityIcons
+              <MaterialIcons
                 style={FloatBarStyle.settings}
                 name='settings'
               />

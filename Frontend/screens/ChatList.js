@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Header,
   Title,
@@ -8,9 +8,10 @@ import {
   Right,
   Text,
   Badge,
-} from "native-base";
-import { FlatList } from "react-native";
-import moment from "moment";
+} from 'native-base';
+import { FlatList, ImageBackground } from 'react-native';
+import moment from 'moment';
+import { ImageBg } from '../appStyles';
 
 class ChatScreenComponent extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class ChatScreenComponent extends Component {
   }
 
   renderGridItem = (itemData) => {
-    const time = moment(itemData.item.lastTime).format("h:mm");
+    const time = moment(itemData.item.lastTime).format('h:mm');
     const messagesCount =
       itemData.item.messages.length - itemData.item.lastMessageReadIndex;
     if (messagesCount && this.props.activeRoom !== itemData.item.id) {
@@ -29,7 +30,7 @@ class ChatScreenComponent extends Component {
           avatar
           onPress={() => {
             this.props.navigation.navigate({
-              routeName: "ChatScreen",
+              routeName: 'ChatScreen',
               params: {
                 id: itemData.item.id,
                 appStyles: this.props.appStyles,
@@ -78,7 +79,7 @@ class ChatScreenComponent extends Component {
           avatar
           onPress={() => {
             this.props.navigation.navigate({
-              routeName: "ChatScreen",
+              routeName: 'ChatScreen',
               params: {
                 id: itemData.item.id,
                 appStyles: this.props.appStyles,
@@ -115,21 +116,29 @@ class ChatScreenComponent extends Component {
   };
 
   render() {
+    var source = require(`../assets/Background.jpg`);
+    if (this.props.mode == 1) source = require(`../assets/DarkBackground.jpg`);
     return (
       <>
-        <Header style={this.props.appStyles.HeaderContainer}>
-          <Body>
-            <Title style={this.props.appStyles.appTitle}>Chats</Title>
-          </Body>
-        </Header>
+        <ImageBackground
+          source={source}
+          resizeMode='cover'
+          style={ImageBg.ImageBack}
+        >
+          <Header style={this.props.appStyles.HeaderContainer}>
+            <Body>
+              <Title style={this.props.appStyles.appTitle}>Chats</Title>
+            </Body>
+          </Header>
 
-        <FlatList
-          keyExtractor={(item) => item.id}
-          data={this.props.rooms}
-          renderItem={this.renderGridItem}
-          numColumns={1}
-          style={this.props.appStyles.FlatListComponent}
-        />
+          <FlatList
+            keyExtractor={(item) => item.id}
+            data={this.props.rooms}
+            renderItem={this.renderGridItem}
+            numColumns={1}
+            style={this.props.appStyles.FlatListComponent}
+          />
+        </ImageBackground>
       </>
     );
   }

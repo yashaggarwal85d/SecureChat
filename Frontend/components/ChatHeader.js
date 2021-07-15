@@ -1,9 +1,14 @@
-import React, { Component } from "react";
-import { Header, Button, Body, Left, Text, Thumbnail } from "native-base";
-
-import { MaterialIcons } from "@expo/vector-icons";
-import * as color from "../constants/colors";
-import { socket, CheckOnline } from "../store/reducers/Socket";
+import React, { Component } from 'react';
+import { Header, Button, Body, Left, Text, Thumbnail } from 'native-base';
+import Menu, { MenuItem } from 'react-native-material-menu';
+import { MaterialIcons } from '@expo/vector-icons';
+import * as colors from '../constants/colors';
+import {
+  socket,
+  CheckOnline,
+  PullMessagesFromBlockchain,
+  PushMessagesToBlockchain,
+} from '../store/reducers/Socket';
 
 export default class ChatHeader extends Component {
   constructor(props) {
@@ -36,13 +41,37 @@ export default class ChatHeader extends Component {
 
   componentDidMount = () => {
     if (!this.state.room.isGroup) {
-      socket.on("online", async (userId) => {
+      socket.on('online', async (userId) => {
         if (userId === this.state.secondUser) this.setState({ online: true });
       });
-      socket.on("offline", async (userId) => {
+      socket.on('offline', async (userId) => {
         if (userId === this.state.secondUser) this.setState({ online: false });
       });
     }
+  };
+
+  _menu = null;
+
+  setMenuRef = (ref) => {
+    this._menu = ref;
+  };
+
+  hideMenu = () => {
+    this._menu.hide();
+  };
+
+  showMenu = () => {
+    this._menu.show();
+  };
+
+  PullMessages = () => {
+    PullMessagesFromBlockchain(this.state.room.id, this.props.user.id);
+    this.hideMenu();
+  };
+
+  PushMessages = () => {
+    PushMessagesToBlockchain(this.state.room.id, this.props.user.id);
+    this.hideMenu();
   };
 
   render() {
@@ -63,22 +92,79 @@ export default class ChatHeader extends Component {
       );
     if (this.state.room.isGroup)
       button = (
-        <Button
-          icon
-          transparent
-          onPress={() => {
-            this.props.navigation.navigate({
-              routeName: "RoomSettingsScreen",
-              params: {
-                updateHeaderComponent: this.updateHeaderComponent.bind(this),
-                room: this.state.room,
-                onPromptSend: this.props.onPromptSend,
-                appStyles: this.props.appStyles,
-              },
-            });
-          }}
-        >
-          <MaterialIcons name='more-vert' size={22} color={color.grey} />
+        <Button icon transparent>
+          <Menu
+            style={this.props.appStyles.ChatMoreButton}
+            ref={this.setMenuRef}
+            button={
+              <MaterialIcons
+                onPress={this.showMenu}
+                name='more-vert'
+                size={22}
+                color={colors.grey}
+              />
+            }
+          >
+            <MenuItem
+              textStyle={this.props.appStyles.ChatMoreButtonText}
+              onPress={() => {
+                this.props.navigation.navigate({
+                  routeName: 'RoomSettingsScreen',
+                  params: {
+                    updateHeaderComponent:
+                      this.updateHeaderComponent.bind(this),
+                    room: this.state.room,
+                    onPromptSend: this.props.onPromptSend,
+                    appStyles: this.props.appStyles,
+                  },
+                });
+              }}
+            >
+              Group info
+            </MenuItem>
+            <MenuItem
+              textStyle={this.props.appStyles.ChatMoreButtonText}
+              onPress={this.PullMessages}
+            >
+              Pull messages
+            </MenuItem>
+            <MenuItem
+              textStyle={this.props.appStyles.ChatMoreButtonText}
+              onPress={this.PushMessages}
+            >
+              Push messages
+            </MenuItem>
+          </Menu>
+        </Button>
+      );
+    else
+      button = (
+        <Button icon transparent>
+          <Menu
+            style={this.props.appStyles.ChatMoreButton}
+            ref={this.setMenuRef}
+            button={
+              <MaterialIcons
+                onPress={this.showMenu}
+                name='more-vert'
+                size={22}
+                color={colors.grey}
+              />
+            }
+          >
+            <MenuItem
+              textStyle={this.props.appStyles.ChatMoreButtonText}
+              onPress={this.PullMessages}
+            >
+              Pull messages
+            </MenuItem>
+            <MenuItem
+              textStyle={this.props.appStyles.ChatMoreButtonText}
+              onPress={this.PushMessages}
+            >
+              Push messages
+            </MenuItem>
+          </Menu>
         </Button>
       );
     return (
@@ -91,7 +177,7 @@ export default class ChatHeader extends Component {
               this.props.navigation.goBack();
             }}
           >
-            <MaterialIcons name='arrow-back' size={22} color={color.grey} />
+            <MaterialIcons name='arrow-back' size={22} color={colors.grey} />
           </Button>
         </Left>
 
@@ -100,7 +186,7 @@ export default class ChatHeader extends Component {
           source={{ uri: this.state.room.profile_pic }}
         />
 
-        <Body style={{ right: "70%" }}>
+        <Body style={{ right: '70%' }}>
           <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderTitle}>
             {this.state.room.name}
           </Text>

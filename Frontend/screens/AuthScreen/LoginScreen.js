@@ -138,8 +138,10 @@ class Login extends React.Component {
               onChangeText={(phone) =>
                 this.props.updatePhone(this.state.callingCode + phone)
               }
-              placeholder='Phone'
+              placeholder='Phone number'
+              placeholderTextColor='grey'
               autoCapitalize='none'
+              keyboardType='number-pad'
               onChange={(e) =>
                 this.PhoneValid(this.state.callingCode + e.nativeEvent.text)
               }
@@ -169,6 +171,7 @@ class Login extends React.Component {
             value={this.props.user.password}
             onChangeText={(password) => this.props.updatePassword(password)}
             placeholder='Password'
+            placeholderTextColor='grey'
             secureTextEntry={true}
             onChange={(e) => this.PasswordValid(e.nativeEvent.text)}
             autoCompleteType='off'

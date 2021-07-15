@@ -1,5 +1,5 @@
 import { createStackNavigator } from "react-navigation-stack";
-import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createAppContainer, createSwitchNavigator} from "react-navigation";
 import MainApp from "../screens/MainScreen";
 import PresentChatScreen from "../screens/Chats";
 import LoginScreen from "../screens/AuthScreen/LoginScreen";
@@ -227,6 +227,7 @@ const AuthNavigator = createStackNavigator({
     navigationOptions: {
       headerShown: false,
       animationEnabled: false,
+      cardStyle: { backgroundColor: "black"},
     },
   },
   SignUp: {
@@ -234,6 +235,7 @@ const AuthNavigator = createStackNavigator({
     navigationOptions: {
       headerShown: false,
       animationEnabled: false,
+      cardStyle: { backgroundColor: "black"},
     },
   },
 });
