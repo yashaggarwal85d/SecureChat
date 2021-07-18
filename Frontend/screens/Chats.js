@@ -3,6 +3,7 @@ import { Container } from 'native-base';
 import ChatHeader from '../components/ChatHeader';
 import ChatBubbles from '../components/ChatBubbles';
 import ChatFooter from '../components/ChatFooter';
+import PullMsg from '../components/PullMsg';
 import { connect } from 'react-redux';
 import { addMessage } from '../store/actions/RoomActions';
 import {
@@ -12,8 +13,7 @@ import {
   addImageMessage,
 } from '../store/reducers/Socket';
 import { bindActionCreators } from 'redux';
-import { ProgressBarAndroid, ImageBackground } from 'react-native';
-import * as colors from '../constants/colors';
+import { ImageBackground } from 'react-native';
 import { ImageBg } from '../appStyles';
 
 class PresentChatScreen extends React.Component {
@@ -21,7 +21,6 @@ class PresentChatScreen extends React.Component {
     super(props);
     this.state = {
       room: this.getRoom(),
-      loader: false,
     };
   }
 
@@ -43,10 +42,18 @@ class PresentChatScreen extends React.Component {
       if (roomId === this.state.room.id)
         this.setState({ room: this.getRoom() });
     });
+    socket.on('PullMessages', (roomId, obj) => {
+      if (roomId === this.state.room.id)
+        this.setState({ room: this.getRoom() });
+    });
     socket.on('removeRoom', async (roomId) => {
       if (roomId === this.state.room.id) {
         this.props.navigation.navigate('MainScreen');
       }
+    });
+    socket.on('ResetRoom', async (roomId, members, messages) => {
+      if (roomId === this.state.room.id)
+        this.setState({ room: this.getRoom() });
     });
   };
 
@@ -90,7 +97,6 @@ class PresentChatScreen extends React.Component {
     await this.props.addMessage(this.state.room.id, message);
     this.setState({ room: this.getRoom() });
     state.params.UpdateComponent();
-    this.updateLoader(false);
   };
 
   sendImageMessage(message) {
@@ -105,20 +111,10 @@ class PresentChatScreen extends React.Component {
     this.updateImageState(messageObject);
   }
 
-  updateLoader(loader) {
-    this.setState({ loader: loader });
-  }
-
   render() {
     var source = require(`../assets/Background.jpg`);
     if (this.state.room.dark) source = require(`../assets/DarkBackground.jpg`);
     const { state } = this.props.navigation;
-    var progress = <></>;
-    if (this.state.loader) {
-      progress = (
-        <ProgressBarAndroid color={colors.dodgerblue} styleAttr='Horizontal' />
-      );
-    }
     return (
       <Container style={state.params.appStyles.ChatMainContainer}>
         <ImageBackground
@@ -133,6 +129,12 @@ class PresentChatScreen extends React.Component {
             user={this.props.user}
             onPromptSend={this.sendPromptMessage.bind(this)}
           />
+          <PullMsg
+            {...this.props}
+            room={this.state.room}
+            PullMsg={this.state.room.PullMessage}
+            appStyles={state.params.appStyles}
+          />
           <ChatBubbles
             {...this.props}
             roomId={this.state.room.id}
@@ -143,14 +145,11 @@ class PresentChatScreen extends React.Component {
             members={this.state.room.members}
             dark={this.state.room.dark}
           />
-          {progress}
           <ChatFooter
             {...this.props}
             room={this.state.room}
             onSend={this.sendMessage.bind(this)}
-            // onFileSend={this.sendFileMessage.bind(this)}
             onImageSend={this.sendImageMessage.bind(this)}
-            updateLoader={this.updateLoader.bind(this)}
             appStyles={state.params.appStyles}
           />
         </ImageBackground>

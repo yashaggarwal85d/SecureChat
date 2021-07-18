@@ -1,36 +1,35 @@
-import React, { Component } from "react";
-import { Root, View, ActionSheet } from "native-base";
-import { TextInput, TouchableOpacity, ImageEditor } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { KeyboardAvoidingView } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as colors from "../constants/colors";
-import { resizeFunc } from "../store/actions/LoginActions";
+import React, { Component } from 'react';
+import { Root, View, ActionSheet } from 'native-base';
+import { TextInput, TouchableOpacity, ImageEditor } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { KeyboardAvoidingView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as colors from '../constants/colors';
+import { resizeFunc } from '../store/actions/LoginActions';
 
 var CameraButton = [
-  { text: "Camera", icon: "camera", iconColor: colors.black },
-  { text: "Gallery", icon: "images", iconColor: colors.dodgerblue },
-  { text: "Cancel", icon: "close", iconColor: colors.red },
+  { text: 'Camera', icon: 'camera', iconColor: colors.black },
+  { text: 'Gallery', icon: 'images', iconColor: colors.dodgerblue },
+  { text: 'Cancel', icon: 'close', iconColor: colors.red },
 ];
 
 class ChatFooter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: "",
+      message: '',
     };
   }
 
   uploadImage = async (result) => {
-    this.props.updateLoader(true);
     const data = await resizeFunc(result);
-    this.props.onImageSend("data:image/png;base64," + data);
+    this.props.onImageSend('data:image/png;base64,' + data);
   };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
       return;
     }
     let result = await ImagePicker.launchCameraAsync({
@@ -44,8 +43,8 @@ class ChatFooter extends Component {
 
   async PickImageFromGallery() {
     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
       return;
     }
     ImagePicker.MediaTypeOptions;
@@ -57,24 +56,6 @@ class ChatFooter extends Component {
       this.uploadImage(result);
     }
   }
-
-  // async uploadDocument(result) {
-  //   this.props.updateLoader(true);
-  //   const uri = result.uri;
-  //   const response = await fetch(uri);
-  //   const blob = await response.blob();
-  //   var ref = firebase
-  //     .storage()
-  //     .ref()
-  //     .child(
-  //       `rooms/files/${this.props.room.id}/${
-  //         this.props.user.id
-  //       }/${moment.now()}`
-  //     );
-  //   await ref.put(blob);
-  //   const url = await ref.getDownloadURL();
-  //   this.props.onFileSend(url, result.name);
-  // }
 
   async handleSend() {
     if (this.state.message.trim()) {
@@ -106,7 +87,7 @@ class ChatFooter extends Component {
                     {
                       options: CameraButton,
                       cancelButtonIndex: 2,
-                      title: "Send photo",
+                      title: 'Send photo',
                     },
                     (buttonIndex) => {
                       if (buttonIndex === 0) {

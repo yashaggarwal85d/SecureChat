@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Text, View } from "native-base";
-import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../../appStyles";
-import { connect } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AllUsers } from "../../store/actions/LoginActions";
-import { CreateNewRoom } from "../../store/actions/RoomActions";
-import { bindActionCreators } from "redux";
-import * as colors from "../../constants/colors";
+import React, { Component } from 'react';
+import { ListItem, Thumbnail, Body, Text, View } from 'native-base';
+import { FlatList, TextInput } from 'react-native';
+import { LightTheme } from '../../appStyles';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
+import { AllUsers } from '../../store/actions/LoginActions';
+import { CreateNewRoom } from '../../store/actions/RoomActions';
+import { bindActionCreators } from 'redux';
+import * as colors from '../../constants/colors';
 
 class SearchScreen extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class SearchScreen extends Component {
     this.state = {
       users: null,
       loaded: false,
-      text: "",
+      text: '',
       filteredUsers: null,
     };
     this.getUsers();
@@ -23,7 +23,7 @@ class SearchScreen extends Component {
 
   comparator = (a, b) => {
     for (const member of b.members) {
-      if (member.details) {
+      if (member.details && member.details._id != this.props.user.id) {
         return member.details._id === a._id;
       }
     }
@@ -56,7 +56,7 @@ class SearchScreen extends Component {
             isDark: false,
           };
           await this.props.CreateNewRoom(body);
-          this.props.navigation.navigate("MainScreen");
+          this.props.navigation.navigate('MainScreen');
         }}
       >
         <Thumbnail source={{ uri: itemData.item.profile_pic }} />

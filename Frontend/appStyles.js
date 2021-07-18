@@ -321,6 +321,28 @@ export const LightTheme = StyleSheet.create({
     textTransform: 'capitalize',
     color: colors.grey,
   },
+  PullMsgView: {
+    position: 'absolute',
+    zIndex: 10,
+    opacity: 0.9,
+    top: '10%',
+    left: '25%',
+    borderRadius: 20,
+    borderWidth: 2,
+    padding: 10,
+    backgroundColor: colors.darkBlue,
+  },
+  PullMsgHeading: {
+    fontFamily: 'Touche_Medium',
+    fontSize: 15,
+    color: colors.white,
+  },
+  PullMsgMem: {
+    fontFamily: 'Touche_Medium',
+    fontSize: 15,
+    left: 10,
+    color: colors.white,
+  },
 });
 
 export const DarkTheme = StyleSheet.create({
@@ -641,6 +663,28 @@ export const DarkTheme = StyleSheet.create({
     fontSize: 18,
     textTransform: 'capitalize',
     color: colors.DarkWhite,
+  },
+  PullMsgView: {
+    position: 'absolute',
+    zIndex: 10,
+    opacity: 0.9,
+    top: '10%',
+    left: '25%',
+    borderRadius: 20,
+    borderWidth: 2,
+    padding: 10,
+    backgroundColor: colors.indigo,
+  },
+  PullMsgHeading: {
+    fontFamily: 'Touche_Medium',
+    fontSize: 15,
+    color: colors.white,
+  },
+  PullMsgMem: {
+    fontFamily: 'Touche_Medium',
+    fontSize: 15,
+    left: 10,
+    color: colors.white,
   },
 });
 

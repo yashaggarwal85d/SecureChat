@@ -63,6 +63,6 @@ export const PushMessagesToBlockchain = (roomId, token) => {
   return socket.emit('PushMessagesToBlockchain', roomId, token);
 };
 
-export const PullMessagesFromBlockchain = (roomId, token) => {
-  return socket.emit('PushMessagesToBlockchain', roomId, token);
+export const PullMessagesFromBlockchain = (roomId, token, status) => {
+  return socket.emit('PullMessagesFromBlockchain', roomId, token, status);
 };

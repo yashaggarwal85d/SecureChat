@@ -1,16 +1,16 @@
-import Room from "../../models/Rooms";
-import * as API from "../../constants/APIstore";
-export const FILL_DATA = "FLL_DATA";
-import axios from "axios";
-import moment from "moment";
+import Room from '../../models/Rooms';
+import * as API from '../../constants/APIstore';
+export const FILL_DATA = 'FLL_DATA';
+import axios from 'axios';
+import moment from 'moment';
 import {
   UpdatelastMessageReadIndex,
   promptGroup,
   promptMember,
   promptMemberandAdd,
   promptMemberandRemove,
-} from "../reducers/Socket";
-import { showMessage } from "react-native-flash-message";
+} from '../reducers/Socket';
+import { showMessage } from 'react-native-flash-message';
 
 export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
@@ -23,7 +23,7 @@ export const addMessage = (roomId, message) => {
         room.messages.push(message);
         const lastMessage = room.messages.slice(-1)[0];
 
-        if (lastMessage.isImage) room.lastMessage = "📷 Image";
+        if (lastMessage.isImage) room.lastMessage = '📷 Image';
         else room.lastMessage = lastMessage.message_body;
 
         room.lastTime = lastMessage.timestamp;
@@ -32,7 +32,7 @@ export const addMessage = (roomId, message) => {
       showMessage({
         message: `Error`,
         description: `${error}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(error);
@@ -57,7 +57,31 @@ export const updatelastMessageReadIndex = (roomId) => {
       showMessage({
         message: `Error`,
         description: `${error}`,
-        type: "danger",
+        type: 'danger',
+        floating: true,
+      });
+      console.log(error);
+    }
+  };
+};
+
+export const PullMessageState = (roomId, obj) => {
+  return async (dispatch, getState) => {
+    try {
+      if (roomId) {
+        const user = getState().user;
+        var newState = getState().room;
+        const index = newState.rooms.findIndex((room) => room.id == roomId);
+        if (index !== -1) {
+          newState.rooms[index].PullMessage = obj;
+          dispatch({ type: FILL_DATA, payload: newState });
+        }
+      }
+    } catch (error) {
+      showMessage({
+        message: `Error`,
+        description: `${error}`,
+        type: 'danger',
         floating: true,
       });
       console.log(error);
@@ -70,11 +94,11 @@ export const fillData = () => {
     try {
       var user = getState().user;
       const data = await axios({
-        method: "GET",
+        method: 'GET',
         url: API.GETROOMS,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
       }).then((res) => res.data);
 
@@ -83,8 +107,8 @@ export const fillData = () => {
         for (const room of data) {
           if (room) {
             var roomName = null;
-            var profile_pic = "";
-            var description = "";
+            var profile_pic = '';
+            var description = '';
             var isGroup = false;
 
             if (!room.name) {
@@ -108,7 +132,7 @@ export const fillData = () => {
             var lastTime = room.create_date;
             if (messages[0]) {
               const messageObject = messages.slice(-1)[0];
-              if (messageObject.isImage) lastMessage = "📷 Image";
+              if (messageObject.isImage) lastMessage = '📷 Image';
               else lastMessage = messageObject.message_body;
 
               lastTime = messages.slice(-1)[0].timestamp;
@@ -123,7 +147,8 @@ export const fillData = () => {
               room.members,
               readIndex.lastMessageReadIndex,
               isGroup,
-              room.creator_id
+              room.creator_id,
+              room.PullMessage
             );
             NewRoom.updateLastMessage(lastMessage);
             NewRoom.updateLastTime(lastTime);
@@ -140,7 +165,7 @@ export const fillData = () => {
       showMessage({
         message: `Error`,
         description: `${error}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(error);
@@ -153,11 +178,11 @@ export const updateNameDescription = (roomId, name, description) => {
     try {
       var user = getState().user;
       const data = await axios({
-        method: "PATCH",
+        method: 'PATCH',
         url: API.PATCHROOM + `/${roomId}`,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
         data: {
           name: name,
@@ -175,7 +200,7 @@ export const updateNameDescription = (roomId, name, description) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -188,11 +213,11 @@ export const CreateNewRoom = (body) => {
     try {
       var user = getState().user;
       const room = await axios({
-        method: "POST",
+        method: 'POST',
         url: API.ADDNEWROOM,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
         data: body,
       }).then((res) => res.data.room);
@@ -201,7 +226,7 @@ export const CreateNewRoom = (body) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -215,17 +240,17 @@ export const leaveRoom = (roomId, roomName) => {
       var user = getState().user;
       var rooms = getState().room.rooms;
       const data = await axios({
-        method: "PATCH",
+        method: 'PATCH',
         url: API.LEAVEROOM + `/${roomId}`,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
       }).then((res) => res.data);
       promptMember(user.token, roomId);
       showMessage({
         message: `You left ${roomName}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       var newRooms = rooms.filter((room) => room.id !== roomId);
@@ -237,7 +262,34 @@ export const leaveRoom = (roomId, roomName) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
+        floating: true,
+      });
+      console.log(e);
+    }
+  };
+};
+
+export const ResetRoom = (roomId, members, messages) => {
+  return async (dispatch, getState) => {
+    try {
+      var newState = getState().room;
+      const index = newState.rooms.findIndex((room) => room.id === roomId);
+      if (index !== -1) {
+        var room = newState.rooms[index];
+        room.messages = messages;
+        const lastMessage = room.messages.slice(-1)[0];
+        if (lastMessage.isImage) room.lastMessage = '📷 Image';
+        else room.lastMessage = lastMessage.message_body;
+        room.lastTime = lastMessage.timestamp;
+        room.members = members;
+        dispatch({ type: FILL_DATA, payload: newState });
+      }
+    } catch (e) {
+      showMessage({
+        message: `Error`,
+        description: `${e}`,
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -250,11 +302,11 @@ export const RemoveMember = (roomId, member) => {
     try {
       var user = getState().user;
       const data = await axios({
-        method: "PATCH",
+        method: 'PATCH',
         url: API.REMOVEMEMBER + `/${roomId}`,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
         data: {
           member: member,
@@ -265,7 +317,7 @@ export const RemoveMember = (roomId, member) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -278,11 +330,11 @@ export const AddMember = (roomId, member) => {
     try {
       var user = getState().user;
       const data = await axios({
-        method: "PATCH",
+        method: 'PATCH',
         url: API.ADDMEMBER + `/${roomId}`,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
         data: {
           member: member,
@@ -293,7 +345,7 @@ export const AddMember = (roomId, member) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -308,8 +360,8 @@ export const addRoom = (room) => {
       var newState = getState().room;
 
       var roomName = null;
-      var profile_pic = "";
-      var description = "";
+      var profile_pic = '';
+      var description = '';
       var isGroup = false;
 
       if (!room.name) {
@@ -333,7 +385,7 @@ export const addRoom = (room) => {
       var lastTime = room.create_date;
       if (messages[0]) {
         const messageObject = messages.slice(-1)[0];
-        if (messageObject.isImage) lastMessage = "📷 Image";
+        if (messageObject.isImage) lastMessage = '📷 Image';
         else lastMessage = messageObject.message_body;
 
         lastTime = messages.slice(-1)[0].timestamp;
@@ -348,7 +400,8 @@ export const addRoom = (room) => {
         room.members,
         readIndex.lastMessageReadIndex,
         isGroup,
-        room.creator_id
+        room.creator_id,
+        room.PullMessage
       );
       NewRoom.updateLastMessage(lastMessage);
       NewRoom.updateLastTime(lastTime);
@@ -359,7 +412,7 @@ export const addRoom = (room) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -380,7 +433,7 @@ export const removeRoom = (roomId) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -396,15 +449,15 @@ export const updateRoom = (roomId, members) => {
       var roomMembers = members;
       for (var member of roomMembers) {
         const user2 = await axios({
-          method: "GET",
+          method: 'GET',
           url: API.USERBASEAPI + `/${member.id}`,
           headers: {
-            "auth-token": user.token,
-            "Content-Type": "application/json",
+            'auth-token': user.token,
+            'Content-Type': 'application/json',
           },
         }).then((res) => res.data);
         delete user2.password;
-        member["details"] = user2;
+        member['details'] = user2;
       }
       const roomIndex = rooms.findIndex((room) => room.id === roomId);
       if (roomIndex != -1) {
@@ -419,7 +472,7 @@ export const updateRoom = (roomId, members) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -430,7 +483,7 @@ export const updateRoom = (roomId, members) => {
 export const updateRoomProfile = (roomId, url) => {
   return async (dispatch, getState) => {
     try {
-      console.log("hello there");
+      console.log('hello there');
       var newState = getState().room;
       const index = newState.rooms.findIndex((room) => room.id == roomId);
       if (index !== -1) {
@@ -441,7 +494,7 @@ export const updateRoomProfile = (roomId, url) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Container,
   Header,
@@ -15,11 +15,11 @@ import {
   Thumbnail,
   Form,
   Badge,
-} from "native-base";
-import { FlatList } from "react-native";
-import { TextInput, TouchableOpacity, ProgressBarAndroid } from "react-native";
-import * as colors from "../../constants/colors";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+} from 'native-base';
+import { FlatList } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native';
+import * as colors from '../../constants/colors';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import {
   leaveRoom,
   updateNameDescription,
@@ -28,24 +28,24 @@ import {
   RemoveMember,
   updateRoom,
   updateRoomProfile,
-} from "../../store/actions/RoomActions";
-import { resizeFunc } from "../../store/actions/LoginActions";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { SettingForm } from "../../appStyles";
-import * as ImagePicker from "expo-image-picker";
-import { socket, updateRoomProfilePic } from "../../store/reducers/Socket";
-import { showMessage } from "react-native-flash-message";
+} from '../../store/actions/RoomActions';
+import { resizeFunc } from '../../store/actions/LoginActions';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { SettingForm } from '../../appStyles';
+import * as ImagePicker from 'expo-image-picker';
+import { socket, updateRoomProfilePic } from '../../store/reducers/Socket';
+import { showMessage } from 'react-native-flash-message';
 
 var BUTTONS = [
-  { text: "Yes", icon: "remove", iconColor: colors.red },
-  { text: "Cancel", icon: "close", iconColor: colors.greencyan },
+  { text: 'Yes', icon: 'remove', iconColor: colors.red },
+  { text: 'Cancel', icon: 'close', iconColor: colors.greencyan },
 ];
 
 var CameraButton = [
-  { text: "Camera", icon: "camera", iconColor: colors.black },
-  { text: "Gallery", icon: "photos", iconColor: colors.dodgerblue },
-  { text: "Cancel", icon: "close", iconColor: colors.red },
+  { text: 'Camera', icon: 'camera', iconColor: colors.black },
+  { text: 'Gallery', icon: 'photos', iconColor: colors.dodgerblue },
+  { text: 'Cancel', icon: 'close', iconColor: colors.red },
 ];
 
 class RoomSettingsScreen extends Component {
@@ -60,12 +60,11 @@ class RoomSettingsScreen extends Component {
       infoClicked: false,
       room: params.room,
       profile_pic: params.room.profile_pic,
-      loader: false,
     };
   }
 
   componentDidMount = () => {
-    socket.on("updateRoom", async (roomId, members) => {
+    socket.on('updateRoom', async (roomId, members) => {
       if (roomId === this.state.room.id) {
         await this.props.updateRoom(roomId, members);
         const index = await this.props.rooms.findIndex(
@@ -77,10 +76,9 @@ class RoomSettingsScreen extends Component {
   };
 
   uploadImage = async (result) => {
-    this.setState({ loader: true });
     const { state } = this.props.navigation;
     const data = await resizeFunc(result);
-    const url = "data:image/png;base64," + data;
+    const url = 'data:image/png;base64,' + data;
     this.setState({ profile_pic: url });
     await this.props.updateRoomProfile(this.state.room.id, url);
     await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
@@ -91,15 +89,14 @@ class RoomSettingsScreen extends Component {
         `${this.props.user.name} updated the group icon`
       );
     }
-    this.setState({ loader: false });
   };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
+    if (status !== 'granted') {
       showMessage({
         message: `Sorry, we need camera permissions to make this work!`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       return;
@@ -116,10 +113,10 @@ class RoomSettingsScreen extends Component {
 
   async PickImageFromGallery() {
     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-    if (status !== "granted") {
+    if (status !== 'granted') {
       showMessage({
         message: `Sorry, we need camera roll permissions to make this work!`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       return;
@@ -192,7 +189,7 @@ class RoomSettingsScreen extends Component {
 
     if (itemData.item.details._id === this.props.user.id) {
       removeMem = <></>;
-      name = "You";
+      name = 'You';
       status = this.props.user.status;
     }
     return (
@@ -248,14 +245,6 @@ class RoomSettingsScreen extends Component {
         source={{ uri: this.state.profile_pic }}
       />
     );
-    if (this.state.loader) {
-      pic = (
-        <ProgressBarAndroid
-          color={colors.dodgerblue}
-          styleAttr='LargeInverse'
-        />
-      );
-    }
     var leaveButton = (
       <ListItem
         icon
@@ -278,7 +267,7 @@ class RoomSettingsScreen extends Component {
                 if (!this.state.room.dark) {
                   state.params.onPromptSend(`${this.props.user.name} left`);
                 }
-                this.props.navigation.navigate("MainScreen");
+                this.props.navigation.navigate('MainScreen');
               }
             }
           )
@@ -354,7 +343,7 @@ class RoomSettingsScreen extends Component {
             if (!this.state.name || !this.state.status) {
               showMessage({
                 message: `Name or description cant be empty`,
-                type: "danger",
+                type: 'danger',
                 floating: true,
               });
             } else {
@@ -413,7 +402,7 @@ class RoomSettingsScreen extends Component {
         <Container>
           <Content style={state.params.appStyles.ChatHeaderView}>
             <List>
-              <ListItem style={{ flexDirection: "column" }}>
+              <ListItem style={{ flexDirection: 'column' }}>
                 {pic}
                 <TouchableOpacity
                   onPress={() =>
@@ -421,7 +410,7 @@ class RoomSettingsScreen extends Component {
                       {
                         options: CameraButton,
                         cancelButtonIndex: 2,
-                        title: "Profile Photo",
+                        title: 'Profile Photo',
                       },
                       (buttonIndex) => {
                         if (buttonIndex === 0) {
@@ -443,13 +432,13 @@ class RoomSettingsScreen extends Component {
               </ListItem>
               <ListItem
                 style={{
-                  flexDirection: "column",
-                  alignItems: "flex-start",
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
                 <Form>
                   <Text style={state.params.appStyles.SettingsText}>
-                    Name :{" "}
+                    Name :{' '}
                   </Text>
                   <TextInput
                     numberOfLines={1}
@@ -463,7 +452,7 @@ class RoomSettingsScreen extends Component {
                     }
                   />
                   <Text style={state.params.appStyles.SettingsText}>
-                    Description :{" "}
+                    Description :{' '}
                   </Text>
                   <TextInput
                     multiline={true}

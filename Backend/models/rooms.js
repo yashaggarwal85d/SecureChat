@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const DefaultImageBuffers = require("../DefaultImageBuffers");
+const mongoose = require('mongoose');
+const DefaultImageBuffers = require('../DefaultImageBuffers');
 
 const ProfilePicUrl = DefaultImageBuffers.defaultGroupPic;
 const MemberPic = DefaultImageBuffers.defaultProfilePic;
@@ -53,7 +53,7 @@ const detailsSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      default: "Hello there",
+      default: 'Hello there',
     },
   },
   { _id: false }
@@ -74,6 +74,21 @@ const membersSchema = mongoose.Schema(
       default: false,
     },
     details: detailsSchema,
+  },
+  { _id: false }
+);
+
+const PullMessageSchema = mongoose.Schema(
+  {
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    sender_id: {
+      type: String,
+      default: null,
+    },
+    membersApproved: [String],
   },
   { _id: false }
 );
@@ -107,6 +122,14 @@ const RoomSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  PullMessage: {
+    type: PullMessageSchema,
+    default: {
+      active: false,
+      sender_id: null,
+      membersApproved: null,
+    },
+  },
 });
 
-module.exports = mongoose.model("room", RoomSchema);
+module.exports = mongoose.model('room', RoomSchema);

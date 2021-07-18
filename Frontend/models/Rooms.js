@@ -8,13 +8,14 @@ class Room {
     members,
     lastMessageReadIndex,
     isGroup,
-    creator_id
+    creator_id,
+    PullMessage
   ) {
     this.id = id;
     this.name = name;
     this.description = description;
-    this.lastMessage = "";
-    this.lastTime = "";
+    this.lastMessage = '';
+    this.lastTime = '';
     this.messages = messages;
     this.profile_pic = profile_pic;
     this.members = members;
@@ -22,6 +23,7 @@ class Room {
     this.isGroup = isGroup;
     this.creator_id = creator_id;
     this.dark = false;
+    this.PullMessage = PullMessage;
   }
   updateLastMessage(message) {
     this.lastMessage = message;

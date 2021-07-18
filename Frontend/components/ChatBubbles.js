@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import { Text, View, Left, Header, Button, Body } from 'native-base';
-import {
-  FlatList,
-  Image,
-  TouchableOpacity,
-  Modal,
-  ImageBackground,
-} from 'react-native';
+import { FlatList, Image, TouchableOpacity, Modal } from 'react-native';
 import moment from 'moment';
 import { socket } from '../store/reducers/Socket';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import * as color from '../constants/colors';
-import { ImageBg } from '../appStyles';
 
 class ChatBubble extends Component {
   constructor(props) {
@@ -181,13 +174,11 @@ class ChatBubble extends Component {
   };
   render() {
     var readIndex = 0;
-    var source = require(`../assets/Background.jpg`);
     if (this.props.dark) {
       this.messages = this.props.messages
         .filter((message) => !message.isPrompt)
         .slice()
         .reverse();
-      source = require(`../assets/DarkBackground.jpg`);
     } else if (!this.props.isGroup) {
       for (var member of this.props.members) {
         if (member.id !== this.props.userId)

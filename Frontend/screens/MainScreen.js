@@ -29,6 +29,8 @@ import {
   removeRoom,
   updateRoomProfile,
   CreateNewRoom,
+  PullMessageState,
+  ResetRoom,
 } from '../store/actions/RoomActions';
 import { socket } from '../store/reducers/Socket';
 import ChatListScreen from './ChatList';
@@ -216,9 +218,19 @@ class MainApp extends Component {
       await this.props.updateRoomProfile(roomId, url);
       this.updateComponent();
     });
-    // setTimeout(() => {
-    //   StatusBar.setHidden(false);
-    // });
+    socket.on('CallBack', async (callback, type) => {
+      showMessage({
+        message: callback,
+        type: type,
+        floating: true,
+      });
+    });
+    socket.on('PullMessages', async (roomId, obj) => {
+      await this.props.PullMessageState(roomId, obj);
+    });
+    socket.on('ResetRoom', async (roomId, members, messages) => {
+      await this.props.ResetRoom(roomId, members, messages);
+    });
   };
 
   SwitchToLight() {
@@ -332,6 +344,8 @@ const mapDispatchToProps = (dispatch) => {
       updateMode,
       CreateNewRoom,
       updateNotificationToken,
+      PullMessageState,
+      ResetRoom,
     },
     dispatch
   );

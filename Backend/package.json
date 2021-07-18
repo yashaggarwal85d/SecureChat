@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "author": "Yash Aggarwal",
   "license": "ISC",
@@ -18,6 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
     "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.12",
     "socket.io": "^3.1.1"
   },
   "engines": {

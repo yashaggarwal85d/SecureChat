@@ -9,6 +9,7 @@ import {
   PullMessagesFromBlockchain,
   PushMessagesToBlockchain,
 } from '../store/reducers/Socket';
+import { showMessage } from 'react-native-flash-message';
 
 export default class ChatHeader extends Component {
   constructor(props) {
@@ -65,12 +66,30 @@ export default class ChatHeader extends Component {
   };
 
   PullMessages = () => {
-    PullMessagesFromBlockchain(this.state.room.id, this.props.user.id);
+    if (
+      this.state.room.PullMessage.active &&
+      this.state.room.PullMessage.membersApproved.indexOf(
+        this.props.user.id
+      ) !== -1
+    ) {
+      showMessage({
+        message: 'Pull Messages',
+        description: 'Pull message request already active',
+        type: 'danger',
+        floating: true,
+      });
+    } else {
+      PullMessagesFromBlockchain(
+        this.state.room.id,
+        this.props.user.token,
+        true
+      );
+    }
     this.hideMenu();
   };
 
   PushMessages = () => {
-    PushMessagesToBlockchain(this.state.room.id, this.props.user.id);
+    PushMessagesToBlockchain(this.state.room.id, this.props.user.token);
     this.hideMenu();
   };
 

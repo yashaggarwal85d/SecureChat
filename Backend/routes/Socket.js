@@ -1,19 +1,37 @@
-const express = require("express");
-const User = require("../models/users");
-const Room = require("../models/rooms");
-const JWT = require("jsonwebtoken");
-const sendNotification = require("./sendNotification");
+const express = require('express');
+const User = require('../models/users');
+const Room = require('../models/rooms');
+const JWT = require('jsonwebtoken');
+const sendNotification = require('./sendNotification');
 
 var ConnectedUsers = {};
 
+//Blockchain part starts
+var tempBlockchain = {};
+
+PushMsgBlockchain = (room) => {
+  tempBlockchain[room._id] = room.messages;
+};
+
+PullMsgBlockchain = (roomId) => {
+  if (tempBlockchain[roomId]) {
+    const result = tempBlockchain[roomId];
+    delete tempBlockchain[roomId];
+    return result;
+  } else {
+    return null;
+  }
+};
+//Blockchain part ends
+
 module.exports = (io) => {
-  io.on("connection", (socket) => {
-    socket.on("connectedUser", async (token) => {
+  io.on('connection', (socket) => {
+    socket.on('connectedUser', async (token) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
         if (!verifiedId || !user) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           ConnectedUsers[user._id] = socket.id;
           user.rooms_id.forEach(async (roomId) => {
@@ -21,7 +39,7 @@ module.exports = (io) => {
             if (room.members.length === 2) {
               room.members.forEach((mem) => {
                 if (ConnectedUsers[mem.id]) {
-                  socket.to(ConnectedUsers[mem.id]).emit("online", user._id);
+                  socket.to(ConnectedUsers[mem.id]).emit('online', user._id);
                 }
               });
             }
@@ -29,64 +47,67 @@ module.exports = (io) => {
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
-    socket.on("checkOnline", async (token, userId) => {
+    socket.on('checkOnline', async (token, userId) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         if (!verifiedId) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           if (ConnectedUsers[userId]) {
-            socket.emit("online", userId);
+            socket.emit('online', userId);
           }
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
-    socket.on("UpdatelastMessageReadIndex", async (roomId, token) => {
+    socket.on('UpdatelastMessageReadIndex', async (roomId, token) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         if (!verifiedId) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const room = await Room.findById(roomId);
           if (!room.name) {
             room.members.forEach((mem) => {
               if (ConnectedUsers[mem.id] && !mem.blocked) {
-                socket.to(ConnectedUsers[mem.id]).emit("bluetick", roomId);
+                socket.to(ConnectedUsers[mem.id]).emit('bluetick', roomId);
               }
             });
           }
           const MessageNum = room.messages.length;
           const UpdatedRoom = await Room.updateOne(
-            { _id: roomId, "members.id": verifiedId._id },
+            { _id: roomId, 'members.id': verifiedId._id },
             {
               $set: {
-                "members.$.lastMessageReadIndex": MessageNum,
+                'members.$.lastMessageReadIndex': MessageNum,
               },
             }
           );
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
-    socket.on("message", async (roomId, token, messageBody) => {
+    socket.on('message', async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id && !member.blocked) f = 1;
+          if (member.id === verifiedId._id && !member.blocked) {
+            f = 1;
+            break;
+          }
         }
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const message = {
             sender_id: verifiedId._id,
@@ -101,12 +122,12 @@ module.exports = (io) => {
               },
             }
           );
-          socket.emit("confirmSend", message, roomId);
+          socket.emit('confirmSend', message, roomId);
           room.members.forEach(async (mem) => {
             if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
-                .emit("recieveMessage", message, roomId);
+                .emit('recieveMessage', message, roomId);
             }
             if (!room.isDark && mem.id != user._id) {
               const user2 = await User.findById(mem.id);
@@ -122,20 +143,23 @@ module.exports = (io) => {
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
-    socket.on("addPrompt", async (roomId, token, messageBody) => {
+    socket.on('addPrompt', async (roomId, token, messageBody) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id && !member.blocked) f = 1;
+          if (member.id === verifiedId._id && !member.blocked) {
+            f = 1;
+            break;
+          }
         }
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const message = {
             isPrompt: true,
@@ -151,12 +175,12 @@ module.exports = (io) => {
               },
             }
           );
-          socket.emit("confirmSend", message, roomId);
+          socket.emit('confirmSend', message, roomId);
           room.members.forEach(async (mem) => {
             if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
-                .emit("recieveMessage", message, roomId);
+                .emit('recieveMessage', message, roomId);
             }
             if (!room.isDark && mem.id != user._id) {
               const user2 = await User.findById(mem.id);
@@ -172,26 +196,29 @@ module.exports = (io) => {
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("addImage", async (roomId, token, ImageData) => {
+    socket.on('addImage', async (roomId, token, ImageData) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id && !member.blocked) f = 1;
+          if (member.id === verifiedId._id && !member.blocked) {
+            f = 1;
+            break;
+          }
         }
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const message = {
             isImage: true,
             sender_id: verifiedId._id,
-            message_body: "📷 Image",
+            message_body: '📷 Image',
             ImageData: ImageData,
           };
           const room = await Room.findById(roomId);
@@ -203,146 +230,155 @@ module.exports = (io) => {
               },
             }
           );
-          socket.emit("confirmSend", message, roomId);
+          socket.emit('confirmSend', message, roomId);
           room.members.forEach(async (mem) => {
             if (ConnectedUsers[mem.id] && !mem.blocked) {
               socket
                 .to(ConnectedUsers[mem.id])
-                .emit("recieveMessage", message, roomId);
+                .emit('recieveMessage', message, roomId);
             }
             if (!room.isDark && mem.id != user._id) {
               const user2 = await User.findById(mem.id);
               const NotificationToken = user2.NotificationToken;
               if (NotificationToken)
-                sendNotification(NotificationToken, `${user.name}`, "📷 Image");
+                sendNotification(NotificationToken, `${user.name}`, '📷 Image');
             }
           });
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("newGroup", async (token, roomId) => {
+    socket.on('newGroup', async (token, roomId) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         if (!verifiedId) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const OriginalRoom = await Room.findById(roomId);
           var room = OriginalRoom;
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
-              socket.to(ConnectedUsers[mem.id]).emit("addRoom", OriginalRoom);
+              socket.to(ConnectedUsers[mem.id]).emit('addRoom', OriginalRoom);
             }
           });
           if (room.isDark && !room.name && room.creator_id === verifiedId._id) {
             for (var member of room.members) {
               const details = await User.findById(member.id);
-              member["details"] = details;
+              member['details'] = details;
             }
           }
-          socket.emit("addRoom", room);
+          socket.emit('addRoom', room);
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("leaveGroup", async (token, roomId) => {
+    socket.on('leaveGroup', async (token, roomId) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id) f = 1;
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
         }
 
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
               socket
                 .to(ConnectedUsers[mem.id])
-                .emit("updateRoom", roomId, room.members);
+                .emit('updateRoom', roomId, room.members);
             }
           });
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("addMember", async (token, roomId, memberId) => {
+    socket.on('addMember', async (token, roomId, memberId) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id) f = 1;
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
         }
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
               if (mem.id === memberId) {
-                socket.to(ConnectedUsers[mem.id]).emit("addRoom", room);
+                socket.to(ConnectedUsers[mem.id]).emit('addRoom', room);
               } else {
                 socket
                   .to(ConnectedUsers[mem.id])
-                  .emit("updateRoom", roomId, room.members);
+                  .emit('updateRoom', roomId, room.members);
               }
             }
           });
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("removeMember", async (token, roomId, memberId) => {
+    socket.on('removeMember', async (token, roomId, memberId) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id) f = 1;
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
         }
 
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
               if (mem.id === memberId) {
                 socket
                   .to(ConnectedUsers[mem.id])
-                  .emit("removeRoom", room.id, room.name);
+                  .emit('removeRoom', room.id, room.name);
               } else {
                 socket
                   .to(ConnectedUsers[mem.id])
-                  .emit("updateRoom", roomId, room.members);
+                  .emit('updateRoom', roomId, room.members);
               }
             }
           });
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("profile_pic", async (token, url) => {
+    socket.on('profile_pic', async (token, url) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         if (!verifiedId) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const user = await User.findById(verifiedId._id);
           user.profile_pic = url;
@@ -359,16 +395,15 @@ module.exports = (io) => {
           const rooms_id = user.rooms_id;
           for (const roomid of rooms_id) {
             const room = await Room.findById(roomid);
-            if(room.isDark)
-            continue;
+            if (room.isDark) continue;
             const UpdatedRoom = await Room.updateMany(
               {
                 _id: room._id,
-                "members.id": user._id,
+                'members.id': user._id,
               },
               {
                 $set: {
-                  "members.$.details": user,
+                  'members.$.details': user,
                 },
               }
             );
@@ -377,7 +412,7 @@ module.exports = (io) => {
                 if (ConnectedUsers[member.id]) {
                   socket
                     .to(ConnectedUsers[member.id])
-                    .emit("update_profile", roomid, url);
+                    .emit('update_profile', roomid, url);
                 }
               }
             }
@@ -385,21 +420,24 @@ module.exports = (io) => {
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
-    socket.on("roomProfile_pic", async (token, roomId, url) => {
+    socket.on('roomProfile_pic', async (token, roomId, url) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const room = await Room.findById(roomId);
         var f = 0;
         for (const member of room.members) {
-          if (member.id === verifiedId._id) f = 1;
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
         }
 
         if (!verifiedId && f) {
-          socket.emit("error", "Access Denied");
+          socket.emit('error', 'Access Denied');
         } else {
           const UpdatedRoom = await Room.updateOne(
             { _id: roomId },
@@ -413,18 +451,18 @@ module.exports = (io) => {
             if (ConnectedUsers[member.id]) {
               socket
                 .to(ConnectedUsers[member.id])
-                .emit("update_profile", roomId, url);
+                .emit('update_profile', roomId, url);
             }
           }
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
 
     socket.on(
-      "registerForPushNotifications",
+      'registerForPushNotifications',
       async (token, NotificationToken) => {
         try {
           const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
@@ -438,35 +476,252 @@ module.exports = (io) => {
           );
         } catch (e) {
           console.log(e);
-          socket.emit("error", e);
+          socket.emit('error', e);
         }
       }
     );
 
-    socket.on("logout", async () => {
+    socket.on('PushMessagesToBlockchain', async (roomId, token) => {
       try {
-        for (const key in ConnectedUsers) {
-          if (ConnectedUsers[key] === socket.id) {
-            delete ConnectedUsers[key];
-            const user = await User.findById(key);
-            user.rooms_id.forEach(async (roomId) => {
-              const room = await Room.findById(roomId);
-              if (room.members.length === 2) {
-                room.members.forEach((mem) => {
-                  if (ConnectedUsers[mem.id]) {
-                    socket.to(ConnectedUsers[mem.id]).emit("offline", key);
-                  }
-                });
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
+        }
+
+        if (!verifiedId && f) {
+          socket.emit('error', 'Access Denied');
+        } else {
+          if (room.messages.length > 2) {
+            PushMsgBlockchain(room); //Function to push messages to blockchain
+
+            socket.emit('CallBack', 'Messages push is successful', 'success');
+            const message = {
+              isPrompt: true,
+              sender_id: verifiedId._id,
+              message_body:
+                'All the previous messages are archived, pull the messages to see them',
+            };
+            var messagesFinal = [message];
+            var members = room.members;
+            for (var member of members) {
+              member.lastMessageReadIndex = 0;
+            }
+            const UpdatedRoom = await Room.updateOne(
+              { _id: roomId },
+              {
+                $set: {
+                  messages: messagesFinal,
+                  members: members,
+                },
+              }
+            );
+            socket.emit('ResetRoom', roomId, members, messagesFinal);
+            room.members.forEach(async (mem) => {
+              if (ConnectedUsers[mem.id] && !mem.blocked) {
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit('ResetRoom', roomId, members, messagesFinal);
+              }
+              if (mem.id != verifiedId._id) {
+                const user2 = await User.findById(mem.id);
+                const NotificationToken = user2.NotificationToken;
+                if (NotificationToken)
+                  sendNotification(
+                    NotificationToken,
+                    'Messages pushed',
+                    'All the previous messages are archived, pull the messages to see them'
+                  );
               }
             });
+          } else {
+            socket.emit('CallBack', 'No messages to push', 'danger');
           }
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
       }
     });
-    socket.on("disconnect", async () => {
+
+    socket.on('PullMessagesFromBlockchain', async (roomId, token, status) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
+        }
+
+        if (!verifiedId && f) {
+          socket.emit('error', 'Access Denied');
+        } else {
+          var PullMsgObj;
+          if (status) {
+            if (room.PullMessage.active) {
+              var obj = room.PullMessage;
+              var arr = room.PullMessage.membersApproved;
+              f = 0;
+              for (const member of arr) {
+                if (member === verifiedId._id) {
+                  f = 1;
+                  break;
+                }
+              }
+              if (!f) {
+                arr.push(verifiedId._id);
+                obj.membersApproved = arr;
+                socket.emit('PullMessages', roomId, obj);
+                for (const member of room.members) {
+                  if (ConnectedUsers[member.id]) {
+                    socket
+                      .to(ConnectedUsers[member.id])
+                      .emit('PullMessages', roomId, obj);
+                  }
+                }
+              }
+              PullMsgObj = {
+                active: true,
+                sender_id: room.PullMessage.sender_id,
+                membersApproved: arr,
+              };
+            } else {
+              PullMsgObj = {
+                active: true,
+                sender_id: verifiedId._id,
+                membersApproved: [verifiedId._id],
+              };
+              socket.emit('PullMessages', roomId, PullMsgObj);
+              for (const member of room.members) {
+                if (ConnectedUsers[member.id]) {
+                  socket
+                    .to(ConnectedUsers[member.id])
+                    .emit('PullMessages', roomId, PullMsgObj);
+                }
+              }
+            }
+            if (
+              room.PullMessage.membersApproved &&
+              room.PullMessage.membersApproved.length == room.members.length
+            ) {
+              var BlockchainMessages = PullMsgBlockchain(room._id);
+              if (BlockchainMessages) {
+                const message = {
+                  isPrompt: true,
+                  sender_id: verifiedId._id,
+                  message_body: 'Archieved messages are pulled successfully',
+                };
+                var messagesFinal = BlockchainMessages.concat(room.messages);
+                messagesFinal.push(message);
+                var members = room.members;
+                for (var member of members) {
+                  member.lastMessageReadIndex += BlockchainMessages.length;
+                }
+                const UpdatedRoom = await Room.updateOne(
+                  { _id: roomId },
+                  {
+                    $set: {
+                      messages: messagesFinal,
+                      members: members,
+                    },
+                  }
+                );
+                socket.emit('ResetRoom', roomId, members, messagesFinal);
+                room.members.forEach(async (mem) => {
+                  if (ConnectedUsers[mem.id] && !mem.blocked) {
+                    socket
+                      .to(ConnectedUsers[mem.id])
+                      .emit('ResetRoom', roomId, members, messagesFinal);
+                  }
+                  if (!room.isDark && mem.id != verifiedId._id) {
+                    const user2 = await User.findById(mem.id);
+                    const NotificationToken = user2.NotificationToken;
+                    if (NotificationToken)
+                      sendNotification(
+                        NotificationToken,
+                        'Messages pushed',
+                        'Archieved messages are pulled successfully'
+                      );
+                  }
+                });
+              }
+              PullMsgObj = {
+                active: false,
+                sender_id: null,
+                membersApproved: null,
+              };
+            }
+          } else {
+            PullMsgObj = {
+              active: false,
+              sender_id: null,
+              membersApproved: null,
+            };
+            socket.emit('PullMessages', roomId, PullMsgObj);
+            for (const member of room.members) {
+              if (ConnectedUsers[member.id]) {
+                socket
+                  .to(ConnectedUsers[member.id])
+                  .emit('PullMessages', roomId, PullMsgObj);
+              }
+            }
+
+            const message = {
+              isPrompt: true,
+              sender_id: verifiedId._id,
+              message_body: 'Pull request is declined',
+            };
+            const UpdatedRoom = await Room.updateOne(
+              { _id: roomId },
+              {
+                $push: {
+                  messages: message,
+                },
+              }
+            );
+            socket.emit('recieveMessage', message, roomId);
+            room.members.forEach(async (mem) => {
+              if (ConnectedUsers[mem.id] && !mem.blocked) {
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit('recieveMessage', message, roomId);
+              }
+              if (!room.isDark && mem.id != verifiedId._id) {
+                const user2 = await User.findById(mem.id);
+                const NotificationToken = user2.NotificationToken;
+                if (NotificationToken)
+                  sendNotification(
+                    NotificationToken,
+                    'Messages pushed',
+                    'Pull request is declined'
+                  );
+              }
+            });
+          }
+          const UpdatedRoom = await Room.updateOne(
+            { _id: roomId },
+            {
+              $set: {
+                PullMessage: PullMsgObj,
+              },
+            }
+          );
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit('error', e);
+      }
+    });
+
+    socket.on('logout', async () => {
       try {
         for (const key in ConnectedUsers) {
           if (ConnectedUsers[key] === socket.id) {
@@ -477,7 +732,7 @@ module.exports = (io) => {
               if (room.members.length === 2) {
                 room.members.forEach((mem) => {
                   if (ConnectedUsers[mem.id]) {
-                    socket.to(ConnectedUsers[mem.id]).emit("offline", key);
+                    socket.to(ConnectedUsers[mem.id]).emit('offline', key);
                   }
                 });
               }
@@ -486,7 +741,30 @@ module.exports = (io) => {
         }
       } catch (e) {
         console.log(e);
-        socket.emit("error", e);
+        socket.emit('error', e);
+      }
+    });
+    socket.on('disconnect', async () => {
+      try {
+        for (const key in ConnectedUsers) {
+          if (ConnectedUsers[key] === socket.id) {
+            delete ConnectedUsers[key];
+            const user = await User.findById(key);
+            user.rooms_id.forEach(async (roomId) => {
+              const room = await Room.findById(roomId);
+              if (room.members.length === 2) {
+                room.members.forEach((mem) => {
+                  if (ConnectedUsers[mem.id]) {
+                    socket.to(ConnectedUsers[mem.id]).emit('offline', key);
+                  }
+                });
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit('error', e);
       }
     });
   });

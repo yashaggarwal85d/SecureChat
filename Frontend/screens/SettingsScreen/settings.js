@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -14,32 +14,32 @@ import {
   Thumbnail,
   Form,
   Root,
-} from "native-base";
-import { TextInput, TouchableOpacity, ProgressBarAndroid } from "react-native";
-import * as colors from "../../constants/colors";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+} from 'native-base';
+import { TextInput, TouchableOpacity } from 'react-native';
+import * as colors from '../../constants/colors';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import {
   logout,
   updateNameStatus,
   updateProfile,
   resizeFunc,
-} from "../../store/actions/LoginActions";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { SettingForm, LightTheme } from "../../appStyles";
-import * as ImagePicker from "expo-image-picker";
-import { updateProfilePic } from "../../store/reducers/Socket";
-import { showMessage } from "react-native-flash-message";
+} from '../../store/actions/LoginActions';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { SettingForm, LightTheme } from '../../appStyles';
+import * as ImagePicker from 'expo-image-picker';
+import { updateProfilePic } from '../../store/reducers/Socket';
+import { showMessage } from 'react-native-flash-message';
 
 var BUTTONS = [
-  { text: "Yes", icon: "open", iconColor: colors.greencyan },
-  { text: "Cancel", icon: "close", iconColor: colors.red },
+  { text: 'Yes', icon: 'open', iconColor: colors.greencyan },
+  { text: 'Cancel', icon: 'close', iconColor: colors.red },
 ];
 
 var CameraButton = [
-  { text: "Camera", icon: "camera", iconColor: colors.black },
-  { text: "Gallery", icon: "images", iconColor: colors.dodgerblue },
-  { text: "Cancel", icon: "close", iconColor: colors.red },
+  { text: 'Camera', icon: 'camera', iconColor: colors.black },
+  { text: 'Gallery', icon: 'images', iconColor: colors.dodgerblue },
+  { text: 'Cancel', icon: 'close', iconColor: colors.red },
 ];
 
 class SettingsScreen extends Component {
@@ -51,26 +51,23 @@ class SettingsScreen extends Component {
       status: this.props.user.status,
       changed: false,
       infoClicked: false,
-      loader: false,
     };
   }
 
   uploadImage = async (result) => {
-    this.setState({ loader: true });
     const data = await resizeFunc(result);
-    const url = "data:image/png;base64," + data;
+    const url = 'data:image/png;base64,' + data;
     this.setState({ profile_pic: url });
     await this.props.updateProfile(url);
     await updateProfilePic(this.props.user.token, url);
-    this.setState({ loader: false });
   };
 
   async PickImageFromCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
+    if (status !== 'granted') {
       showMessage({
         message: `Sorry, we need camera permissions to make this work!`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       return;
@@ -87,10 +84,10 @@ class SettingsScreen extends Component {
 
   async PickImageFromGallery() {
     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-    if (status !== "granted") {
+    if (status !== 'granted') {
       showMessage({
         message: `Sorry, we need camera roll permissions to make this work!`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       return;
@@ -121,14 +118,6 @@ class SettingsScreen extends Component {
         source={{ uri: this.state.profile_pic }}
       />
     );
-    if (this.state.loader) {
-      pic = (
-        <ProgressBarAndroid
-          color={colors.dodgerblue}
-          styleAttr='LargeInverse'
-        />
-      );
-    }
     if (this.state.changed)
       button = (
         <TouchableOpacity
@@ -147,7 +136,7 @@ class SettingsScreen extends Component {
             } else {
               showMessage({
                 message: `Name or Status Invalid`,
-                type: "danger",
+                type: 'danger',
                 floating: true,
               });
             }
@@ -183,7 +172,7 @@ class SettingsScreen extends Component {
         <Root>
           <Content>
             <List>
-              <ListItem style={{ flexDirection: "column" }}>
+              <ListItem style={{ flexDirection: 'column' }}>
                 {pic}
                 <TouchableOpacity
                   onPress={() =>
@@ -191,7 +180,7 @@ class SettingsScreen extends Component {
                       {
                         options: CameraButton,
                         cancelButtonIndex: 2,
-                        title: "Profile Photo",
+                        title: 'Profile Photo',
                       },
                       (buttonIndex) => {
                         if (buttonIndex === 0) {
@@ -213,8 +202,8 @@ class SettingsScreen extends Component {
               </ListItem>
               <ListItem
                 style={{
-                  flexDirection: "column",
-                  alignItems: "flex-start",
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
                 <Form>
@@ -279,12 +268,12 @@ class SettingsScreen extends Component {
                     {
                       options: BUTTONS,
                       cancelButtonIndex: 1,
-                      title: "Are you sure you want to logout ?",
+                      title: 'Are you sure you want to logout ?',
                     },
                     (buttonIndex) => {
                       if (buttonIndex === 0) {
                         this.props.logout();
-                        this.props.navigation.navigate("Auth");
+                        this.props.navigation.navigate('Auth');
                       }
                     }
                   )

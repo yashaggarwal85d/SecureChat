@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const User = require("../models/users");
-const bcrypt = require("bcryptjs");
-const JWT = require("jsonwebtoken");
-const { registerValidation, loginValidation } = require("../validation");
-const AuthTokenVerification = require("./TokenVerify");
+const User = require('../models/users');
+const bcrypt = require('bcryptjs');
+const JWT = require('jsonwebtoken');
+const { registerValidation, loginValidation } = require('../validation');
+const AuthTokenVerification = require('./TokenVerify');
 
-router.get("/all", AuthTokenVerification, async (req, res) => {
+router.get('/all', AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(400).send("Access denied");
+      return res.status(400).send('Access denied');
     }
     const users = await User.find({ _id: { $nin: req.user } });
     res.json(users);
@@ -18,10 +18,10 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.get("/:UserId", AuthTokenVerification, async (req, res) => {
+router.get('/:UserId', AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(400).send("Access denied");
+      return res.status(400).send('Access denied');
     }
     const user = await User.findById(req.params.UserId);
     res.json(user);
@@ -30,10 +30,10 @@ router.get("/:UserId", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.patch("/update", AuthTokenVerification, async (req, res) => {
+router.patch('/update', AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(400).send("Access denied");
+      return res.status(400).send('Access denied');
     }
     const user = await User.findById(req.user._id);
     var hashedPassword = null;
@@ -41,7 +41,7 @@ router.patch("/update", AuthTokenVerification, async (req, res) => {
     if (req.body.password) {
       const validPass = await bcrypt.compare(req.body.password, user.password);
       if (!validPass) {
-        return res.status(400).send("Incorrect password");
+        return res.status(400).send('Incorrect password');
       }
 
       if (validPass) {
@@ -64,14 +64,14 @@ router.patch("/update", AuthTokenVerification, async (req, res) => {
       }
     );
     res.json({
-      message: "successfully updated",
+      message: 'successfully updated',
     });
   } catch (err) {
     res.status(400).send(err);
   }
 });
 
-router.post("/register", async (req, res) => {
+router.post('/register', async (req, res) => {
   const { error } = registerValidation(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
@@ -83,7 +83,7 @@ router.post("/register", async (req, res) => {
   if (phoneExist) {
     return res
       .status(400)
-      .send("Account with this Phone number already exists");
+      .send('Account with this Phone number already exists');
   }
 
   //hashing the send password
@@ -106,8 +106,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
-  console.log("hi");
+router.post('/login', async (req, res) => {
   const { error } = loginValidation(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
@@ -119,13 +118,13 @@ router.post("/login", async (req, res) => {
   if (!user) {
     return res
       .status(400)
-      .send("Account with this Phone number does not exists");
+      .send('Account with this Phone number does not exists');
   }
 
   //comparing the send password
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass) {
-    return res.status(400).send("Phone or Password is incorrect");
+    return res.status(400).send('Phone or Password is incorrect');
   }
 
   const token = JWT.sign(
@@ -143,7 +142,7 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.post("/CheckContacts", AuthTokenVerification, async (req, res) => {
+router.post('/CheckContacts', AuthTokenVerification, async (req, res) => {
   var f = 0;
   var contacts = [];
   for (const number of req.body.PhoneNumbers) {
