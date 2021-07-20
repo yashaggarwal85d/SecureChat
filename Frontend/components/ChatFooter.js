@@ -6,6 +6,8 @@ import { KeyboardAvoidingView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as colors from '../constants/colors';
 import { resizeFunc } from '../store/actions/LoginActions';
+import { connect } from 'react-redux';
+import { LightTheme, DarkTheme } from '../appStyles';
 
 var CameraButton = [
   { text: 'Camera', icon: 'camera', iconColor: colors.black },
@@ -62,24 +64,18 @@ class ChatFooter extends Component {
       this.props.onSend(this.state.message.trim());
       this.setState({ message: null });
     }
-    // else {
-    //   const result = await DocumentPicker.getDocumentAsync();
-    //   this.uploadDocument(result);
-    // }
   }
 
-  // setText = (text) => {
-  //   if (text) this.setState({ message: text, icon: "send" });
-  //   else this.setState({ message: text, icon: "attach-file" });
-  // };
-
   render() {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     return (
-      <KeyboardAvoidingView
-        style={this.props.appStyles.ChatKeyboardAvoidingView}
-      >
-        <View style={this.props.appStyles.ChatInputView}>
-          <View style={this.props.appStyles.ChatInputCamera}>
+      <KeyboardAvoidingView style={Theme.ChatKeyboardAvoidingView}>
+        <View style={Theme.ChatInputView}>
+          <View style={Theme.ChatInputCamera}>
             <Root>
               <MaterialIcons
                 onPress={() =>
@@ -99,7 +95,7 @@ class ChatFooter extends Component {
                   )
                 }
                 size={26}
-                style={this.props.appStyles.ChatInputCameraIcon}
+                style={Theme.ChatInputCameraIcon}
                 name='photo-camera'
               />
             </Root>
@@ -107,7 +103,7 @@ class ChatFooter extends Component {
           <TextInput
             value={this.state.message}
             onChangeText={(text) => this.setState({ message: text })}
-            style={this.props.appStyles.ChatInput}
+            style={Theme.ChatInput}
             placeholder='Type a message'
             placeholderTextColor='grey'
             underlineColorAndroid='transparent'
@@ -115,15 +111,22 @@ class ChatFooter extends Component {
           ></TextInput>
         </View>
         <TouchableOpacity
-          style={this.props.appStyles.SendButtonView}
+          style={Theme.SendButtonView}
           onPress={() => this.handleSend()}
           activeOpacity={1}
         >
-          <MaterialIcons name='send' style={this.props.appStyles.SendButton} />
+          <MaterialIcons name='send' style={Theme.SendButton} />
         </TouchableOpacity>
       </KeyboardAvoidingView>
     );
   }
 }
 
-export default ChatFooter;
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.rooms,
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatFooter);

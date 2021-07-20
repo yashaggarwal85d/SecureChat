@@ -1,6 +1,17 @@
 import Room from '../../models/Rooms';
 import * as API from '../../constants/APIstore';
-export const FILL_DATA = 'FLL_DATA';
+import {
+  FILL_DATA,
+  ADD_MESSAGE_ROOM,
+  ADD_ROOM,
+  DELETE_ROOM,
+  LAST_MESSAGE_READ_INDEX,
+  PULL_MESSAGE_STATE,
+  UPDATE_NAME_DESC,
+  UPDATE_MEMBERS_MESSAGES,
+  UPDATE_PROFILE_PIC,
+  MARK_READ_MESSAGES,
+} from '../../constants/Actions';
 import axios from 'axios';
 import moment from 'moment';
 import {
@@ -15,19 +26,48 @@ import { showMessage } from 'react-native-flash-message';
 export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
     try {
-      var newState = getState().room;
-      const index = newState.rooms.findIndex((room) => room.id === roomId);
-      if (index !== -1) {
-        message = { ...message, timestamp: moment.now() };
-        var room = newState.rooms[index];
-        room.messages.push(message);
-        const lastMessage = room.messages.slice(-1)[0];
-
-        if (lastMessage.isImage) room.lastMessage = '📷 Image';
-        else room.lastMessage = lastMessage.message_body;
-
-        room.lastTime = lastMessage.timestamp;
+      console.log('helloooooooooo14');
+      const user = getState().user;
+      const messageObj = { ...message, timestamp: moment.now() };
+      dispatch({
+        type: ADD_MESSAGE_ROOM,
+        payload: {
+          message: messageObj,
+          id: roomId,
+        },
+      });
+      if (user.active_room === roomId) {
+        dispatch({
+          type: LAST_MESSAGE_READ_INDEX,
+          payload: {
+            id: roomId,
+          },
+        });
+        UpdatelastMessageReadIndex(roomId, user.token);
       }
+    } catch (error) {
+      showMessage({
+        message: `Error`,
+        description: `${error}`,
+        type: 'danger',
+        floating: true,
+      });
+      console.log(error);
+    }
+  };
+};
+
+export const MarkRead = (roomId, userId) => {
+  return async (dispatch, getState) => {
+    try {
+      console.log('helloooooooooo13.5');
+      dispatch({
+        type: MARK_READ_MESSAGES,
+        payload: {
+          id: roomId,
+          userId: userId,
+        },
+      });
     } catch (error) {
       showMessage({
         message: `Error`,
@@ -43,15 +83,16 @@ export const addMessage = (roomId, message) => {
 export const updatelastMessageReadIndex = (roomId) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo13');
       if (roomId) {
         const user = getState().user;
-        var newState = getState().room;
-        const index = newState.rooms.findIndex((room) => room.id == roomId);
-        if (index !== -1) {
-          var room = newState.rooms[index];
-          room.lastMessageReadIndex = room.messages.length;
-          UpdatelastMessageReadIndex(roomId, user.token);
-        }
+        dispatch({
+          type: LAST_MESSAGE_READ_INDEX,
+          payload: {
+            id: roomId,
+          },
+        });
+        UpdatelastMessageReadIndex(roomId, user.token);
       }
     } catch (error) {
       showMessage({
@@ -68,14 +109,15 @@ export const updatelastMessageReadIndex = (roomId) => {
 export const PullMessageState = (roomId, obj) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo12');
       if (roomId) {
-        const user = getState().user;
-        var newState = getState().room;
-        const index = newState.rooms.findIndex((room) => room.id == roomId);
-        if (index !== -1) {
-          newState.rooms[index].PullMessage = obj;
-          dispatch({ type: FILL_DATA, payload: newState });
-        }
+        dispatch({
+          type: PULL_MESSAGE_STATE,
+          payload: {
+            id: roomId,
+            obj: obj,
+          },
+        });
       }
     } catch (error) {
       showMessage({
@@ -92,6 +134,7 @@ export const PullMessageState = (roomId, obj) => {
 export const fillData = () => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo11');
       var user = getState().user;
       const data = await axios({
         method: 'GET',
@@ -156,10 +199,7 @@ export const fillData = () => {
             rooms.push(NewRoom);
           }
         }
-        const roomState = {
-          rooms: rooms,
-        };
-        dispatch({ type: FILL_DATA, payload: roomState });
+        dispatch({ type: FILL_DATA, payload: rooms });
       }
     } catch (error) {
       showMessage({
@@ -176,6 +216,7 @@ export const fillData = () => {
 export const updateNameDescription = (roomId, name, description) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo0');
       var user = getState().user;
       const data = await axios({
         method: 'PATCH',
@@ -189,13 +230,14 @@ export const updateNameDescription = (roomId, name, description) => {
           description: description,
         },
       }).then((res) => res.data);
-      var newState = getState().room;
-      const index = newState.rooms.findIndex((room) => room.id === roomId);
-      if (index !== -1) {
-        var room = newState.rooms[index];
-        room.name = name;
-        room.description = description;
-      }
+      dispatch({
+        type: UPDATE_NAME_DESC,
+        payload: {
+          id: roomId,
+          name: name,
+          description: description,
+        },
+      });
     } catch (e) {
       showMessage({
         message: `Error`,
@@ -211,6 +253,7 @@ export const updateNameDescription = (roomId, name, description) => {
 export const CreateNewRoom = (body) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo9');
       var user = getState().user;
       const room = await axios({
         method: 'POST',
@@ -237,8 +280,8 @@ export const CreateNewRoom = (body) => {
 export const leaveRoom = (roomId, roomName) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo8');
       var user = getState().user;
-      var rooms = getState().room.rooms;
       const data = await axios({
         method: 'PATCH',
         url: API.LEAVEROOM + `/${roomId}`,
@@ -253,11 +296,12 @@ export const leaveRoom = (roomId, roomName) => {
         type: 'danger',
         floating: true,
       });
-      var newRooms = rooms.filter((room) => room.id !== roomId);
-      const newState = {
-        rooms: newRooms,
-      };
-      dispatch({ type: FILL_DATA, payload: newState });
+      dispatch({
+        type: DELETE_ROOM,
+        payload: {
+          id: roomId,
+        },
+      });
     } catch (e) {
       showMessage({
         message: `Error`,
@@ -273,18 +317,15 @@ export const leaveRoom = (roomId, roomName) => {
 export const ResetRoom = (roomId, members, messages) => {
   return async (dispatch, getState) => {
     try {
-      var newState = getState().room;
-      const index = newState.rooms.findIndex((room) => room.id === roomId);
-      if (index !== -1) {
-        var room = newState.rooms[index];
-        room.messages = messages;
-        const lastMessage = room.messages.slice(-1)[0];
-        if (lastMessage.isImage) room.lastMessage = '📷 Image';
-        else room.lastMessage = lastMessage.message_body;
-        room.lastTime = lastMessage.timestamp;
-        room.members = members;
-        dispatch({ type: FILL_DATA, payload: newState });
-      }
+      console.log('helloooooooooo7');
+      dispatch({
+        type: UPDATE_MEMBERS_MESSAGES,
+        payload: {
+          id: roomId,
+          members: members,
+          messages: messages,
+        },
+      });
     } catch (e) {
       showMessage({
         message: `Error`,
@@ -300,6 +341,7 @@ export const ResetRoom = (roomId, members, messages) => {
 export const RemoveMember = (roomId, member) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo6');
       var user = getState().user;
       const data = await axios({
         method: 'PATCH',
@@ -328,6 +370,7 @@ export const RemoveMember = (roomId, member) => {
 export const AddMember = (roomId, member) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo5');
       var user = getState().user;
       const data = await axios({
         method: 'PATCH',
@@ -356,9 +399,8 @@ export const AddMember = (roomId, member) => {
 export const addRoom = (room) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo4');
       var user = getState().user;
-      var newState = getState().room;
-
       var roomName = null;
       var profile_pic = '';
       var description = '';
@@ -406,8 +448,7 @@ export const addRoom = (room) => {
       NewRoom.updateLastMessage(lastMessage);
       NewRoom.updateLastTime(lastTime);
       NewRoom.updateDark(room.isDark);
-      newState.rooms.push(NewRoom);
-      dispatch({ type: FILL_DATA, payload: newState });
+      dispatch({ type: ADD_ROOM, payload: NewRoom });
     } catch (e) {
       showMessage({
         message: `Error`,
@@ -423,12 +464,13 @@ export const addRoom = (room) => {
 export const removeRoom = (roomId) => {
   return async (dispatch, getState) => {
     try {
-      const rooms = getState().room.rooms;
-      var newRooms = rooms.filter((room) => room.id !== roomId);
-      var newState = {
-        rooms: newRooms,
-      };
-      dispatch({ type: FILL_DATA, payload: newState });
+      console.log('helloooooooooo3');
+      dispatch({
+        type: DELETE_ROOM,
+        payload: {
+          id: roomId,
+        },
+      });
     } catch (e) {
       showMessage({
         message: `Error`,
@@ -444,8 +486,8 @@ export const removeRoom = (roomId) => {
 export const updateRoom = (roomId, members) => {
   return async (dispatch, getState) => {
     try {
+      console.log('helloooooooooo2');
       var user = getState().user;
-      const rooms = getState().room.rooms;
       var roomMembers = members;
       for (var member of roomMembers) {
         const user2 = await axios({
@@ -459,15 +501,13 @@ export const updateRoom = (roomId, members) => {
         delete user2.password;
         member['details'] = user2;
       }
-      const roomIndex = rooms.findIndex((room) => room.id === roomId);
-      if (roomIndex != -1) {
-        var newRooms = rooms;
-        newRooms[roomIndex].members = roomMembers;
-        const newState = {
-          rooms: newRooms,
-        };
-        dispatch({ type: FILL_DATA, payload: newState });
-      }
+      dispatch({
+        type: UPDATE_MEMBERS,
+        payload: {
+          id: roomId,
+          members: roomMembers,
+        },
+      });
     } catch (e) {
       showMessage({
         message: `Error`,
@@ -483,13 +523,14 @@ export const updateRoom = (roomId, members) => {
 export const updateRoomProfile = (roomId, url) => {
   return async (dispatch, getState) => {
     try {
-      console.log('hello there');
-      var newState = getState().room;
-      const index = newState.rooms.findIndex((room) => room.id == roomId);
-      if (index !== -1) {
-        var room = newState.rooms[index];
-        room.profile_pic = url;
-      }
+      console.log('helloooooooooo1');
+      dispatch({
+        type: UPDATE_PROFILE_PIC,
+        payload: {
+          id: roomId,
+          profile_pic: url,
+        },
+      });
     } catch (e) {
       showMessage({
         message: `Error`,

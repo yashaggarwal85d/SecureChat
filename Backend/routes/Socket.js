@@ -75,7 +75,9 @@ module.exports = (io) => {
           if (!room.name) {
             room.members.forEach((mem) => {
               if (ConnectedUsers[mem.id] && !mem.blocked) {
-                socket.to(ConnectedUsers[mem.id]).emit('bluetick', roomId);
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit('bluetick', roomId, verifiedId._id);
               }
             });
           }
@@ -161,38 +163,40 @@ module.exports = (io) => {
         if (!verifiedId && f) {
           socket.emit('error', 'Access Denied');
         } else {
-          const message = {
-            isPrompt: true,
-            sender_id: verifiedId._id,
-            message_body: messageBody,
-          };
-          const room = await Room.findById(roomId);
-          const UpdatedRoom = await Room.updateOne(
-            { _id: roomId },
-            {
-              $push: {
-                messages: message,
-              },
-            }
-          );
-          socket.emit('confirmSend', message, roomId);
-          room.members.forEach(async (mem) => {
-            if (ConnectedUsers[mem.id] && !mem.blocked) {
-              socket
-                .to(ConnectedUsers[mem.id])
-                .emit('recieveMessage', message, roomId);
-            }
-            if (!room.isDark && mem.id != user._id) {
-              const user2 = await User.findById(mem.id);
-              const NotificationToken = user2.NotificationToken;
-              if (NotificationToken)
-                sendNotification(
-                  NotificationToken,
-                  `${user.name}`,
-                  messageBody
-                );
-            }
-          });
+          if (!room.isDark) {
+            const message = {
+              isPrompt: true,
+              sender_id: verifiedId._id,
+              message_body: messageBody,
+            };
+            const room = await Room.findById(roomId);
+            const UpdatedRoom = await Room.updateOne(
+              { _id: roomId },
+              {
+                $push: {
+                  messages: message,
+                },
+              }
+            );
+            socket.emit('confirmSend', message, roomId);
+            room.members.forEach(async (mem) => {
+              if (ConnectedUsers[mem.id] && !mem.blocked) {
+                socket
+                  .to(ConnectedUsers[mem.id])
+                  .emit('recieveMessage', message, roomId);
+              }
+              if (!room.isDark && mem.id != user._id) {
+                const user2 = await User.findById(mem.id);
+                const NotificationToken = user2.NotificationToken;
+                if (NotificationToken)
+                  sendNotification(
+                    NotificationToken,
+                    `${user.name}`,
+                    messageBody
+                  );
+              }
+            });
+          }
         }
       } catch (e) {
         console.log(e);

@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput, TouchableOpacity } from "react-native";
-import { DarkTheme } from "../../appStyles";
-import { connect } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, { Component } from 'react';
+import { ListItem, Thumbnail, Body, Text, View, Right } from 'native-base';
+import { FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { DarkTheme } from '../../appStyles';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
 
 class GroupSearchScreen extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class GroupSearchScreen extends Component {
     const Allusers = this.getUsers();
     this.state = {
       users: Allusers,
-      text: "",
+      text: '',
       filteredUsers: Allusers,
       selectedUsers: 0,
     };
@@ -135,7 +135,7 @@ class GroupSearchScreen extends Component {
                 return user.selected;
               });
               this.props.navigation.navigate({
-                routeName: "DarkGroupConfirmScreen",
+                routeName: 'DarkGroupConfirmScreen',
                 params: {
                   members: members,
                 },
@@ -175,7 +175,7 @@ class GroupSearchScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.rooms.filter((room) => !room.dark),
     user: state.user,
   };
 };

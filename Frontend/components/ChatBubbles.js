@@ -6,15 +6,20 @@ import { socket } from '../store/reducers/Socket';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import * as color from '../constants/colors';
+import { connect } from 'react-redux';
+import { LightTheme, DarkTheme } from '../appStyles';
 
 class ChatBubble extends Component {
   constructor(props) {
     super(props);
-    this.messages = null;
+
+    const memIndex = this.props.rooms[this.props.roomInd].members.findIndex(
+      (mem) => mem.id !== this.props.user.id
+    );
     this.state = {
       sent: false,
       visible: false,
-      read: false,
+      secondUserInd: memIndex,
     };
   }
 
@@ -25,38 +30,26 @@ class ChatBubble extends Component {
     socket.on('confirmSend', async (message, roomId) => {
       this.setState({ sent: true });
     });
-    socket.on('bluetick', async (roomId) => {
-      if (roomId === this.props.roomId) {
-        this.setState({ read: true });
-        this.markRead();
-      }
-    });
-  }
-
-  markRead() {
-    for (var message of this.messages) {
-      message.read = true;
-    }
-    this.setState({ read: false });
   }
 
   renderGridItem = (itemData) => {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     if (itemData.item.isPrompt) {
       return (
-        <View style={this.props.appStyles.PromptMessageView}>
-          <Text style={this.props.appStyles.PromptMessage}>
-            {itemData.item.message_body}
-          </Text>
+        <View style={Theme.PromptMessageView}>
+          <Text style={Theme.PromptMessage}>{itemData.item.message_body}</Text>
         </View>
       );
     } else {
       const time = moment(itemData.item.timestamp).format('h:mm');
-      if (itemData.item.sender_id === this.props.userId) {
+      if (itemData.item.sender_id === this.props.user.id) {
         var icon = 'clock-outline';
         var message_body = (
-          <Text style={this.props.appStyles.ChatBubbleText}>
-            {itemData.item.message_body}
-          </Text>
+          <Text style={Theme.ChatBubbleText}>{itemData.item.message_body}</Text>
         );
         if (itemData.item.isImage) {
           message_body = (
@@ -83,32 +76,38 @@ class ChatBubble extends Component {
           itemData.item._id = true;
           this.setState({ sent: false });
         }
-        if (itemData.item.read) {
+        if (
+          !this.props.rooms[this.props.roomInd].isGroup &&
+          this.props.rooms[this.props.roomInd].members[this.state.secondUserInd]
+            .lastMessageReadIndex >=
+            this.props.rooms[this.props.roomInd].messages.length -
+              itemData.index
+        ) {
           return (
-            <View style={this.props.appStyles.ChatBubbleView}>
+            <View style={Theme.ChatBubbleView}>
               {message_body}
-              <Text style={this.props.appStyles.ChatBubbleNote}>{time}</Text>
+              <Text style={Theme.ChatBubbleNote}>{time}</Text>
               <MaterialCommunityIcons
                 name={icon}
-                style={this.props.appStyles.ChatBubbleNoteIconBlue}
+                style={Theme.ChatBubbleNoteIconBlue}
               />
             </View>
           );
         } else {
           return (
-            <View style={this.props.appStyles.ChatBubbleView}>
+            <View style={Theme.ChatBubbleView}>
               {message_body}
-              <Text style={this.props.appStyles.ChatBubbleNote}>{time}</Text>
+              <Text style={Theme.ChatBubbleNote}>{time}</Text>
               <MaterialCommunityIcons
                 name={icon}
-                style={this.props.appStyles.ChatBubbleNoteIcon}
+                style={Theme.ChatBubbleNoteIcon}
               />
             </View>
           );
         }
       } else {
         var message_body = (
-          <Text style={this.props.appStyles.ChatBubbleLeftText}>
+          <Text style={Theme.ChatBubbleLeftText}>
             {itemData.item.message_body}
           </Text>
         );
@@ -131,40 +130,42 @@ class ChatBubble extends Component {
         }
 
         if (
-          (!this.messages[itemData.index + 1] ||
-            this.messages[itemData.index + 1].sender_id !==
-              itemData.item.sender_id ||
-            this.messages[itemData.index + 1].isPrompt) &&
-          this.props.isGroup
+          (!this.props.rooms[this.props.roomInd].messages.slice().reverse()[
+            itemData.index + 1
+          ] ||
+            this.props.rooms[this.props.roomInd].messages.slice().reverse()[
+              itemData.index + 1
+            ].sender_id !== itemData.item.sender_id ||
+            this.props.rooms[this.props.roomInd].messages.slice().reverse()[
+              itemData.index + 1
+            ].isPrompt) &&
+          this.props.rooms[this.props.roomInd].isGroup
         ) {
           var name;
-          const memIndex = this.props.members.findIndex(
+          const memIndex = this.props.rooms[
+            this.props.roomInd
+          ].members.findIndex(
             (mem) =>
               mem.id === itemData.item.sender_id ||
               mem.details._id === itemData.item.sender_id
           );
-          name = this.props.members[memIndex].details.name;
+          name =
+            this.props.rooms[this.props.roomInd].members[memIndex].details.name;
           return (
-            <View style={this.props.appStyles.ChatBubbleLeftView}>
-              <Text style={this.props.appStyles.ChatBubbleLeftViewName}>
-                {name}
-              </Text>
+            <View style={Theme.ChatBubbleLeftView}>
+              <Text style={Theme.ChatBubbleLeftViewName}>{name}</Text>
               <View style={{ flexDirection: 'row' }}>
                 {message_body}
-                <Text style={this.props.appStyles.ChatBubbleLeftNote}>
-                  {time}
-                </Text>
+                <Text style={Theme.ChatBubbleLeftNote}>{time}</Text>
               </View>
             </View>
           );
         } else {
           return (
-            <View style={this.props.appStyles.ChatBubbleLeftView}>
+            <View style={Theme.ChatBubbleLeftView}>
               <View style={{ flexDirection: 'row' }}>
                 {message_body}
-                <Text style={this.props.appStyles.ChatBubbleLeftNote}>
-                  {time}
-                </Text>
+                <Text style={Theme.ChatBubbleLeftNote}>{time}</Text>
               </View>
             </View>
           );
@@ -173,32 +174,16 @@ class ChatBubble extends Component {
     }
   };
   render() {
-    var readIndex = 0;
-    if (this.props.dark) {
-      this.messages = this.props.messages
-        .filter((message) => !message.isPrompt)
-        .slice()
-        .reverse();
-    } else if (!this.props.isGroup) {
-      for (var member of this.props.members) {
-        if (member.id !== this.props.userId)
-          readIndex = member.lastMessageReadIndex;
-      }
-
-      this.messages = this.props.messages.slice();
-      for (var message of this.messages) {
-        if (readIndex !== 0) {
-          message.read = true;
-          readIndex--;
-        }
-      }
-      this.messages.reverse();
-    } else {
-      this.messages = this.props.messages.slice().reverse();
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
     }
-    const imagesObj = this.props.messages.filter((msg) => {
-      return msg.isImage;
-    });
+
+    const imagesObj = this.props.rooms[this.props.roomInd].messages.filter(
+      (msg) => {
+        return msg.isImage;
+      }
+    );
     const indexInit = imagesObj.length - 1;
     const images = [];
     for (const img of imagesObj) {
@@ -209,13 +194,13 @@ class ChatBubble extends Component {
         <FlatList
           inverted
           keyExtractor={(item, index) => 'key' + index}
-          data={this.messages}
+          data={this.props.rooms[this.props.roomInd].messages.slice().reverse()}
           renderItem={this.renderGridItem}
           numColumns={1}
-          style={this.props.appStyles.ChatBubblesList}
+          style={Theme.ChatBubblesList}
         />
         <Modal visible={this.state.visible} transparent={true}>
-          <Header style={this.props.appStyles.FlatListComponent}>
+          <Header style={Theme.FlatListComponent}>
             <Left>
               <Button
                 icon
@@ -230,9 +215,7 @@ class ChatBubble extends Component {
             <Body />
           </Header>
           <ImageViewer
-            backgroundColor={
-              this.props.appStyles.FlatListComponent.backgroundColor
-            }
+            backgroundColor={Theme.FlatListComponent.backgroundColor}
             useNativeDriver={true}
             index={indexInit}
             imageUrls={images}
@@ -243,4 +226,11 @@ class ChatBubble extends Component {
   }
 }
 
-export default ChatBubble;
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.rooms,
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatBubble);

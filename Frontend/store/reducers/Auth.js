@@ -14,21 +14,23 @@ import {
   SWITCH_MODE,
   LOGOUT,
   UPDATE_NAME_STATUS,
-} from "../actions/LoginActions";
+  UPDATE_ACTIVE_ROOM,
+} from '../../constants/Actions';
 
 const AuthInitialState = {
-  id: "",
-  name: "",
-  email: "",
-  phone: "",
-  password: "",
+  id: '',
+  name: '',
+  email: '',
+  phone: '',
+  password: '',
   isauth: false,
-  token: "",
+  token: '',
   alert: null,
-  profile_pic: "",
-  mode: "light",
+  profile_pic: '',
+  mode: 'light',
   NotificationToken: null,
-  status: "",
+  status: '',
+  active_room: null,
 };
 
 const AuthReducer = (state = AuthInitialState, action) => {
@@ -65,6 +67,8 @@ const AuthReducer = (state = AuthInitialState, action) => {
       };
     case SWITCH_MODE:
       return { ...state, mode: action.payload };
+    case UPDATE_ACTIVE_ROOM:
+      return { ...state, active_room: action.payload };
     case LOGOUT:
       return AuthInitialState;
 

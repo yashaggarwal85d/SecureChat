@@ -1,15 +1,122 @@
-import { FILL_DATA } from "../actions/RoomActions";
+import {
+  FILL_DATA,
+  ADD_MESSAGE_ROOM,
+  ADD_ROOM,
+  DELETE_ROOM,
+  LAST_MESSAGE_READ_INDEX,
+  PULL_MESSAGE_STATE,
+  UPDATE_NAME_DESC,
+  UPDATE_MEMBERS_MESSAGES,
+  UPDATE_MEMBERS,
+  UPDATE_PROFILE_PIC,
+  MARK_READ_MESSAGES,
+} from '../../constants/Actions';
 
-const RoomListInitialState = {
-  rooms: [],
-};
+function LastMessage(message) {
+  if (message.isImage) return '📷 Image';
+  else return message.message_body;
+}
 
-const RoomReducer = (state = RoomListInitialState, action) => {
+function Read(members, userId, length) {
+  var membersObj = members;
+  for (var member of membersObj) {
+    if (member.id === userId) member.lastMessageReadIndex = length;
+  }
+  return membersObj;
+}
+
+const RoomReducer = (rooms = [], action) => {
   switch (action.type) {
     case FILL_DATA:
       return action.payload;
+    case ADD_ROOM:
+      return [...rooms, action.payload];
+    case ADD_MESSAGE_ROOM:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            messages: [...room.messages, action.payload.message],
+            lastMessage: LastMessage(action.payload.message),
+            lastTime: action.payload.message.timestamp,
+          };
+        } else return room;
+      });
+    case DELETE_ROOM:
+      return rooms.filter((room) => room.id !== action.payload.id);
+    case LAST_MESSAGE_READ_INDEX:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            lastMessageReadIndex: room.messages.length,
+          };
+        } else return room;
+      });
+    case PULL_MESSAGE_STATE:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            PullMessage: action.payload.obj,
+          };
+        } else return room;
+      });
+    case UPDATE_NAME_DESC:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            name: action.payload.name,
+            description: action.payload.description,
+          };
+        } else return room;
+      });
+    case UPDATE_MEMBERS_MESSAGES:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            messages: action.payload.messages,
+            members: action.payload.members,
+            lastMessage: LastMessage(room.messages.slice(-1)[0]),
+            lastTime: room.messages.slice(-1)[0].timestamp,
+          };
+        } else return room;
+      });
+    case UPDATE_MEMBERS:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            members: action.payload.members,
+          };
+        } else return room;
+      });
+    case UPDATE_PROFILE_PIC:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            profile_pic: action.payload.profile_pic,
+          };
+        } else return room;
+      });
+    case MARK_READ_MESSAGES:
+      return rooms.map((room) => {
+        if (room.id === action.payload.id) {
+          return {
+            ...room,
+            members: Read(
+              room.members,
+              action.payload.userId,
+              room.messages.length
+            ),
+          };
+        } else return room;
+      });
     default:
-      return state;
+      return rooms;
   }
 };
 

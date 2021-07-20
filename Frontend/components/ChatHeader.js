@@ -10,19 +10,21 @@ import {
   PushMessagesToBlockchain,
 } from '../store/reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
+import { connect } from 'react-redux';
+import { LightTheme, DarkTheme } from '../appStyles';
 
-export default class ChatHeader extends Component {
+class ChatHeader extends Component {
   constructor(props) {
     super(props);
     var secondUser = null;
     if (
-      !this.props.room.isGroup &&
+      !this.props.rooms[this.props.roomInd].isGroup &&
       !(
-        this.props.room.dark &&
-        this.props.room.creator_id !== this.props.user.id
+        this.props.rooms[this.props.roomInd].dark &&
+        this.props.rooms[this.props.roomInd].creator_id !== this.props.user.id
       )
     ) {
-      this.props.room.members.forEach((member) => {
+      this.props.rooms[this.props.roomInd].members.forEach((member) => {
         if (this.props.user.id !== member.id) {
           secondUser = member.id;
           CheckOnline(this.props.user.token, secondUser);
@@ -30,18 +32,13 @@ export default class ChatHeader extends Component {
       });
     }
     this.state = {
-      room: this.props.room,
       online: false,
       secondUser: secondUser,
     };
   }
 
-  updateHeaderComponent = () => {
-    this.setState({ room: this.props.room });
-  };
-
   componentDidMount = () => {
-    if (!this.state.room.isGroup) {
+    if (!this.props.rooms[this.props.roomInd].isGroup) {
       socket.on('online', async (userId) => {
         if (userId === this.state.secondUser) this.setState({ online: true });
       });
@@ -67,8 +64,8 @@ export default class ChatHeader extends Component {
 
   PullMessages = () => {
     if (
-      this.state.room.PullMessage.active &&
-      this.state.room.PullMessage.membersApproved.indexOf(
+      this.props.rooms[this.props.roomInd].PullMessage.active &&
+      this.props.rooms[this.props.roomInd].PullMessage.membersApproved.indexOf(
         this.props.user.id
       ) !== -1
     ) {
@@ -80,7 +77,7 @@ export default class ChatHeader extends Component {
       });
     } else {
       PullMessagesFromBlockchain(
-        this.state.room.id,
+        this.props.rooms[this.props.roomInd].id,
         this.props.user.token,
         true
       );
@@ -89,31 +86,36 @@ export default class ChatHeader extends Component {
   };
 
   PushMessages = () => {
-    PushMessagesToBlockchain(this.state.room.id, this.props.user.token);
+    PushMessagesToBlockchain(
+      this.props.rooms[this.props.roomInd].id,
+      this.props.user.token
+    );
     this.hideMenu();
   };
 
   render() {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     var note = (
-      <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderNote}>
-        {this.state.room.description}
+      <Text numberOfLines={1} style={Theme.ChatHeaderNote}>
+        {this.props.rooms[this.props.roomInd].description}
       </Text>
     );
     var button = <></>;
     if (this.state.online)
       note = (
-        <Text
-          numberOfLines={1}
-          style={this.props.appStyles.ChatHeaderNoteOnline}
-        >
+        <Text numberOfLines={1} style={Theme.ChatHeaderNoteOnline}>
           Online
         </Text>
       );
-    if (this.state.room.isGroup)
+    if (this.props.rooms[this.props.roomInd].isGroup)
       button = (
         <Button icon transparent>
           <Menu
-            style={this.props.appStyles.ChatMoreButton}
+            style={Theme.ChatMoreButton}
             ref={this.setMenuRef}
             button={
               <MaterialIcons
@@ -125,16 +127,14 @@ export default class ChatHeader extends Component {
             }
           >
             <MenuItem
-              textStyle={this.props.appStyles.ChatMoreButtonText}
+              textStyle={Theme.ChatMoreButtonText}
               onPress={() => {
                 this.props.navigation.navigate({
                   routeName: 'RoomSettingsScreen',
                   params: {
-                    updateHeaderComponent:
-                      this.updateHeaderComponent.bind(this),
-                    room: this.state.room,
+                    room: this.props.rooms[this.props.roomInd],
                     onPromptSend: this.props.onPromptSend,
-                    appStyles: this.props.appStyles,
+                    appStyles: Theme,
                   },
                 });
               }}
@@ -142,13 +142,13 @@ export default class ChatHeader extends Component {
               Group info
             </MenuItem>
             <MenuItem
-              textStyle={this.props.appStyles.ChatMoreButtonText}
+              textStyle={Theme.ChatMoreButtonText}
               onPress={this.PullMessages}
             >
               Pull messages
             </MenuItem>
             <MenuItem
-              textStyle={this.props.appStyles.ChatMoreButtonText}
+              textStyle={Theme.ChatMoreButtonText}
               onPress={this.PushMessages}
             >
               Push messages
@@ -160,7 +160,7 @@ export default class ChatHeader extends Component {
       button = (
         <Button icon transparent>
           <Menu
-            style={this.props.appStyles.ChatMoreButton}
+            style={Theme.ChatMoreButton}
             ref={this.setMenuRef}
             button={
               <MaterialIcons
@@ -172,13 +172,13 @@ export default class ChatHeader extends Component {
             }
           >
             <MenuItem
-              textStyle={this.props.appStyles.ChatMoreButtonText}
+              textStyle={Theme.ChatMoreButtonText}
               onPress={this.PullMessages}
             >
               Pull messages
             </MenuItem>
             <MenuItem
-              textStyle={this.props.appStyles.ChatMoreButtonText}
+              textStyle={Theme.ChatMoreButtonText}
               onPress={this.PushMessages}
             >
               Push messages
@@ -187,7 +187,7 @@ export default class ChatHeader extends Component {
         </Button>
       );
     return (
-      <Header style={this.props.appStyles.ChatHeaderView}>
+      <Header style={Theme.ChatHeaderView}>
         <Left>
           <Button
             icon
@@ -201,13 +201,13 @@ export default class ChatHeader extends Component {
         </Left>
 
         <Thumbnail
-          style={this.props.appStyles.ChatHeaderImage}
-          source={{ uri: this.state.room.profile_pic }}
+          style={Theme.ChatHeaderImage}
+          source={{ uri: this.props.rooms[this.props.roomInd].profile_pic }}
         />
 
         <Body style={{ right: '70%' }}>
-          <Text numberOfLines={1} style={this.props.appStyles.ChatHeaderTitle}>
-            {this.state.room.name}
+          <Text numberOfLines={1} style={Theme.ChatHeaderTitle}>
+            {this.props.rooms[this.props.roomInd].name}
           </Text>
           {note}
         </Body>
@@ -216,3 +216,12 @@ export default class ChatHeader extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.rooms,
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatHeader);

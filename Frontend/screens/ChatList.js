@@ -12,61 +12,65 @@ import {
 import { FlatList, ImageBackground } from 'react-native';
 import moment from 'moment';
 import { ImageBg } from '../appStyles';
+import { connect } from 'react-redux';
+import { LightTheme, DarkTheme } from '../appStyles';
+import { bindActionCreators } from 'redux';
+import { updatelastMessageReadIndex } from '../store/actions/RoomActions';
+import { updateActiveRoom } from '../store/actions/LoginActions';
 
+function sorted(arr) {
+  const sortedArray = arr.sort(function (a, b) {
+    return moment(b.lastTime).unix() - moment(a.lastTime).unix();
+  });
+  return sortedArray;
+}
 class ChatScreenComponent extends Component {
   constructor(props) {
     super(props);
   }
 
   renderGridItem = (itemData) => {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     const time = moment(itemData.item.lastTime).format('h:mm');
     const messagesCount =
       itemData.item.messages.length - itemData.item.lastMessageReadIndex;
-    if (messagesCount && this.props.activeRoom !== itemData.item.id) {
+    if (messagesCount) {
       return (
         <ListItem
           noBorder={true}
-          style={this.props.appStyles.ListItemStyle}
+          style={Theme.ListItemStyle}
           avatar
           onPress={() => {
             this.props.navigation.navigate({
               routeName: 'ChatScreen',
               params: {
                 id: itemData.item.id,
-                appStyles: this.props.appStyles,
-                UpdateComponent: this.props.updateComponent.bind(this),
-                UpdateActiveRoom: this.props.UpdateActiveRoom.bind(this),
               },
             });
             this.props.updatelastMessageReadIndex(itemData.item.id);
-            this.props.UpdateActiveRoom(itemData.item.id);
+            this.props.updateActiveRoom(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.chatListActiveName}
-            >
+            <Text numberOfLines={1} style={Theme.chatListActiveName}>
               {itemData.item.name}
             </Text>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.chatListActiveNote}
-              note
-            >
+            <Text numberOfLines={1} style={Theme.chatListActiveNote} note>
               {itemData.item.lastMessage}
             </Text>
           </Body>
           <Right>
-            <Text note style={this.props.appStyles.chatListActiveNote}>
+            <Text note style={Theme.chatListActiveNote}>
               {time}
             </Text>
-            <Badge style={this.props.appStyles.chatListBadge}>
-              <Text style={this.props.appStyles.chatListBadgeText}>
-                {messagesCount}
-              </Text>
+            <Badge style={Theme.chatListBadge}>
+              <Text style={Theme.chatListBadgeText}>{messagesCount}</Text>
             </Badge>
           </Right>
         </ListItem>
@@ -75,38 +79,31 @@ class ChatScreenComponent extends Component {
       return (
         <ListItem
           noBorder={true}
-          style={this.props.appStyles.ListItemStyle}
+          style={Theme.ListItemStyle}
           avatar
           onPress={() => {
             this.props.navigation.navigate({
               routeName: 'ChatScreen',
               params: {
                 id: itemData.item.id,
-                appStyles: this.props.appStyles,
-                UpdateComponent: this.props.updateComponent.bind(this),
-                UpdateActiveRoom: this.props.UpdateActiveRoom.bind(this),
               },
             });
-            this.props.UpdateActiveRoom(itemData.item.id);
             this.props.updatelastMessageReadIndex(itemData.item.id);
+            this.props.updateActiveRoom(itemData.item.id);
           }}
         >
           <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
           <Body>
-            <Text numberOfLines={1} style={this.props.appStyles.chatListName}>
+            <Text numberOfLines={1} style={Theme.chatListName}>
               {itemData.item.name}
             </Text>
-            <Text
-              numberOfLines={1}
-              style={this.props.appStyles.chatListNote}
-              note
-            >
+            <Text numberOfLines={1} style={Theme.chatListNote} note>
               {itemData.item.lastMessage}
             </Text>
           </Body>
           <Right>
-            <Text note style={this.props.appStyles.chatListNote}>
+            <Text note style={Theme.chatListNote}>
               {time}
             </Text>
           </Right>
@@ -117,7 +114,20 @@ class ChatScreenComponent extends Component {
 
   render() {
     var source = require(`../assets/Background.jpg`);
-    if (this.props.mode == 1) source = require(`../assets/DarkBackground.jpg`);
+    var Theme = LightTheme;
+    var rooms = this.props.rooms.filter((room) => {
+      if (room && !room.dark) return true;
+      else return false;
+    });
+    if (this.props.user.mode == 'dark') {
+      source = require(`../assets/DarkBackground.jpg`);
+      Theme = DarkTheme;
+      rooms = this.props.rooms.filter((room) => {
+        if (room && room.dark) return true;
+        else return false;
+      });
+    }
+
     return (
       <>
         <ImageBackground
@@ -125,18 +135,18 @@ class ChatScreenComponent extends Component {
           resizeMode='cover'
           style={ImageBg.ImageBack}
         >
-          <Header style={this.props.appStyles.HeaderContainer}>
+          <Header style={Theme.HeaderContainer}>
             <Body>
-              <Title style={this.props.appStyles.appTitle}>Chats</Title>
+              <Title style={Theme.appTitle}>Chats</Title>
             </Body>
           </Header>
 
           <FlatList
             keyExtractor={(item) => item.id}
-            data={this.props.rooms}
+            data={sorted(rooms)}
             renderItem={this.renderGridItem}
             numColumns={1}
-            style={this.props.appStyles.FlatListComponent}
+            style={Theme.FlatListComponent}
           />
         </ImageBackground>
       </>
@@ -144,4 +154,24 @@ class ChatScreenComponent extends Component {
   }
 }
 
-export default ChatScreenComponent;
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(
+    {
+      updatelastMessageReadIndex,
+      updateActiveRoom,
+    },
+    dispatch
+  );
+};
+
+function mapStateToProps(state) {
+  return {
+    rooms: state.rooms,
+    user: state.user,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChatScreenComponent);

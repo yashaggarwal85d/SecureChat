@@ -1,13 +1,12 @@
-import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Text, View } from "native-base";
-import { FlatList, TextInput } from "react-native";
-import { DarkTheme } from "../../appStyles";
-import { connect } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AllUsers } from "../../store/actions/LoginActions";
-import { CreateNewRoom } from "../../store/actions/RoomActions";
-import { bindActionCreators } from "redux";
-import * as colors from "../../constants/colors";
+import React, { Component } from 'react';
+import { ListItem, Thumbnail, Body, Text, View } from 'native-base';
+import { FlatList, TextInput } from 'react-native';
+import { DarkTheme } from '../../appStyles';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
+import { AllUsers } from '../../store/actions/LoginActions';
+import { CreateNewRoom } from '../../store/actions/RoomActions';
+import { bindActionCreators } from 'redux';
 
 class SearchScreen extends Component {
   constructor(props) {
@@ -15,7 +14,7 @@ class SearchScreen extends Component {
     this.state = {
       users: null,
       loaded: false,
-      text: "",
+      text: '',
       filteredUsers: null,
     };
     this.getUsers();
@@ -56,7 +55,7 @@ class SearchScreen extends Component {
             ],
           };
           await this.props.CreateNewRoom(body);
-          this.props.navigation.navigate("MainScreen");
+          this.props.navigation.navigate('MainScreen');
         }}
       >
         <Thumbnail source={{ uri: itemData.item.profile_pic }} />
@@ -132,7 +131,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => room.dark),
+    rooms: state.rooms.filter((room) => room.dark),
     user: state.user,
   };
 };

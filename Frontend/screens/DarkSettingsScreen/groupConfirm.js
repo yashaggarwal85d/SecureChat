@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput, TouchableOpacity } from "react-native";
-import { DarkTheme } from "../../appStyles";
-import { connect } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
-import { bindActionCreators } from "redux";
-import { CreateNewRoom } from "../../store/actions/RoomActions";
-import { showMessage } from "react-native-flash-message";
+import React, { Component } from 'react';
+import { ListItem, Thumbnail, Body, Text, View, Right } from 'native-base';
+import { FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { DarkTheme } from '../../appStyles';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
+import { bindActionCreators } from 'redux';
+import { CreateNewRoom } from '../../store/actions/RoomActions';
+import { showMessage } from 'react-native-flash-message';
 
 class GroupConfirmScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
+      name: '',
     };
   }
 
@@ -76,7 +76,7 @@ class GroupConfirmScreen extends Component {
               var body = {
                 isDark: true,
                 name: this.state.name,
-                description: "Add a description",
+                description: 'Add a description',
                 members: [],
               };
               state.params.members.forEach((member) => {
@@ -92,11 +92,11 @@ class GroupConfirmScreen extends Component {
               this.props.CreateNewRoom(body);
               showMessage({
                 message: `Group Created`,
-                description: "Your group is created please wait",
-                type: "success",
+                description: 'Your group is created please wait',
+                type: 'success',
                 floating: true,
               });
-              this.props.navigation.navigate("MainScreen");
+              this.props.navigation.navigate('MainScreen');
             }}
           >
             <MaterialIcons style={DarkTheme.RightArrow} name='arrow-forward' />
@@ -135,7 +135,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => room.dark),
+    rooms: state.rooms.filter((room) => room.dark),
     user: state.user,
   };
 };

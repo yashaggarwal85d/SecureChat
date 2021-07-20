@@ -1,17 +1,16 @@
-import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput } from "react-native";
-import { connect } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
-import * as colors from "../../constants/colors";
-
+import React, { Component } from 'react';
+import { ListItem, Thumbnail, Body, Text, View, Right } from 'native-base';
+import { FlatList, TextInput } from 'react-native';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
+import { DarkTheme } from '../../appStyles';
 class AddParticipantScreen extends Component {
   constructor(props) {
     super(props);
     const Allusers = this.getUsers();
     this.state = {
       users: Allusers,
-      text: "",
+      text: '',
       filteredUsers: Allusers,
     };
   }
@@ -41,7 +40,7 @@ class AddParticipantScreen extends Component {
     return (
       <ListItem
         noBorder={true}
-        style={state.params.appStyles.ListItemStyle}
+        style={DarkTheme.ListItemStyle}
         avatar
         onPress={async () => {
           for (const memba of itemData.item.members) {
@@ -53,14 +52,10 @@ class AddParticipantScreen extends Component {
         <Thumbnail source={{ uri: itemData.item.profile_pic }} />
 
         <Body>
-          <Text numberOfLines={1} style={state.params.appStyles.chatListName}>
+          <Text numberOfLines={1} style={DarkTheme.chatListName}>
             {itemData.item.name}
           </Text>
-          <Text
-            numberOfLines={1}
-            style={state.params.appStyles.chatListNote}
-            note
-          >
+          <Text numberOfLines={1} style={DarkTheme.chatListNote} note>
             {itemData.item.description}
           </Text>
         </Body>
@@ -80,16 +75,13 @@ class AddParticipantScreen extends Component {
   render() {
     const { state } = this.props.navigation;
     return (
-      <View style={state.params.appStyles.ChatInputViewContainer}>
-        <View style={state.params.appStyles.ChatInputView}>
-          <MaterialIcons
-            name='search'
-            style={state.params.appStyles.ChatInputSmile}
-          />
+      <View style={DarkTheme.ChatInputViewContainer}>
+        <View style={DarkTheme.ChatInputView}>
+          <MaterialIcons name='search' style={DarkTheme.ChatInputSmile} />
           <TextInput
             value={this.state.text}
             onChangeText={(text) => this.setText(text)}
-            style={state.params.appStyles.ChatInput}
+            style={DarkTheme.ChatInput}
             placeholder='Search'
             placeholderTextColor='grey'
             underlineColorAndroid='transparent'
@@ -101,7 +93,7 @@ class AddParticipantScreen extends Component {
           data={this.state.filteredUsers}
           renderItem={this.renderGridItem}
           numColumns={1}
-          style={state.params.appStyles.FlatListComponent}
+          style={DarkTheme.FlatListComponent}
         />
       </View>
     );
@@ -110,7 +102,7 @@ class AddParticipantScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.rooms.filter((room) => !room.dark),
     user: state.user,
   };
 };

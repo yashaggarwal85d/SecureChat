@@ -36,6 +36,7 @@ import { SettingForm } from '../../appStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { socket, updateRoomProfilePic } from '../../store/reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
+import { LightTheme, DarkTheme } from '../../appStyles';
 
 var BUTTONS = [
   { text: 'Yes', icon: 'remove', iconColor: colors.red },
@@ -44,7 +45,7 @@ var BUTTONS = [
 
 var CameraButton = [
   { text: 'Camera', icon: 'camera', iconColor: colors.black },
-  { text: 'Gallery', icon: 'photos', iconColor: colors.dodgerblue },
+  { text: 'Gallery', icon: 'images', iconColor: colors.dodgerblue },
   { text: 'Cancel', icon: 'close', iconColor: colors.red },
 ];
 
@@ -82,7 +83,6 @@ class RoomSettingsScreen extends Component {
     this.setState({ profile_pic: url });
     await this.props.updateRoomProfile(this.state.room.id, url);
     await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
-    state.params.updateHeaderComponent();
 
     if (!this.state.room.dark) {
       state.params.onPromptSend(
@@ -132,15 +132,17 @@ class RoomSettingsScreen extends Component {
   }
 
   renderGridItem = (itemData) => {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     var admin = <></>;
     var name = itemData.item.details.name;
     var status = itemData.item.details.status;
     var removeMem = <></>;
-    const { state } = this.props.navigation;
     if (itemData.item.details._id === this.state.room.creator_id)
-      admin = (
-        <Text style={state.params.appStyles.ChatHeaderNoteOnline}>admin</Text>
-      );
+      admin = <Text style={Theme.ChatHeaderNoteOnline}>admin</Text>;
     if (this.props.user.id === this.state.room.creator_id) {
       removeMem = (
         <TouchableOpacity
@@ -197,17 +199,10 @@ class RoomSettingsScreen extends Component {
         <Thumbnail source={{ uri: itemData.item.details.profile_pic }} />
 
         <Body>
-          <Text
-            numberOfLines={1}
-            style={state.params.appStyles.SettingsmemberListName}
-          >
+          <Text numberOfLines={1} style={Theme.SettingsmemberListName}>
             {name}
           </Text>
-          <Text
-            numberOfLines={1}
-            style={state.params.appStyles.SettingsmemberListNote}
-            note
-          >
+          <Text numberOfLines={1} style={Theme.SettingsmemberListNote} note>
             {status}
           </Text>
         </Body>
@@ -234,6 +229,11 @@ class RoomSettingsScreen extends Component {
   };
 
   render() {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     var button = <></>;
     var members = <></>;
     var infoArrow = <Icon active name='add' />;
@@ -283,9 +283,7 @@ class RoomSettingsScreen extends Component {
           </Button>
         </Left>
         <Body>
-          <Text style={state.params.appStyles.chatListName}>
-            Leave this group
-          </Text>
+          <Text style={Theme.chatListName}>Leave this group</Text>
         </Body>
         <Right>
           <Icon active name='arrow-forward' />
@@ -310,7 +308,7 @@ class RoomSettingsScreen extends Component {
               params: {
                 members: this.state.room.members,
                 addMem: this.addMem.bind(this),
-                appStyles: state.params.appStyles,
+                appStyles: Theme,
               },
             })
           }
@@ -325,9 +323,7 @@ class RoomSettingsScreen extends Component {
             </Button>
           </Left>
           <Body>
-            <Text style={state.params.appStyles.chatListName}>
-              Add participants
-            </Text>
+            <Text style={Theme.chatListName}>Add participants</Text>
           </Body>
           <Right>
             <Icon active name='arrow-forward' />
@@ -356,7 +352,6 @@ class RoomSettingsScreen extends Component {
               this.setState({
                 changed: false,
               });
-              state.params.updateHeaderComponent();
               if (!this.state.room.dark) {
                 state.params.onPromptSend(
                   `${this.props.user.name} updated the group info`
@@ -385,7 +380,7 @@ class RoomSettingsScreen extends Component {
     }
     return (
       <>
-        <Header style={state.params.appStyles.ChatHeaderView}>
+        <Header style={Theme.ChatHeaderView}>
           <Left>
             <Button
               icon
@@ -400,7 +395,7 @@ class RoomSettingsScreen extends Component {
           <Body></Body>
         </Header>
         <Container>
-          <Content style={state.params.appStyles.ChatHeaderView}>
+          <Content style={Theme.ChatHeaderView}>
             <List>
               <ListItem style={{ flexDirection: 'column' }}>
                 {pic}
@@ -437,12 +432,10 @@ class RoomSettingsScreen extends Component {
                 }}
               >
                 <Form>
-                  <Text style={state.params.appStyles.SettingsText}>
-                    Name :{' '}
-                  </Text>
+                  <Text style={Theme.SettingsText}>Name : </Text>
                   <TextInput
                     numberOfLines={1}
-                    style={state.params.appStyles.SettingsinputBox}
+                    style={Theme.SettingsinputBox}
                     value={this.state.name}
                     onChangeText={(text) =>
                       this.setState({
@@ -451,12 +444,10 @@ class RoomSettingsScreen extends Component {
                       })
                     }
                   />
-                  <Text style={state.params.appStyles.SettingsText}>
-                    Description :{' '}
-                  </Text>
+                  <Text style={Theme.SettingsText}>Description : </Text>
                   <TextInput
                     multiline={true}
-                    style={state.params.appStyles.SettingsinputBox}
+                    style={Theme.SettingsinputBox}
                     value={this.state.status}
                     onChangeText={(text) =>
                       this.setState({
@@ -488,9 +479,7 @@ class RoomSettingsScreen extends Component {
                   </Button>
                 </Left>
                 <Body>
-                  <Text style={state.params.appStyles.chatListName}>
-                    Members
-                  </Text>
+                  <Text style={Theme.chatListName}>Members</Text>
                 </Body>
                 <Right>{infoArrow}</Right>
               </ListItem>
@@ -522,7 +511,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms,
+    rooms: state.rooms,
     user: state.user,
   };
 };

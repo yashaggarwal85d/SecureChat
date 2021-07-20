@@ -132,7 +132,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.rooms.filter((room) => !room.dark),
     user: state.user,
   };
 };

@@ -1,29 +1,36 @@
-export const UPDATE_PHONE = "UPDATE_PHONE";
-export const UPDATE_EMAIL = "UPDATE_EMAIL";
-export const UPDATE_NAME = "UPDATE_NAME";
-export const UPDATE_PASSWORD = "UPDATE_PASSWORD";
-export const UPDATE_ALERT = "UPDATE_ALERT";
-export const UPDATE_ISAUTH = "UPDATE_ISAUTH";
-export const UPDATE_TOKEN = "UPDATE_TOKEN";
-export const UPDATE_ID = "UPDATE_ID";
-export const LOGIN = "LOGIN";
-export const LOGOUT = "LOGOUT";
-export const SIGNUP = "SIGNUP";
-export const UPDATE_PIC = "UPDATE_PIC";
-export const UPDATE_NOTTOKEN = "UPDATE_NOTTOKEN";
-export const SWITCH_MODE = "SWITCH_MODE";
-export const UPDATE_ACTIVE_ROOM = "UPDATE_ACTIVE_ROOM";
-export const UPDATE_NAME_STATUS = "UPDATE_NAME_STATUS";
-import axios from "axios";
-import * as API from "../../constants/APIstore";
-import { logoutSocket } from "../reducers/Socket";
-import { showMessage } from "react-native-flash-message";
-import * as ImageManipulator from "expo-image-manipulator";
+import {
+  LOGIN,
+  UPDATE_ALERT,
+  UPDATE_PHONE,
+  UPDATE_NAME,
+  UPDATE_PASSWORD,
+  UPDATE_ISAUTH,
+  UPDATE_TOKEN,
+  UPDATE_ID,
+  UPDATE_PIC,
+  UPDATE_NOTTOKEN,
+  SWITCH_MODE,
+  LOGOUT,
+  UPDATE_NAME_STATUS,
+  UPDATE_ACTIVE_ROOM,
+} from '../../constants/Actions';
+import axios from 'axios';
+import * as API from '../../constants/APIstore';
+import { logoutSocket } from '../reducers/Socket';
+import { showMessage } from 'react-native-flash-message';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 export const updateMode = (mode) => {
   return {
     type: SWITCH_MODE,
     payload: mode,
+  };
+};
+
+export const updateActiveRoom = (roomId) => {
+  return {
+    type: UPDATE_ACTIVE_ROOM,
+    payload: roomId,
   };
 };
 
@@ -95,11 +102,11 @@ export const updateNameStatus = (name, status) => {
     try {
       const user = getState().user;
       const data = await axios({
-        method: "PATCH",
+        method: 'PATCH',
         url: API.PATCHUSER,
         headers: {
-          "auth-token": user.token,
-          "Content-Type": "application/json",
+          'auth-token': user.token,
+          'Content-Type': 'application/json',
         },
         data: {
           name: name,
@@ -115,7 +122,7 @@ export const updateNameStatus = (name, status) => {
       showMessage({
         message: `Error`,
         description: `${e}`,
-        type: "danger",
+        type: 'danger',
         floating: true,
       });
       console.log(e);
@@ -127,10 +134,10 @@ export const login = () => {
   return async (dispatch, getState) => {
     var user = getState().user;
     const data = await axios({
-      method: "POST",
+      method: 'POST',
       url: API.LOGINAPI,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       data: {
         phone: user.phone,
@@ -154,7 +161,7 @@ export const login = () => {
           showMessage({
             message: `Error`,
             description: `${e}`,
-            type: "danger",
+            type: 'danger',
             floating: true,
           });
           console.log(e);
@@ -167,10 +174,10 @@ export const signup = () => {
   return async (dispatch, getState) => {
     const { name, phone, password } = getState().user;
     const data = await axios({
-      method: "POST",
+      method: 'POST',
       url: API.SIGNUPAPI,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       data: {
         name: name,
@@ -181,9 +188,9 @@ export const signup = () => {
       .then((res) => res.data)
       .then((data) => {
         showMessage({
-          message: "Account created",
-          description: "Your account has been created, login to continue",
-          type: "success",
+          message: 'Account created',
+          description: 'Your account has been created, login to continue',
+          type: 'success',
           floating: true,
         });
         dispatch({ type: UPDATE_ISAUTH, payload: true });
@@ -195,7 +202,7 @@ export const signup = () => {
           showMessage({
             message: `Error`,
             description: `${e}`,
-            type: "danger",
+            type: 'danger',
             floating: true,
           });
           console.log(e);
@@ -207,11 +214,11 @@ export const signup = () => {
 export const AllUsers = async (token) => {
   try {
     const data = await axios({
-      method: "GET",
+      method: 'GET',
       url: API.ALLUSERSAPI,
       headers: {
-        "auth-token": token,
-        "Content-Type": "application/json",
+        'auth-token': token,
+        'Content-Type': 'application/json',
       },
     }).then((res) => res.data);
     return data;
@@ -219,7 +226,7 @@ export const AllUsers = async (token) => {
     showMessage({
       message: `Error`,
       description: `${e}`,
-      type: "danger",
+      type: 'danger',
       floating: true,
     });
     console.log(e);
@@ -229,11 +236,11 @@ export const AllUsers = async (token) => {
 export const CheckUserContacts = async (token, PhoneNumbers) => {
   try {
     const data = await axios({
-      method: "POST",
+      method: 'POST',
       url: API.CHECKUSERCONTACTS,
       headers: {
-        "auth-token": token,
-        "Content-Type": "application/json",
+        'auth-token': token,
+        'Content-Type': 'application/json',
       },
       data: {
         PhoneNumbers: PhoneNumbers,
@@ -243,7 +250,7 @@ export const CheckUserContacts = async (token, PhoneNumbers) => {
       showMessage({
         message: `Contacts Updated`,
         description: `${data.message}`,
-        type: "success",
+        type: 'success',
         floating: true,
       });
     return data.contacts;
@@ -251,7 +258,7 @@ export const CheckUserContacts = async (token, PhoneNumbers) => {
     showMessage({
       message: `Error`,
       description: `${e}`,
-      type: "danger",
+      type: 'danger',
       floating: true,
     });
     console.log(e);
@@ -293,7 +300,7 @@ export const resizeFunc = async (result) => {
     showMessage({
       message: `Error`,
       description: `${e}`,
-      type: "danger",
+      type: 'danger',
       floating: true,
     });
     console.log(e);

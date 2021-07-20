@@ -5,7 +5,11 @@ import ChatBubbles from '../components/ChatBubbles';
 import ChatFooter from '../components/ChatFooter';
 import PullMsg from '../components/PullMsg';
 import { connect } from 'react-redux';
-import { addMessage } from '../store/actions/RoomActions';
+import {
+  addMessage,
+  updatelastMessageReadIndex,
+} from '../store/actions/RoomActions';
+import { updateActiveRoom } from '../store/actions/LoginActions';
 import {
   socket,
   SendMessage,
@@ -15,57 +19,41 @@ import {
 import { bindActionCreators } from 'redux';
 import { ImageBackground } from 'react-native';
 import { ImageBg } from '../appStyles';
+import { LightTheme, DarkTheme } from '../appStyles';
 
 class PresentChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      room: this.getRoom(),
+      roomInd: this.getRoom(),
     };
   }
 
   componentWillUnmount = async () => {
-    const { state } = this.props.navigation;
-    state.params.UpdateActiveRoom(null);
+    await this.props.updateActiveRoom(null);
   };
 
   getRoom = () => {
     const { state } = this.props.navigation;
-    const OpenRoom = this.props.rooms.find(
+    const OpenRoom = this.props.rooms.findIndex(
       (room) => room.id === state.params.id
     );
     return OpenRoom;
   };
 
-  componentDidMount = () => {
-    socket.on('recieveMessage', (message, roomId) => {
-      if (roomId === this.state.room.id)
-        this.setState({ room: this.getRoom() });
-    });
-    socket.on('PullMessages', (roomId, obj) => {
-      if (roomId === this.state.room.id)
-        this.setState({ room: this.getRoom() });
-    });
-    socket.on('removeRoom', async (roomId) => {
-      if (roomId === this.state.room.id) {
-        this.props.navigation.navigate('MainScreen');
-      }
-    });
-    socket.on('ResetRoom', async (roomId, members, messages) => {
-      if (roomId === this.state.room.id)
-        this.setState({ room: this.getRoom() });
-    });
-  };
-
   updateState = async (message) => {
-    const { state } = this.props.navigation;
-    await this.props.addMessage(this.state.room.id, message);
-    this.setState({ room: this.getRoom() });
-    state.params.UpdateComponent();
+    await this.props.addMessage(
+      this.props.rooms[this.state.roomInd].id,
+      message
+    );
   };
 
   sendMessage(message) {
-    SendMessage(this.state.room.id, this.props.user.token, message);
+    SendMessage(
+      this.props.rooms[this.state.roomInd].id,
+      this.props.user.token,
+      message
+    );
     const messageObject = {
       sender_id: this.props.user.id,
       message_body: message,
@@ -75,14 +63,18 @@ class PresentChatScreen extends React.Component {
   }
 
   updatePromptState = async (message) => {
-    const { state } = this.props.navigation;
-    await this.props.addMessage(this.state.room.id, message);
-    this.setState({ room: this.getRoom() });
-    state.params.UpdateComponent();
+    await this.props.addMessage(
+      this.props.rooms[this.state.roomInd].id,
+      message
+    );
   };
 
   sendPromptMessage(message) {
-    addPromptMessage(this.state.room.id, this.props.user.token, message);
+    addPromptMessage(
+      this.props.rooms[this.state.roomInd].id,
+      this.props.user.token,
+      message
+    );
     const messageObject = {
       isPrompt: true,
       sender_id: this.props.user.id,
@@ -93,14 +85,18 @@ class PresentChatScreen extends React.Component {
   }
 
   updateImageState = async (message) => {
-    const { state } = this.props.navigation;
-    await this.props.addMessage(this.state.room.id, message);
-    this.setState({ room: this.getRoom() });
-    state.params.UpdateComponent();
+    await this.props.addMessage(
+      this.props.rooms[this.state.roomInd].id,
+      message
+    );
   };
 
   sendImageMessage(message) {
-    addImageMessage(this.state.room.id, this.props.user.token, message);
+    addImageMessage(
+      this.props.rooms[this.state.roomInd].id,
+      this.props.user.token,
+      message
+    );
     const messageObject = {
       isImage: true,
       sender_id: this.props.user.id,
@@ -112,45 +108,40 @@ class PresentChatScreen extends React.Component {
   }
 
   render() {
+    var Theme = LightTheme;
+    if (this.props.user.mode == 'dark') {
+      Theme = DarkTheme;
+    }
+
     var source = require(`../assets/Background.jpg`);
-    if (this.state.room.dark) source = require(`../assets/DarkBackground.jpg`);
-    const { state } = this.props.navigation;
+    if (this.props.rooms[this.state.roomInd].dark)
+      source = require(`../assets/DarkBackground.jpg`);
+
     return (
-      <Container style={state.params.appStyles.ChatMainContainer}>
+      <Container style={Theme.ChatMainContainer}>
         <ImageBackground
           source={source}
           resizeMode='cover'
           style={ImageBg.ImageBack}
         >
           <ChatHeader
-            {...this.props}
-            room={this.state.room}
-            appStyles={state.params.appStyles}
-            user={this.props.user}
+            navigation={this.props.navigation}
+            roomInd={this.state.roomInd}
             onPromptSend={this.sendPromptMessage.bind(this)}
           />
           <PullMsg
-            {...this.props}
-            room={this.state.room}
-            PullMsg={this.state.room.PullMessage}
-            appStyles={state.params.appStyles}
+            navigation={this.props.navigation}
+            roomInd={this.state.roomInd}
           />
           <ChatBubbles
-            {...this.props}
-            roomId={this.state.room.id}
-            messages={this.state.room.messages}
-            userId={this.props.user.id}
-            appStyles={state.params.appStyles}
-            isGroup={this.state.room.isGroup}
-            members={this.state.room.members}
-            dark={this.state.room.dark}
+            navigation={this.props.navigation}
+            roomInd={this.state.roomInd}
           />
           <ChatFooter
-            {...this.props}
-            room={this.state.room}
+            navigation={this.props.navigation}
+            roomInd={this.state.roomInd}
             onSend={this.sendMessage.bind(this)}
             onImageSend={this.sendImageMessage.bind(this)}
-            appStyles={state.params.appStyles}
           />
         </ImageBackground>
       </Container>
@@ -159,12 +150,15 @@ class PresentChatScreen extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addMessage }, dispatch);
+  return bindActionCreators(
+    { addMessage, updatelastMessageReadIndex, updateActiveRoom },
+    dispatch
+  );
 };
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms,
+    rooms: state.rooms,
     user: state.user,
   };
 };

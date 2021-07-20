@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { ListItem, Thumbnail, Body, Text, View, Right } from "native-base";
-import { FlatList, TextInput } from "react-native";
-import { LightTheme } from "../../appStyles";
-import { connect } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
-import * as colors from "../../constants/colors";
+import React, { Component } from 'react';
+import { ListItem, Thumbnail, Body, Text, View, Right } from 'native-base';
+import { FlatList, TextInput } from 'react-native';
+import { LightTheme } from '../../appStyles';
+import { connect } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
+import * as colors from '../../constants/colors';
 
 class AddParticipantScreen extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class AddParticipantScreen extends Component {
     const Allusers = this.getUsers();
     this.state = {
       users: Allusers,
-      text: "",
+      text: '',
       filteredUsers: Allusers,
     };
   }
@@ -103,7 +103,7 @@ class AddParticipantScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.room.rooms.filter((room) => !room.dark),
+    rooms: state.rooms.filter((room) => !room.dark),
     user: state.user,
   };
 };
