@@ -11,21 +11,19 @@ import {
   Icon,
   Body,
   Right,
-  ActionSheet,
   Thumbnail,
   Form,
+  ActionSheet,
   Badge,
+  View,
 } from 'native-base';
 import { FlatList } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native';
 import * as colors from '../../constants/colors';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import {
-  leaveRoom,
   updateNameDescription,
-  AddMember,
   fillData,
-  RemoveMember,
   updateRoom,
   updateRoomProfile,
 } from '../../store/actions/RoomActions';
@@ -34,10 +32,17 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SettingForm } from '../../appStyles';
 import * as ImagePicker from 'expo-image-picker';
-import { socket, updateRoomProfilePic } from '../../store/reducers/Socket';
+import {
+  updateRoomProfilePic,
+  updateRoomNameDesc,
+} from '../../store/reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
 import { LightTheme, DarkTheme } from '../../appStyles';
-
+import {
+  promptMemberandAdd,
+  promptMemberandRemove,
+  promptMember,
+} from '../../store/reducers/Socket';
 var BUTTONS = [
   { text: 'Yes', icon: 'remove', iconColor: colors.red },
   { text: 'Cancel', icon: 'close', iconColor: colors.greencyan },
@@ -55,36 +60,32 @@ class RoomSettingsScreen extends Component {
     const { state } = this.props.navigation;
     const params = state.params;
     this.state = {
-      name: params.room.name,
-      status: params.room.description,
+      name: this.props.rooms[params.roomInd].name,
+      status: this.props.rooms[params.roomInd].description,
       changed: false,
       infoClicked: false,
-      room: params.room,
-      profile_pic: params.room.profile_pic,
+      roomInd: params.roomInd,
+      profile_pic: this.props.rooms[params.roomInd].profile_pic,
+      visible: false,
     };
   }
-
-  componentDidMount = () => {
-    socket.on('updateRoom', async (roomId, members) => {
-      if (roomId === this.state.room.id) {
-        await this.props.updateRoom(roomId, members);
-        const index = await this.props.rooms.findIndex(
-          (room) => room.id === roomId
-        );
-        this.setState({ room: this.props.rooms[index] });
-      }
-    });
-  };
 
   uploadImage = async (result) => {
     const { state } = this.props.navigation;
     const data = await resizeFunc(result);
     const url = 'data:image/png;base64,' + data;
     this.setState({ profile_pic: url });
-    await this.props.updateRoomProfile(this.state.room.id, url);
-    await updateRoomProfilePic(this.props.user.token, this.state.room.id, url);
+    await this.props.updateRoomProfile(
+      this.props.rooms[this.state.roomInd].id,
+      url
+    );
+    await updateRoomProfilePic(
+      this.props.user.token,
+      this.props.rooms[this.state.roomInd].id,
+      url
+    );
 
-    if (!this.state.room.dark) {
+    if (!this.props.rooms[this.state.roomInd].dark) {
       state.params.onPromptSend(
         `${this.props.user.name} updated the group icon`
       );
@@ -141,9 +142,14 @@ class RoomSettingsScreen extends Component {
     var name = itemData.item.details.name;
     var status = itemData.item.details.status;
     var removeMem = <></>;
-    if (itemData.item.details._id === this.state.room.creator_id)
+    if (
+      itemData.item.details._id ===
+      this.props.rooms[this.state.roomInd].creator_id
+    )
       admin = <Text style={Theme.ChatHeaderNoteOnline}>admin</Text>;
-    if (this.props.user.id === this.state.room.creator_id) {
+    if (
+      this.props.user.id === this.props.rooms[this.state.roomInd].creator_id
+    ) {
       removeMem = (
         <TouchableOpacity
           onPress={() =>
@@ -155,28 +161,10 @@ class RoomSettingsScreen extends Component {
               },
               async (buttonIndex) => {
                 if (buttonIndex === 0) {
-                  await this.props.RemoveMember(
-                    this.state.room.id,
-                    itemData.item.details._id
+                  this.removeMem(
+                    itemData.item.details._id,
+                    itemData.item.details.name
                   );
-                  var newRoom = this.state.room;
-                  var filteredMem = this.state.room.members.filter((member) => {
-                    return !member.blocked;
-                  });
-                  newRoom.members = filteredMem;
-                  var index = newRoom.members.findIndex(
-                    (member) => member.details._id === itemData.item.details._id
-                  );
-                  newRoom.members[index].blocked = true;
-                  this.setState({
-                    room: newRoom,
-                  });
-                  const { state } = this.props.navigation;
-                  if (!this.state.room.dark) {
-                    state.params.onPromptSend(
-                      `${this.props.user.name} removed ${itemData.item.details.name}`
-                    );
-                  }
                 }
               }
             )
@@ -214,18 +202,40 @@ class RoomSettingsScreen extends Component {
     );
   };
 
-  addMem = async (user) => {
-    await this.props.AddMember(this.state.room.id, user._id);
-    var newRoom = this.state.room;
-    const details = {
-      details: user,
-    };
-    newRoom.members.push(details);
-    this.setState({ room: newRoom });
+  addMem = async (userId, name) => {
+    promptMemberandAdd(
+      this.props.user.token,
+      this.props.rooms[this.state.roomInd].id,
+      userId
+    );
     const { state } = this.props.navigation;
-    if (!this.state.room.dark) {
-      state.params.onPromptSend(`${this.props.user.name} added ${user.name}`);
+    if (!this.props.rooms[this.state.roomInd].dark) {
+      state.params.onPromptSend(`${this.props.user.name} added ${name}`);
     }
+  };
+
+  removeMem = async (userId, name) => {
+    promptMemberandRemove(
+      this.props.user.token,
+      this.props.rooms[this.state.roomInd].id,
+      userId
+    );
+    const { state } = this.props.navigation;
+    if (!this.props.rooms[this.state.roomInd].dark) {
+      state.params.onPromptSend(`${this.props.user.name} removed ${name}`);
+    }
+  };
+
+  leave = async () => {
+    const { state } = this.props.navigation;
+    if (!this.props.rooms[this.state.roomInd].dark) {
+      state.params.onPromptSend(`${this.props.user.name} left`);
+    }
+    promptMember(
+      this.props.user.token,
+      this.props.rooms[this.state.roomInd].id
+    );
+    this.props.navigation.navigate('MainScreen');
   };
 
   render() {
@@ -238,7 +248,6 @@ class RoomSettingsScreen extends Component {
     var members = <></>;
     var infoArrow = <Icon active name='add' />;
     var addParticipant = <></>;
-    const { state } = this.props.navigation;
     var pic = (
       <Thumbnail
         style={SettingForm.profile_pic}
@@ -252,22 +261,13 @@ class RoomSettingsScreen extends Component {
         onPress={() =>
           ActionSheet.show(
             {
-              style: { backgroundColor: colors.indigo },
               options: BUTTONS,
               cancelButtonIndex: 1,
-              title: `Are you sure you want to leave ${this.state.room.name} ?`,
+              title: `Are you sure you want to leave ${this.state.name} ?`,
             },
             async (buttonIndex) => {
               if (buttonIndex === 0) {
-                await this.props.leaveRoom(
-                  this.state.room.id,
-                  this.state.room.name
-                );
-                const { state } = this.props.navigation;
-                if (!this.state.room.dark) {
-                  state.params.onPromptSend(`${this.props.user.name} left`);
-                }
-                this.props.navigation.navigate('MainScreen');
+                this.leave();
               }
             }
           )
@@ -291,13 +291,15 @@ class RoomSettingsScreen extends Component {
       </ListItem>
     );
     var f = 0;
-    for (const member of this.state.room.members) {
+    for (const member of this.props.rooms[this.state.roomInd].members) {
       if (member.details._id === this.props.user.id) f = 1;
     }
     if (!f) {
       leaveButton = <></>;
     }
-    if (this.props.user.id === this.state.room.creator_id) {
+    if (
+      this.props.user.id === this.props.rooms[this.state.roomInd].creator_id
+    ) {
       addParticipant = (
         <ListItem
           noBorder={true}
@@ -306,9 +308,8 @@ class RoomSettingsScreen extends Component {
             this.props.navigation.navigate({
               routeName: `${this.props.user.mode}AddParticipantScreen`,
               params: {
-                members: this.state.room.members,
+                roomInd: this.state.roomInd,
                 addMem: this.addMem.bind(this),
-                appStyles: Theme,
               },
             })
           }
@@ -345,14 +346,20 @@ class RoomSettingsScreen extends Component {
             } else {
               const { state } = this.props.navigation;
               await this.props.updateNameDescription(
-                this.state.room.id,
-                this.state.name,
-                this.state.status
+                this.props.rooms[this.state.roomInd].id,
+                this.state.name.trim(),
+                this.state.status.trim()
+              );
+              updateRoomNameDesc(
+                this.props.user.token,
+                this.props.rooms[this.state.roomInd].id,
+                this.state.name.trim(),
+                this.state.status.trim()
               );
               this.setState({
                 changed: false,
               });
-              if (!this.state.room.dark) {
+              if (!this.props.rooms[this.state.roomInd].dark) {
                 state.params.onPromptSend(
                   `${this.props.user.name} updated the group info`
                 );
@@ -365,7 +372,9 @@ class RoomSettingsScreen extends Component {
       );
 
     if (this.state.infoClicked) {
-      const filteredMembers = this.state.room.members.filter((member) => {
+      const filteredMembers = this.props.rooms[
+        this.state.roomInd
+      ].members.filter((member) => {
         return !member.blocked;
       });
       members = (
@@ -497,11 +506,8 @@ class RoomSettingsScreen extends Component {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
-      leaveRoom,
       updateNameDescription,
-      AddMember,
       fillData,
-      RemoveMember,
       updateRoom,
       updateRoomProfile,
     },

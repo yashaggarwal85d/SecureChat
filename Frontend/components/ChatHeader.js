@@ -132,9 +132,8 @@ class ChatHeader extends Component {
                 this.props.navigation.navigate({
                   routeName: 'RoomSettingsScreen',
                   params: {
-                    room: this.props.rooms[this.props.roomInd],
+                    roomInd: this.props.roomInd,
                     onPromptSend: this.props.onPromptSend,
-                    appStyles: Theme,
                   },
                 });
               }}

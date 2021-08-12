@@ -343,6 +343,11 @@ export const LightTheme = StyleSheet.create({
     left: 10,
     color: colors.white,
   },
+  ConfirmationStyle: {
+    fontFamily: 'Touche_Medium',
+    backgroundColor: colors.white,
+    color: colors.black,
+  },
 });
 
 export const DarkTheme = StyleSheet.create({
@@ -684,6 +689,11 @@ export const DarkTheme = StyleSheet.create({
     fontFamily: 'Touche_Medium',
     fontSize: 15,
     left: 10,
+    color: colors.white,
+  },
+  ConfirmationStyle: {
+    fontFamily: 'Touche_Medium',
+    backgroundColor: colors.black,
     color: colors.white,
   },
 });

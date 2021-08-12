@@ -1,4 +1,4 @@
-export const LOCALBASEAPI = 'http://192.168.1.7:3000';
+export const LOCALBASEAPI = 'http://172.16.12.22:3000';
 export const SERVERBASEAPI = 'https://project-x2.herokuapp.com';
 export const BASEAPI = LOCALBASEAPI;
 export const USERBASEAPI = BASEAPI + '/users';

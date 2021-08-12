@@ -51,6 +51,10 @@ export const updateRoomProfilePic = (token, roomId, url) => {
   return socket.emit('roomProfile_pic', token, roomId, url);
 };
 
+export const updateRoomNameDesc = (token, roomId, name, description) => {
+  return socket.emit('roomNameDesc', token, roomId, name, description);
+};
+
 export const addPromptMessage = (roomId, token, message) => {
   return socket.emit('addPrompt', roomId, token, message);
 };

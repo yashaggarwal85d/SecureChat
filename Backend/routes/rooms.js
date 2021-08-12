@@ -1,16 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const User = require("../models/users");
-const Room = require("../models/rooms");
-const AuthTokenVerification = require("./TokenVerify");
-const { roomValidation } = require("../validation");
-const RoomMemberVerification = require("./RoomMemberVerify");
-const RandomUserNames = require("../NamesList");
+const User = require('../models/users');
+const Room = require('../models/rooms');
+const AuthTokenVerification = require('./TokenVerify');
+const { roomValidation } = require('../validation');
+const RoomMemberVerification = require('./RoomMemberVerify');
+const RandomUserNames = require('../NamesList');
 
-router.get("/all", AuthTokenVerification, async (req, res) => {
+router.get('/all', AuthTokenVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(400).send("Access denied");
+      return res.status(400).send('Access denied');
     }
     const user = await User.findById(req.user._id);
     const rooms_id = user.rooms_id;
@@ -29,7 +29,7 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
         if (room.isDark && room.creator_id === req.user._id) {
           for (var member of room.members) {
             const details = await User.findById(member.id);
-            member["details"] = details;
+            member['details'] = details;
           }
         }
         rooms.push(room);
@@ -41,10 +41,10 @@ router.get("/all", AuthTokenVerification, async (req, res) => {
   }
 });
 
-router.get("/:RoomId", RoomMemberVerification, async (req, res) => {
+router.get('/:RoomId', RoomMemberVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(400).send("Access denied");
+      return res.status(400).send('Access denied');
     }
     const room = await Room.findById(req.params.RoomId);
     res.json(room);
@@ -53,10 +53,10 @@ router.get("/:RoomId", RoomMemberVerification, async (req, res) => {
   }
 });
 
-router.patch("/update/:RoomId", RoomMemberVerification, async (req, res) => {
+router.patch('/update/:RoomId', RoomMemberVerification, async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(400).send("Access denied");
+      return res.status(400).send('Access denied');
     }
     const room = await Room.findById(req.params.RoomId);
     const UpdatedRoom = await Room.updateMany(
@@ -72,16 +72,16 @@ router.patch("/update/:RoomId", RoomMemberVerification, async (req, res) => {
       }
     );
     res.json({
-      message: "successfully updated",
+      message: 'successfully updated',
     });
   } catch (err) {
     return res.status(400).send(err);
   }
 });
 
-router.post("/new", AuthTokenVerification, async (req, res) => {
+router.post('/new', AuthTokenVerification, async (req, res) => {
   if (!req.user) {
-    return res.status(400).send("Access denied");
+    return res.status(400).send('Access denied');
   }
   try {
     const members = req.body.members;
@@ -94,7 +94,7 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
         var username =
           RandomUserNames[Math.floor(Math.random() * RandomUserNames.length)];
         var user = await User.findById(member.id);
-        member["details"] = {
+        member['details'] = {
           _id: member.id,
           name: username,
           status: `hi, i am ${username}`,
@@ -104,7 +104,7 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
     } else {
       for (const member of members) {
         var user = await User.findById(member.id);
-        member["details"] = user;
+        member['details'] = user;
       }
       isdark = false;
     }
@@ -138,139 +138,6 @@ router.post("/new", AuthTokenVerification, async (req, res) => {
     }
     res.json({
       room: room,
-    });
-  } catch (err) {
-    return res.status(400).send(err);
-  }
-});
-
-router.patch(
-  "/RemoveMember/:RoomId",
-  RoomMemberVerification,
-  async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(400).send("Access denied");
-      }
-      const room = await Room.findById(req.params.RoomId);
-      if (req.user._id === room.creator_id) {
-        const UpdatedRoom = await Room.updateMany(
-          {
-            _id: room._id,
-            "members.id": req.body.member,
-          },
-          {
-            $set: {
-              "members.$.blocked": true,
-            },
-          }
-        );
-        res.json({
-          message: "successfully updated",
-        });
-      } else {
-        return res.status(400).send("Access denied");
-      }
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-  }
-);
-
-router.patch("/AddMember/:RoomId", RoomMemberVerification, async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(400).send("Access denied");
-    }
-    const room = await Room.findById(req.params.RoomId);
-    if (req.user._id === room.creator_id) {
-      const member_id = req.body.member;
-      for (const member of room.members) {
-        if (member.id === member_id) {
-          const UpdatedRoom = await Room.updateMany(
-            {
-              _id: req.params.RoomId,
-              "members.id": req.body.member,
-            },
-            {
-              $set: {
-                "members.$.blocked": false,
-              },
-            }
-          );
-
-          return res.json({
-            message: "successfully updated",
-          });
-        }
-      }
-      var userdetails;
-
-      if (room.isDark) {
-        var username =
-          RandomUserNames[Math.floor(Math.random() * RandomUserNames.length)];
-        userdetails = {
-          _id: member_id,
-          name: username,
-          profile_pic:
-            "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
-          status: `hi, i am ${username}`,
-        };
-      } else {
-        userdetails = await User.findById(member_id);
-      }
-      const updatedRoom = await Room.updateMany(
-        {
-          _id: req.params.RoomId,
-        },
-        {
-          $push: {
-            members: {
-              id: member_id,
-              details: userdetails,
-            },
-          },
-        }
-      );
-      const UpdatedUser = await User.updateMany(
-        {
-          _id: member_id,
-        },
-        {
-          $push: {
-            rooms_id: room._id,
-          },
-        }
-      );
-      res.json({
-        message: "successfully updated",
-      });
-    } else {
-      return res.status(400).send("Access denied");
-    }
-  } catch (err) {
-    return res.status(400).send(err);
-  }
-});
-
-router.patch("/leave/:RoomId", RoomMemberVerification, async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(400).send("Access denied");
-    }
-    const UpdatedRoom = await Room.updateMany(
-      {
-        _id: req.params.RoomId,
-        "members.id": req.user._id,
-      },
-      {
-        $set: {
-          "members.$.blocked": true,
-        },
-      }
-    );
-    res.json({
-      message: "successfully updated",
     });
   } catch (err) {
     return res.status(400).send(err);

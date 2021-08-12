@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import { Provider } from 'react-redux';
@@ -10,6 +11,7 @@ import { Root } from 'native-base';
 import FlashMessage from 'react-native-flash-message';
 import * as ScreenCapture from 'expo-screen-capture';
 import { getIpAddressAsync, getNetworkStateAsync } from 'expo-network';
+import { __handlePersistedRegistrationInfoAsync } from 'expo-notifications/build/DevicePushTokenAutoRegistration.fx';
 
 const getip = async () => {
   const ip = await getIpAddressAsync();
@@ -30,6 +32,28 @@ const fetchFonts = async () => {
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setappStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    AppState.addEventListener('change', _handleAppStateChange);
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      console.log('foreground');
+    }
+    appState.current = nextAppState;
+    setappStateVisible(appState.current);
+    console.log(appState.current);
+  };
+
   if (!fontLoaded) {
     return (
       <AppLoading

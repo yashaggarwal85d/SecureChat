@@ -32,6 +32,7 @@ import {
   PullMessageState,
   ResetRoom,
   MarkRead,
+  updateNameDescription,
 } from '../store/actions/RoomActions';
 import { socket } from '../store/reducers/Socket';
 import ChatListScreen from './ChatList';
@@ -157,7 +158,6 @@ class MainApp extends Component {
 
   componentDidMount = () => {
     socket.on('recieveMessage', async (message, roomId) => {
-      console.log(message);
       await this.props.addMessage(roomId, message);
     });
     socket.on('addRoom', async (room) => {
@@ -166,7 +166,11 @@ class MainApp extends Component {
     socket.on('updateRoom', async (roomId, members) => {
       await this.props.updateRoom(roomId, members);
     });
+    socket.on('updateRoomInfo', async (roomId, name, description) => {
+      await this.props.updateNameDescription(roomId, name, description);
+    });
     socket.on('removeRoom', async (roomId, roomName) => {
+      await this.props.navigation.navigate('MainScreen');
       await this.props.removeRoom(roomId);
       showMessage({
         message: `You are no longer a participant of ${roomName}`,
@@ -175,7 +179,6 @@ class MainApp extends Component {
       });
     });
     socket.on('update_profile', async (roomId, url) => {
-      console.log('hey');
       await this.props.updateRoomProfile(roomId, url);
     });
     socket.on('CallBack', async (callback, type) => {
@@ -287,6 +290,7 @@ const mapDispatchToProps = (dispatch) => {
       ResetRoom,
       MarkRead,
       updateActiveRoom,
+      updateNameDescription,
     },
     dispatch
   );

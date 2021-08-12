@@ -17,24 +17,32 @@ class AddParticipantScreen extends Component {
     };
   }
 
-  comparator = (a, b) => {
-    for (const mem of a.members) {
-      if (mem.details) {
-        return b.details._id === mem.details._id && !b.blocked;
-      }
-    }
-  };
-
   getUsers() {
     const { state } = this.props.navigation;
-    const members = state.params.members;
+    const RoomMembers = this.props.rooms[state.params.roomInd].members;
     const Allusers = this.props.rooms.filter((room) => {
-      return !room.isGroup;
+      return !room.isGroup && !room.dark;
     });
-    const users = Allusers.filter(
-      (a) => !members.some((b) => this.comparator(a, b))
+
+    var Users1 = [];
+    var Users2 = [];
+    for (const user of Allusers) {
+      for (const member of user.members) {
+        if (member.id !== this.props.user.id) {
+          Users1.push(member.details);
+        }
+      }
+    }
+    for (const user of RoomMembers) {
+      console.log(user.blocked);
+      if (user.id !== this.props.user.id && !user.blocked) {
+        Users2.push(user.details);
+      }
+    }
+    const FinalUsers = Users1.filter(
+      (a) => !Users2.some((b) => a._id === b._id)
     );
-    return users;
+    return FinalUsers;
   }
 
   renderGridItem = (itemData) => {
@@ -45,9 +53,7 @@ class AddParticipantScreen extends Component {
         style={LightTheme.ListItemStyle}
         avatar
         onPress={async () => {
-          for (const memba of itemData.item.members) {
-            if (memba.details) await state.params.addMem(memba.details);
-          }
+          await state.params.addMem(itemData.item._id, itemData.item.name);
           this.props.navigation.goBack();
         }}
       >
@@ -58,7 +64,7 @@ class AddParticipantScreen extends Component {
             {itemData.item.name}
           </Text>
           <Text numberOfLines={1} style={LightTheme.chatListNote} note>
-            {itemData.item.description}
+            {itemData.item.status}
           </Text>
         </Body>
       </ListItem>
@@ -103,7 +109,7 @@ class AddParticipantScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    rooms: state.rooms.filter((room) => !room.dark),
+    rooms: state.rooms,
     user: state.user,
   };
 };

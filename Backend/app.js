@@ -3,6 +3,7 @@ const socketio = require('socket.io');
 const mongoose = require('mongoose');
 const http = require('http');
 const bodyparser = require('body-parser');
+const compression = require('compression');
 require('dotenv/config');
 
 const app = express();
@@ -10,6 +11,7 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 //router
+app.use(compression());
 app.use(bodyparser.json());
 const HomeRouter = require('./routes/users');
 const RoomRouter = require('./routes/rooms');

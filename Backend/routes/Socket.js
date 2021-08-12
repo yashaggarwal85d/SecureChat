@@ -3,6 +3,8 @@ const User = require('../models/users');
 const Room = require('../models/rooms');
 const JWT = require('jsonwebtoken');
 const sendNotification = require('./sendNotification');
+const RandomUserNames = require('../NamesList');
+const DefaultImageBuffers = require('../DefaultImageBuffers');
 
 var ConnectedUsers = {};
 
@@ -261,19 +263,19 @@ module.exports = (io) => {
         if (!verifiedId) {
           socket.emit('error', 'Access Denied');
         } else {
-          const OriginalRoom = await Room.findById(roomId);
-          var room = OriginalRoom;
+          var room = await Room.findById(roomId);
           room.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
-              socket.to(ConnectedUsers[mem.id]).emit('addRoom', OriginalRoom);
+              socket.to(ConnectedUsers[mem.id]).emit('addRoom', room);
             }
           });
-          if (room.isDark && !room.name && room.creator_id === verifiedId._id) {
+          if (room.isDark && room.creator_id === verifiedId._id) {
             for (var member of room.members) {
               const details = await User.findById(member.id);
               member['details'] = details;
             }
           }
+
           socket.emit('addRoom', room);
         }
       } catch (e) {
@@ -297,11 +299,24 @@ module.exports = (io) => {
         if (!verifiedId && f) {
           socket.emit('error', 'Access Denied');
         } else {
-          room.members.forEach((mem) => {
+          const UpdatedRoom = await Room.updateMany(
+            {
+              _id: roomId,
+              'members.id': verifiedId._id,
+            },
+            {
+              $set: {
+                'members.$.blocked': true,
+              },
+            }
+          );
+          const NewRoom = await Room.findById(roomId);
+          socket.emit('removeRoom', room.id, room.name);
+          NewRoom.members.forEach((mem) => {
             if (ConnectedUsers[mem.id]) {
               socket
                 .to(ConnectedUsers[mem.id])
-                .emit('updateRoom', roomId, room.members);
+                .emit('updateRoom', roomId, NewRoom.members);
             }
           });
         }
@@ -325,17 +340,79 @@ module.exports = (io) => {
         if (!verifiedId && f) {
           socket.emit('error', 'Access Denied');
         } else {
-          room.members.forEach((mem) => {
-            if (ConnectedUsers[mem.id]) {
-              if (mem.id === memberId) {
-                socket.to(ConnectedUsers[mem.id]).emit('addRoom', room);
-              } else {
-                socket
-                  .to(ConnectedUsers[mem.id])
-                  .emit('updateRoom', roomId, room.members);
+          if (verifiedId._id === room.creator_id) {
+            f = 0;
+            for (const member of room.members) {
+              if (member.id === memberId) {
+                const UpdatedRoom = await Room.updateMany(
+                  {
+                    _id: roomId,
+                    'members.id': memberId,
+                  },
+                  {
+                    $set: {
+                      'members.$.blocked': false,
+                    },
+                  }
+                );
+                f = 1;
+                break;
               }
             }
-          });
+            if (!f) {
+              var userdetails;
+              if (room.isDark) {
+                var username =
+                  RandomUserNames[
+                    Math.floor(Math.random() * RandomUserNames.length)
+                  ];
+                userdetails = {
+                  _id: memberId,
+                  name: username,
+                  profile_pic: DefaultImageBuffers.defaultProfilePic,
+                  status: `hi, i am ${username}`,
+                };
+              } else {
+                userdetails = await User.findById(memberId);
+              }
+              const updatedRoom = await Room.updateMany(
+                {
+                  _id: roomId,
+                },
+                {
+                  $push: {
+                    members: {
+                      id: memberId,
+                      details: userdetails,
+                    },
+                  },
+                }
+              );
+              const UpdatedUser = await User.updateMany(
+                {
+                  _id: member_id,
+                },
+                {
+                  $push: {
+                    rooms_id: room._id,
+                  },
+                }
+              );
+            }
+            const NewRoom = await Room.findById(roomId);
+            socket.emit('updateRoom', roomId, NewRoom.members);
+            NewRoom.members.forEach((mem) => {
+              if (ConnectedUsers[mem.id]) {
+                if (mem.id === memberId) {
+                  socket.to(ConnectedUsers[mem.id]).emit('addRoom', NewRoom);
+                } else {
+                  socket
+                    .to(ConnectedUsers[mem.id])
+                    .emit('updateRoom', roomId, NewRoom.members);
+                }
+              }
+            });
+          }
         }
       } catch (e) {
         console.log(e);
@@ -358,19 +435,34 @@ module.exports = (io) => {
         if (!verifiedId && f) {
           socket.emit('error', 'Access Denied');
         } else {
-          room.members.forEach((mem) => {
-            if (ConnectedUsers[mem.id]) {
-              if (mem.id === memberId) {
-                socket
-                  .to(ConnectedUsers[mem.id])
-                  .emit('removeRoom', room.id, room.name);
-              } else {
-                socket
-                  .to(ConnectedUsers[mem.id])
-                  .emit('updateRoom', roomId, room.members);
+          if (verifiedId._id === room.creator_id) {
+            const UpdatedRoom = await Room.updateMany(
+              {
+                _id: roomId,
+                'members.id': memberId,
+              },
+              {
+                $set: {
+                  'members.$.blocked': true,
+                },
               }
-            }
-          });
+            );
+            const NewRoom = await Room.findById(roomId);
+            socket.emit('updateRoom', roomId, NewRoom.members);
+            room.members.forEach((mem) => {
+              if (ConnectedUsers[mem.id]) {
+                if (mem.id === memberId) {
+                  socket
+                    .to(ConnectedUsers[mem.id])
+                    .emit('removeRoom', roomId, room.name);
+                } else {
+                  socket
+                    .to(ConnectedUsers[mem.id])
+                    .emit('updateRoom', roomId, NewRoom.members);
+                }
+              }
+            });
+          }
         }
       } catch (e) {
         console.log(e);
@@ -456,6 +548,44 @@ module.exports = (io) => {
               socket
                 .to(ConnectedUsers[member.id])
                 .emit('update_profile', roomId, url);
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit('error', e);
+      }
+    });
+
+    socket.on('roomNameDesc', async (token, roomId, name, description) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        const room = await Room.findById(roomId);
+        var f = 0;
+        for (const member of room.members) {
+          if (member.id === verifiedId._id) {
+            f = 1;
+            break;
+          }
+        }
+
+        if (!verifiedId && f) {
+          socket.emit('error', 'Access Denied');
+        } else {
+          const UpdatedRoom = await Room.updateOne(
+            { _id: roomId },
+            {
+              $set: {
+                name: name,
+                description: description,
+              },
+            }
+          );
+          for (const member of room.members) {
+            if (ConnectedUsers[member.id]) {
+              socket
+                .to(ConnectedUsers[member.id])
+                .emit('updateRoomInfo', roomId, name, description);
             }
           }
         }

@@ -11,6 +11,7 @@ import {
   UPDATE_MEMBERS_MESSAGES,
   UPDATE_PROFILE_PIC,
   MARK_READ_MESSAGES,
+  UPDATE_MEMBERS,
 } from '../../constants/Actions';
 import axios from 'axios';
 import moment from 'moment';
@@ -217,19 +218,6 @@ export const updateNameDescription = (roomId, name, description) => {
   return async (dispatch, getState) => {
     try {
       console.log('helloooooooooo0');
-      var user = getState().user;
-      const data = await axios({
-        method: 'PATCH',
-        url: API.PATCHROOM + `/${roomId}`,
-        headers: {
-          'auth-token': user.token,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          name: name,
-          description: description,
-        },
-      }).then((res) => res.data);
       dispatch({
         type: UPDATE_NAME_DESC,
         payload: {
@@ -277,43 +265,6 @@ export const CreateNewRoom = (body) => {
   };
 };
 
-export const leaveRoom = (roomId, roomName) => {
-  return async (dispatch, getState) => {
-    try {
-      console.log('helloooooooooo8');
-      var user = getState().user;
-      const data = await axios({
-        method: 'PATCH',
-        url: API.LEAVEROOM + `/${roomId}`,
-        headers: {
-          'auth-token': user.token,
-          'Content-Type': 'application/json',
-        },
-      }).then((res) => res.data);
-      promptMember(user.token, roomId);
-      showMessage({
-        message: `You left ${roomName}`,
-        type: 'danger',
-        floating: true,
-      });
-      dispatch({
-        type: DELETE_ROOM,
-        payload: {
-          id: roomId,
-        },
-      });
-    } catch (e) {
-      showMessage({
-        message: `Error`,
-        description: `${e}`,
-        type: 'danger',
-        floating: true,
-      });
-      console.log(e);
-    }
-  };
-};
-
 export const ResetRoom = (roomId, members, messages) => {
   return async (dispatch, getState) => {
     try {
@@ -326,64 +277,6 @@ export const ResetRoom = (roomId, members, messages) => {
           messages: messages,
         },
       });
-    } catch (e) {
-      showMessage({
-        message: `Error`,
-        description: `${e}`,
-        type: 'danger',
-        floating: true,
-      });
-      console.log(e);
-    }
-  };
-};
-
-export const RemoveMember = (roomId, member) => {
-  return async (dispatch, getState) => {
-    try {
-      console.log('helloooooooooo6');
-      var user = getState().user;
-      const data = await axios({
-        method: 'PATCH',
-        url: API.REMOVEMEMBER + `/${roomId}`,
-        headers: {
-          'auth-token': user.token,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          member: member,
-        },
-      }).then((res) => res.data);
-      await promptMemberandRemove(user.token, roomId, member);
-    } catch (e) {
-      showMessage({
-        message: `Error`,
-        description: `${e}`,
-        type: 'danger',
-        floating: true,
-      });
-      console.log(e);
-    }
-  };
-};
-
-export const AddMember = (roomId, member) => {
-  return async (dispatch, getState) => {
-    try {
-      console.log('helloooooooooo5');
-      var user = getState().user;
-      const data = await axios({
-        method: 'PATCH',
-        url: API.ADDMEMBER + `/${roomId}`,
-        headers: {
-          'auth-token': user.token,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          member: member,
-        },
-      }).then((res) => res.data);
-      await promptMemberandAdd(user.token, roomId, member);
     } catch (e) {
       showMessage({
         message: `Error`,
