@@ -19,6 +19,7 @@ import * as API from '../../constants/APIstore';
 import { logoutSocket } from '../reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { cypherChain, cypherServer } from '../Encryption';
 
 export const updateMode = (mode) => {
   return {
@@ -133,6 +134,8 @@ export const updateNameStatus = (name, status) => {
 export const login = () => {
   return async (dispatch, getState) => {
     var user = getState().user;
+    const serverPass = cypherServer(user.password);
+    const chainPass = cypherChain(user.password);
     const data = await axios({
       method: 'POST',
       url: API.LOGINAPI,
@@ -141,10 +144,26 @@ export const login = () => {
       },
       data: {
         phone: user.phone,
-        password: user.password,
+        password: serverPass,
       },
     })
       .then((res) => res.data)
+      .then(async (data) => {
+        const wallet = await axios({
+          method: 'POST',
+          url: API.GETWALLET,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            token: data.user,
+            password: chainPass,
+          },
+        }).then((res) => res.data);
+        data.privateKey = wallet.privateKey;
+        data.publicKey = wallet.publicKey;
+        return data;
+      })
       .then((data) => {
         user.name = data.name;
         user.token = data.token;
@@ -152,6 +171,8 @@ export const login = () => {
         user.id = data.user;
         user.profile_pic = data.profile_pic;
         user.status = data.status;
+        user.publicKey = data.publicKey;
+        user.privateKey = data.privateKey;
         dispatch({ type: LOGIN, payload: user });
       })
       .catch((e) => {
@@ -173,6 +194,9 @@ export const login = () => {
 export const signup = () => {
   return async (dispatch, getState) => {
     const { name, phone, password } = getState().user;
+    const serverPass = cypherServer(password);
+    const chainPass = cypherChain(password);
+    console.log(serverPass, chainPass);
     const data = await axios({
       method: 'POST',
       url: API.SIGNUPAPI,
@@ -182,10 +206,24 @@ export const signup = () => {
       data: {
         name: name,
         phone: phone,
-        password: password,
+        password: serverPass,
       },
     })
       .then((res) => res.data)
+      .then(async (data) => {
+        const wallet = await axios({
+          method: 'POST',
+          url: API.NEWWALLET,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            token: data.user,
+            password: chainPass,
+          },
+        }).then((res) => res.data);
+        return data;
+      })
       .then((data) => {
         showMessage({
           message: 'Account created',

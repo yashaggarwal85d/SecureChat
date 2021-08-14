@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/users');
 const Room = require('../models/rooms');
-const AuthTokenVerification = require('./TokenVerify');
-const { roomValidation } = require('../validation');
-const RoomMemberVerification = require('./RoomMemberVerify');
-const RandomUserNames = require('../NamesList');
+const AuthTokenVerification = require('../validation/TokenVerify');
+const { roomValidation } = require('../validation/validation');
+const RoomMemberVerification = require('../validation/RoomMemberVerify');
+const RandomUserNames = require('../constants/NamesList');
 
 router.get('/all', AuthTokenVerification, async (req, res) => {
   try {

@@ -1,30 +1,49 @@
-const express = require('express');
 const User = require('../models/users');
 const Room = require('../models/rooms');
 const JWT = require('jsonwebtoken');
-const sendNotification = require('./sendNotification');
-const RandomUserNames = require('../NamesList');
-const DefaultImageBuffers = require('../DefaultImageBuffers');
+const sendNotification = require('../validation/sendNotification');
+const RandomUserNames = require('../constants/NamesList');
+const DefaultImageBuffers = require('../constants/DefaultImageBuffers');
+const axios = require('axios');
+const API = require('../constants/APIstore');
 
 var ConnectedUsers = {};
 
-//Blockchain part starts
-var tempBlockchain = {};
-
-PushMsgBlockchain = (room) => {
-  tempBlockchain[room._id] = room.messages;
-};
-
-PullMsgBlockchain = (roomId) => {
-  if (tempBlockchain[roomId]) {
-    const result = tempBlockchain[roomId];
-    delete tempBlockchain[roomId];
-    return result;
-  } else {
-    return null;
+PushMsgBlockchain = async (room) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: API.PUSH,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        id: room._id,
+        messages: room.messages,
+      },
+    }).then((res) => res.data);
+  } catch (e) {
+    console.log(e);
   }
 };
-//Blockchain part ends
+
+PullMsgBlockchain = async (roomId) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: API.PULL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        id: roomId,
+      },
+    }).then((res) => res.data);
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
@@ -746,7 +765,8 @@ module.exports = (io) => {
               room.PullMessage.membersApproved &&
               room.PullMessage.membersApproved.length == room.members.length
             ) {
-              var BlockchainMessages = PullMsgBlockchain(room._id);
+              var BlockchainMessages = await PullMsgBlockchain(room._id);
+              BlockchainMessages.shift();
               if (BlockchainMessages) {
                 const message = {
                   isPrompt: true,

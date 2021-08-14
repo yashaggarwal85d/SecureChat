@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const DefaultImageBuffers = require('../DefaultImageBuffers');
+const DefaultImageBuffers = require('../constants/DefaultImageBuffers');
 
 const ProfilePicUrl = DefaultImageBuffers.defaultGroupPic;
 const MemberPic = DefaultImageBuffers.defaultProfilePic;

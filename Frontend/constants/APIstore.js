@@ -17,3 +17,7 @@ export const REMOVEMEMBER = ROOMBASEAPI + '/RemoveMember';
 export const ADDMEMBER = ROOMBASEAPI + '/AddMember';
 export const UPDATEPROFILEPIC = USERBASEAPI + '/profile_pic';
 export const CHECKUSERCONTACTS = USERBASEAPI + '/CheckContacts';
+
+export const CHAIN = 'http://172.16.12.22:8000/wallet';
+export const NEWWALLET = CHAIN + '/NewWallet';
+export const GETWALLET = CHAIN + '/getWallet';

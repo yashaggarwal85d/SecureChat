@@ -3,8 +3,11 @@ const router = express.Router();
 const User = require('../models/users');
 const bcrypt = require('bcryptjs');
 const JWT = require('jsonwebtoken');
-const { registerValidation, loginValidation } = require('../validation');
-const AuthTokenVerification = require('./TokenVerify');
+const {
+  registerValidation,
+  loginValidation,
+} = require('../validation/validation');
+const AuthTokenVerification = require('../validation/TokenVerify');
 
 router.get('/all', AuthTokenVerification, async (req, res) => {
   try {

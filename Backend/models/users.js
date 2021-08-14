@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const DefaultImageBuffers = require("../DefaultImageBuffers");
+const mongoose = require('mongoose');
+const DefaultImageBuffers = require('../constants/DefaultImageBuffers');
 
 const ProfilePicUrl = DefaultImageBuffers.defaultProfilePic;
 
@@ -31,7 +31,7 @@ const UserSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    default: "Hello there",
+    default: 'Hello there',
   },
   NotificationToken: {
     type: String,
@@ -39,4 +39,4 @@ const UserSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model('user', UserSchema);
