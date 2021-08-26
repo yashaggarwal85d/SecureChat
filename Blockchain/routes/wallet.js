@@ -23,7 +23,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
-const crypto = __importStar(require("crypto"));
 const router = express.Router();
 const wallet_1 = __importDefault(require("../BlockChainModals/wallet"));
 const multiChain_1 = __importDefault(require("../BlockChainModals/multiChain"));
@@ -33,16 +32,12 @@ router.post('/NewWallet', async (req, res) => {
         const token = req.body.token;
         const EncPass = req.body.password;
         if (token && EncPass) {
-            const user = crypto.createECDH('secp256k1');
-            user.generateKeys();
-            const publicKey = user.getPublicKey().toString('base64');
-            const privateKey = user.getPrivateKey().toString('base64');
             if (wallets.has(token))
                 return res.status(400).send('Wallet already exists');
-            const wallet = new wallet_1.default(publicKey, privateKey, EncPass);
+            const wallet = new wallet_1.default(EncPass);
             wallets.set(token, wallet);
             console.log(wallets);
-            res.json("Success");
+            res.json("success");
         }
         else
             return res.status(400).send("Undefined data");

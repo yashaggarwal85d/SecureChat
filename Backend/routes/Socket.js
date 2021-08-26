@@ -86,6 +86,28 @@ module.exports = (io) => {
         socket.emit('error', e);
       }
     });
+    socket.on('setPublickey', async (token, pk) => {
+      try {
+        const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
+        if (!verifiedId) {
+          socket.emit('error', 'Access Denied');
+        } else {
+          const updatedUser = await User.updateOne(
+            {
+              _id: verifiedId._id,
+            },
+            {
+              $set: {
+                pk: pk,
+              },
+            }
+          );
+        }
+      } catch (e) {
+        console.log(e);
+        socket.emit('error', e);
+      }
+    });
     socket.on('UpdatelastMessageReadIndex', async (roomId, token) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
@@ -117,7 +139,8 @@ module.exports = (io) => {
         socket.emit('error', e);
       }
     });
-    socket.on('message', async (roomId, token, messageBody) => {
+
+    socket.on('message', async (roomId, token, messageBody, spk) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
@@ -135,6 +158,7 @@ module.exports = (io) => {
           const message = {
             sender_id: verifiedId._id,
             message_body: messageBody,
+            spk: spk,
           };
           const room = await Room.findById(roomId);
           const UpdatedRoom = await Room.updateOne(
@@ -169,7 +193,7 @@ module.exports = (io) => {
         socket.emit('error', e);
       }
     });
-    socket.on('addPrompt', async (roomId, token, messageBody) => {
+    socket.on('addPrompt', async (roomId, token, messageBody, spk) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
@@ -189,6 +213,7 @@ module.exports = (io) => {
               isPrompt: true,
               sender_id: verifiedId._id,
               message_body: messageBody,
+              spk: spk,
             };
             const room = await Room.findById(roomId);
             const UpdatedRoom = await Room.updateOne(
@@ -225,7 +250,7 @@ module.exports = (io) => {
       }
     });
 
-    socket.on('addImage', async (roomId, token, ImageData) => {
+    socket.on('addImage', async (roomId, token, ImageData, spk) => {
       try {
         const verifiedId = JWT.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(verifiedId._id);
@@ -245,6 +270,7 @@ module.exports = (io) => {
             sender_id: verifiedId._id,
             message_body: '📷 Image',
             ImageData: ImageData,
+            spk: spk,
           };
           const room = await Room.findById(roomId);
           const UpdatedRoom = await Room.updateOne(

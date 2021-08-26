@@ -101,8 +101,15 @@ router.post('/register', async (req, res) => {
 
   try {
     const SavedUser = await user.save();
+    const token = JWT.sign(
+      {
+        _id: user._id,
+      },
+      process.env.TOKEN_SECRET
+    );
     res.json({
       user: user._id,
+      token: token,
     });
   } catch (err) {
     res.status(400).send(err);

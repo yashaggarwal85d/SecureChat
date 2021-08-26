@@ -37,6 +37,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     default: null,
   },
+  pk: {
+    type: String,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model('user', UserSchema);

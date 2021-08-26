@@ -16,7 +16,7 @@ import {
 } from '../../constants/Actions';
 import axios from 'axios';
 import * as API from '../../constants/APIstore';
-import { logoutSocket } from '../reducers/Socket';
+import { logoutSocket, setPublickey } from '../reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { cypherChain, cypherServer } from '../Encryption';
@@ -222,6 +222,7 @@ export const signup = () => {
             password: chainPass,
           },
         }).then((res) => res.data);
+        setPublickey(data.token, wallet);
         return data;
       })
       .then((data) => {

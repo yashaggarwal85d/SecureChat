@@ -8,7 +8,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import * as color from '../constants/colors';
 import { connect } from 'react-redux';
 import { LightTheme, DarkTheme } from '../appStyles';
-
+import { decrypt } from '../store/Encryption';
 class ChatBubble extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +49,9 @@ class ChatBubble extends Component {
       if (itemData.item.sender_id === this.props.user.id) {
         var icon = 'clock-outline';
         var message_body = (
-          <Text style={Theme.ChatBubbleText}>{itemData.item.message_body}</Text>
+          <Text style={Theme.ChatBubbleText}>
+            {decrypt(itemData.item.message_body, itemData.item.spk)}
+          </Text>
         );
         if (itemData.item.isImage) {
           message_body = (
@@ -62,7 +64,7 @@ class ChatBubble extends Component {
                   resizeMode: 'contain',
                 }}
                 source={{
-                  uri: itemData.item.ImageData,
+                  uri: decrypt(itemData.item.ImageData, itemData.item.spk),
                 }}
               />
             </TouchableOpacity>
@@ -108,7 +110,7 @@ class ChatBubble extends Component {
       } else {
         var message_body = (
           <Text style={Theme.ChatBubbleLeftText}>
-            {itemData.item.message_body}
+            {decrypt(itemData.item.message_body, itemData.item.spk)}
           </Text>
         );
         if (itemData.item.isImage) {
@@ -122,7 +124,7 @@ class ChatBubble extends Component {
                   resizeMode: 'contain',
                 }}
                 source={{
-                  uri: itemData.item.ImageData,
+                  uri: decrypt(itemData.item.ImageData, itemData.item.spk),
                 }}
               />
             </TouchableOpacity>

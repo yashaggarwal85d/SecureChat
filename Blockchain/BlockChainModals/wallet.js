@@ -25,10 +25,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const transaction_1 = __importDefault(require("./transaction"));
 const multiChain_1 = __importDefault(require("./multiChain"));
+function KeyGen(base, modulo, exponent) {
+    var result = 1;
+    while (exponent > 0) {
+        if (exponent % 2 == 1) {
+            result = (result * base) % modulo;
+        }
+        base = (base * base) % modulo;
+        exponent = exponent >>> 1;
+    }
+    return result;
+}
 class Wallet {
-    constructor(DHpublicKey, DHprivateKey, EncPass) {
-        this.DHpublicKey = DHpublicKey;
-        this.DHprivateKey = DHprivateKey;
+    constructor(EncPass) {
         const keypair = crypto.generateKeyPairSync('rsa', {
             modulusLength: 2048,
             publicKeyEncoding: { type: 'spki', format: 'pem' },
@@ -38,6 +47,7 @@ class Wallet {
         this.TokenHash = crypto.pbkdf2Sync(`${EncPass}`, this.salt, 1000, 64, `sha512`).toString(`hex`);
         this.privateKey = keypair.privateKey;
         this.publicKey = keypair.publicKey;
+        this.DHprivateKey = Math.floor(Math.random() * (9999999999 - 99999999) + 99999999);
     }
     sendMoney(Obj, id) {
         var _a;
@@ -47,16 +57,24 @@ class Wallet {
         const signature = sign.sign(this.privateKey);
         (_a = multiChain_1.default.instance.getChain(id)) === null || _a === void 0 ? void 0 : _a.addBlock(transaction, this.publicKey, signature);
     }
+    verify(password) {
+        var hash = crypto.pbkdf2Sync(`${password}`, this.salt, 1000, 64, `sha512`).toString(`hex`);
+        if (hash === this.TokenHash) {
+            return true;
+        }
+        else
+            return false;
+    }
     getPrivate(password) {
         var hash = crypto.pbkdf2Sync(`${password}`, this.salt, 1000, 64, `sha512`).toString(`hex`);
+        var base = 1000151;
+        var modulo = 2000303;
         if (hash === this.TokenHash) {
             return {
                 privateKey: this.DHprivateKey,
-                publicKey: this.DHpublicKey,
+                publicKey: KeyGen(base, modulo, this.DHprivateKey),
             };
         }
-        else
-            return null;
     }
 }
 exports.default = Wallet;

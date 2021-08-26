@@ -11,8 +11,12 @@ export const registerForPushNotifications = (token, NotificationToken) => {
   return socket.emit('registerForPushNotifications', token, NotificationToken);
 };
 
-export const SendMessage = (roomId, token, message) => {
-  return socket.emit('message', roomId, token, message);
+export const SendMessage = (roomId, token, message, spk) => {
+  return socket.emit('message', roomId, token, message, spk);
+};
+
+export const setPublickey = (token, pk) => {
+  return socket.emit('setPublickey', token, pk);
 };
 
 export const UpdatelastMessageReadIndex = (roomId, token) => {
@@ -55,12 +59,12 @@ export const updateRoomNameDesc = (token, roomId, name, description) => {
   return socket.emit('roomNameDesc', token, roomId, name, description);
 };
 
-export const addPromptMessage = (roomId, token, message) => {
-  return socket.emit('addPrompt', roomId, token, message);
+export const addPromptMessage = (roomId, token, message, spk) => {
+  return socket.emit('addPrompt', roomId, token, message, spk);
 };
 
-export const addImageMessage = (roomId, token, message) => {
-  return socket.emit('addImage', roomId, token, message);
+export const addImageMessage = (roomId, token, message, spk) => {
+  return socket.emit('addImage', roomId, token, message, spk);
 };
 
 export const PushMessagesToBlockchain = (roomId, token) => {

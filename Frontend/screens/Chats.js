@@ -20,7 +20,7 @@ import { bindActionCreators } from 'redux';
 import { ImageBackground } from 'react-native';
 import { ImageBg } from '../appStyles';
 import { LightTheme, DarkTheme } from '../appStyles';
-
+import { encrypt } from '../store/Encryption';
 class PresentChatScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -49,15 +49,18 @@ class PresentChatScreen extends React.Component {
   };
 
   sendMessage(message) {
+    message = encrypt(message, this.props.user.publicKey);
     SendMessage(
       this.props.rooms[this.state.roomInd].id,
       this.props.user.token,
-      message
+      message,
+      this.props.user.publicKey
     );
     const messageObject = {
       sender_id: this.props.user.id,
       message_body: message,
       timer: true,
+      spk: this.props.user.publicKey,
     };
     this.updateState(messageObject);
   }
@@ -70,15 +73,18 @@ class PresentChatScreen extends React.Component {
   };
 
   sendPromptMessage(message) {
+    // message = encrypt(message, this.props.user.publicKey);
     addPromptMessage(
       this.props.rooms[this.state.roomInd].id,
       this.props.user.token,
-      message
+      message,
+      this.props.user.publicKey
     );
     const messageObject = {
       isPrompt: true,
       sender_id: this.props.user.id,
       message_body: message,
+      spk: this.props.user.publicKey,
       timer: true,
     };
     this.updatePromptState(messageObject);
@@ -92,10 +98,12 @@ class PresentChatScreen extends React.Component {
   };
 
   sendImageMessage(message) {
+    message = encrypt(message, this.props.user.publicKey);
     addImageMessage(
       this.props.rooms[this.state.roomInd].id,
       this.props.user.token,
-      message
+      message,
+      this.props.user.publicKey
     );
     const messageObject = {
       isImage: true,
@@ -103,6 +111,7 @@ class PresentChatScreen extends React.Component {
       message_body: '📷 Image',
       timer: true,
       ImageData: message,
+      spk: this.props.user.publicKey,
     };
     this.updateImageState(messageObject);
   }

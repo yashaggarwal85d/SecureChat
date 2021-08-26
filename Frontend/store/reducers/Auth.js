@@ -15,8 +15,6 @@ import {
   LOGOUT,
   UPDATE_NAME_STATUS,
   UPDATE_ACTIVE_ROOM,
-  UPDATE_PUBLIC_KEY,
-  UPDATE_PRIVATE_KEY,
 } from '../../constants/Actions';
 
 const AuthInitialState = {
@@ -49,10 +47,6 @@ const AuthReducer = (state = AuthInitialState, action) => {
       return { ...state, alert: action.payload };
     case UPDATE_ISAUTH:
       return { ...state, isauth: action.payload };
-    case UPDATE_PRIVATE_KEY:
-      return { ...state, privateKey: action.payload };
-    case UPDATE_PUBLIC_KEY:
-      return { ...state, publicKey: action.payload };
     case UPDATE_TOKEN:
       return { ...state, token: action.payload };
     case UPDATE_NAME:

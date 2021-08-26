@@ -29,6 +29,10 @@ const MessageSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  spk: {
+    type: String,
+    required: true,
+  },
 });
 
 const detailsSchema = mongoose.Schema(

@@ -12,16 +12,11 @@ router.post('/NewWallet', async (req:any, res:any) => {
     const EncPass = req.body.password;
     
     if(token && EncPass){
-      const user = crypto.createECDH('secp256k1');
-      user.generateKeys();
-      const publicKey = user.getPublicKey().toString('base64');
-      const privateKey = user.getPrivateKey().toString('base64');
-    
       if (wallets.has(token)) return res.status(400).send('Wallet already exists');
-      const wallet = new Wallet(publicKey,privateKey,EncPass);
+      const wallet = new Wallet(EncPass);
       wallets.set(token,wallet);
       console.log(wallets);
-      res.json("Success");
+      res.json(wallet.DHpublicKey);
     }
     else return res.status(400).send("Undefined data");
   } catch (err) {
