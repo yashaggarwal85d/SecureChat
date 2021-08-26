@@ -47,7 +47,7 @@ const detailsSchema = mongoose.Schema(
       min: 5,
       max: 100,
     },
-    phone: {
+    pk: {
       type: String,
       default: null,
     },

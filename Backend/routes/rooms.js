@@ -97,7 +97,8 @@ router.post('/new', AuthTokenVerification, async (req, res) => {
         member['details'] = {
           _id: member.id,
           name: username,
-          status: `hi, i am ${username}`,
+          status: `Hi, i am ${username}`,
+          pk: user.pk,
         };
       }
       isdark = true;

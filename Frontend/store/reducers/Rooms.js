@@ -11,11 +11,19 @@ import {
   UPDATE_PROFILE_PIC,
   MARK_READ_MESSAGES,
 } from '../../constants/Actions';
-import { decrypt } from '../Encryption';
+import { decrypt, decryptGroup } from '../Encryption';
 
-function LastMessage(message) {
+function LastMessage(message, isGroup, pk, puk, userId) {
+  console.log(message, isGroup, pk, puk, userId);
   if (message.isImage) return '📷 Image';
-  else return decrypt(message.message_body, message.spk);
+  else {
+    if (isGroup) return decryptGroup(message.message_body, message.spk);
+    else {
+      if (message.sender_id === userId)
+        return decrypt(message.message_body, puk, pk);
+      else return decrypt(message.message_body, message.spk, pk);
+    }
+  }
 }
 
 function Read(members, userId, length) {
@@ -38,7 +46,13 @@ const RoomReducer = (rooms = [], action) => {
           return {
             ...room,
             messages: [...room.messages, action.payload.message],
-            lastMessage: LastMessage(action.payload.message),
+            lastMessage: LastMessage(
+              action.payload.message,
+              room.isGroup,
+              action.payload.pk,
+              action.payload.puk,
+              action.payload.userId
+            ),
             lastTime: action.payload.message.timestamp,
           };
         } else return room;
@@ -80,7 +94,13 @@ const RoomReducer = (rooms = [], action) => {
             ...room,
             messages: action.payload.messages,
             members: action.payload.members,
-            lastMessage: LastMessage(room.messages.slice(-1)[0]),
+            lastMessage: LastMessage(
+              room.messages.slice(-1)[0],
+              room.isGroup,
+              action.payload.pk,
+              action.payload.puk,
+              action.payload.userId
+            ),
             lastTime: room.messages.slice(-1)[0].timestamp,
           };
         } else return room;

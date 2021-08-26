@@ -20,12 +20,14 @@ import { bindActionCreators } from 'redux';
 import { ImageBackground } from 'react-native';
 import { ImageBg } from '../appStyles';
 import { LightTheme, DarkTheme } from '../appStyles';
-import { encrypt } from '../store/Encryption';
+import { encrypt, encryptGroup } from '../store/Encryption';
 class PresentChatScreen extends React.Component {
   constructor(props) {
     super(props);
+    const room = this.getRoom();
     this.state = {
-      roomInd: this.getRoom(),
+      roomInd: room.ind,
+      secondUserPk: room.pk,
     };
   }
 
@@ -38,18 +40,33 @@ class PresentChatScreen extends React.Component {
     const OpenRoom = this.props.rooms.findIndex(
       (room) => room.id === state.params.id
     );
-    return OpenRoom;
+    var pk;
+    for (const member of this.props.rooms[OpenRoom].members) {
+      if (member.id != this.props.user.id) pk = member.details.pk;
+    }
+    return {
+      ind: OpenRoom,
+      pk: pk,
+    };
   };
 
   updateState = async (message) => {
     await this.props.addMessage(
       this.props.rooms[this.state.roomInd].id,
-      message
+      message,
+      this.state.secondUserPk
     );
   };
 
   sendMessage(message) {
-    message = encrypt(message, this.props.user.publicKey);
+    if (this.props.rooms[this.state.roomInd].isGroup)
+      message = encryptGroup(message, this.props.user.publicKey);
+    else
+      message = encrypt(
+        message,
+        this.state.secondUserPk,
+        this.props.user.privateKey
+      );
     SendMessage(
       this.props.rooms[this.state.roomInd].id,
       this.props.user.token,
@@ -68,7 +85,8 @@ class PresentChatScreen extends React.Component {
   updatePromptState = async (message) => {
     await this.props.addMessage(
       this.props.rooms[this.state.roomInd].id,
-      message
+      message,
+      this.state.secondUserPk
     );
   };
 
@@ -93,12 +111,20 @@ class PresentChatScreen extends React.Component {
   updateImageState = async (message) => {
     await this.props.addMessage(
       this.props.rooms[this.state.roomInd].id,
-      message
+      message,
+      this.state.secondUserPk
     );
   };
 
   sendImageMessage(message) {
-    message = encrypt(message, this.props.user.publicKey);
+    if (this.props.rooms[this.state.roomInd].isGroup)
+      message = encryptGroup(message, this.props.user.publicKey);
+    else
+      message = encrypt(
+        message,
+        this.state.secondUserPk,
+        this.props.user.privateKey
+      );
     addImageMessage(
       this.props.rooms[this.state.roomInd].id,
       this.props.user.token,

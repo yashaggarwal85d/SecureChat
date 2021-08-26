@@ -23,9 +23,9 @@ import {
   promptMemberandRemove,
 } from '../reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
-import { decrypt } from '../Encryption';
+import { decrypt, decryptGroup } from '../Encryption';
 
-export const addMessage = (roomId, message) => {
+export const addMessage = (roomId, message, pk2) => {
   return async (dispatch, getState) => {
     try {
       console.log('helloooooooooo14');
@@ -36,6 +36,9 @@ export const addMessage = (roomId, message) => {
         payload: {
           message: messageObj,
           id: roomId,
+          pk: user.privateKey,
+          puk: pk2,
+          userId: user.id,
         },
       });
       if (user.active_room === roomId) {
@@ -155,6 +158,7 @@ export const fillData = () => {
             var profile_pic = '';
             var description = '';
             var isGroup = false;
+            var secondUserPk = null;
 
             if (!room.name) {
               for (var member of room.members) {
@@ -163,6 +167,7 @@ export const fillData = () => {
                   profile_pic = member.details.profile_pic;
                   description = member.details.status;
                   isGroup = false;
+                  secondUserPk = member.details.pk;
                 }
               }
             } else {
@@ -178,11 +183,28 @@ export const fillData = () => {
             if (messages[0]) {
               const messageObject = messages.slice(-1)[0];
               if (messageObject.isImage) lastMessage = '📷 Image';
-              else
-                lastMessage = decrypt(
-                  messageObject.message_body,
-                  messageObject.spk
-                );
+              else {
+                if (isGroup)
+                  lastMessage = decryptGroup(
+                    messageObject.message_body,
+                    messageObject.spk
+                  );
+                else {
+                  console.log(secondUserPk);
+                  if (messageObject.sender_id === user.id)
+                    lastMessage = decrypt(
+                      messageObject.message_body,
+                      secondUserPk,
+                      user.privateKey
+                    );
+                  else
+                    lastMessage = decrypt(
+                      messageObject.message_body,
+                      messageObject.spk,
+                      user.privateKey
+                    );
+                }
+              }
 
               lastTime = messages.slice(-1)[0].timestamp;
             }
@@ -274,12 +296,20 @@ export const ResetRoom = (roomId, members, messages) => {
   return async (dispatch, getState) => {
     try {
       console.log('helloooooooooo7');
+      var user = getState().user;
+      var pk2;
+      for (const member of members) {
+        if (member.id != user.id) pk2 = member.details.pk;
+      }
       dispatch({
         type: UPDATE_MEMBERS_MESSAGES,
         payload: {
           id: roomId,
           members: members,
           messages: messages,
+          pk: user.privateKey,
+          puk: pk2,
+          userId: user.id,
         },
       });
     } catch (e) {
@@ -303,6 +333,7 @@ export const addRoom = (room) => {
       var profile_pic = '';
       var description = '';
       var isGroup = false;
+      var secondUserPk = null;
 
       if (!room.name) {
         for (var member of room.members) {
@@ -311,6 +342,7 @@ export const addRoom = (room) => {
             profile_pic = member.details.profile_pic;
             description = member.details.status;
             isGroup = false;
+            secondUserPk = member.details.pk;
           }
         }
       } else {
@@ -326,8 +358,27 @@ export const addRoom = (room) => {
       if (messages[0]) {
         const messageObject = messages.slice(-1)[0];
         if (messageObject.isImage) lastMessage = '📷 Image';
-        else
-          lastMessage = decrypt(messageObject.message_body, messageObject.spk);
+        else {
+          if (isGroup)
+            lastMessage = decryptGroup(
+              messageObject.message_body,
+              messageObject.spk
+            );
+          else {
+            if (messageObject.sender_id === user.id)
+              lastMessage = decrypt(
+                messageObject.message_body,
+                secondUserPk,
+                user.privateKey
+              );
+            else
+              lastMessage = decrypt(
+                messageObject.message_body,
+                messageObject.spk,
+                user.privateKey
+              );
+          }
+        }
 
         lastTime = messages.slice(-1)[0].timestamp;
       }

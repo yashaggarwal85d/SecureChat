@@ -8,7 +8,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import * as color from '../constants/colors';
 import { connect } from 'react-redux';
 import { LightTheme, DarkTheme } from '../appStyles';
-import { decrypt } from '../store/Encryption';
+import { decrypt, decryptGroup } from '../store/Encryption';
 class ChatBubble extends Component {
   constructor(props) {
     super(props);
@@ -32,6 +32,21 @@ class ChatBubble extends Component {
     });
   }
 
+  decryptfunc = (message, spk, id) => {
+    if (this.props.rooms[this.props.roomInd].isGroup) {
+      return decryptGroup(message, spk);
+    } else {
+      if (id === this.props.user.id)
+        return decrypt(
+          message,
+          this.props.rooms[this.props.roomInd].members[this.state.secondUserInd]
+            .details.pk,
+          this.props.user.privateKey
+        );
+      else return decrypt(message, spk, this.props.user.privateKey);
+    }
+  };
+
   renderGridItem = (itemData) => {
     var Theme = LightTheme;
     if (this.props.user.mode == 'dark') {
@@ -50,7 +65,11 @@ class ChatBubble extends Component {
         var icon = 'clock-outline';
         var message_body = (
           <Text style={Theme.ChatBubbleText}>
-            {decrypt(itemData.item.message_body, itemData.item.spk)}
+            {this.decryptfunc(
+              itemData.item.message_body,
+              itemData.item.spk,
+              itemData.item.sender_id
+            )}
           </Text>
         );
         if (itemData.item.isImage) {
@@ -64,7 +83,11 @@ class ChatBubble extends Component {
                   resizeMode: 'contain',
                 }}
                 source={{
-                  uri: decrypt(itemData.item.ImageData, itemData.item.spk),
+                  uri: this.decryptfunc(
+                    itemData.item.ImageData,
+                    itemData.item.spk,
+                    itemData.item.sender_id
+                  ),
                 }}
               />
             </TouchableOpacity>
@@ -110,7 +133,11 @@ class ChatBubble extends Component {
       } else {
         var message_body = (
           <Text style={Theme.ChatBubbleLeftText}>
-            {decrypt(itemData.item.message_body, itemData.item.spk)}
+            {this.decryptfunc(
+              itemData.item.message_body,
+              itemData.item.spk,
+              itemData.item.sender_id
+            )}
           </Text>
         );
         if (itemData.item.isImage) {
@@ -124,7 +151,11 @@ class ChatBubble extends Component {
                   resizeMode: 'contain',
                 }}
                 source={{
-                  uri: decrypt(itemData.item.ImageData, itemData.item.spk),
+                  uri: this.decryptfunc(
+                    itemData.item.ImageData,
+                    itemData.item.spk,
+                    itemData.item.sender_id
+                  ),
                 }}
               />
             </TouchableOpacity>
