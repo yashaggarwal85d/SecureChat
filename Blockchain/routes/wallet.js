@@ -37,7 +37,7 @@ router.post('/NewWallet', async (req, res) => {
             const wallet = new wallet_1.default(EncPass);
             wallets.set(token, wallet);
             console.log(wallets);
-            res.json("success");
+            res.json(wallet.DHpublicKey);
         }
         else
             return res.status(400).send("Undefined data");

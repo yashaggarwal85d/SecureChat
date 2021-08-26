@@ -11,10 +11,11 @@ import {
   UPDATE_PROFILE_PIC,
   MARK_READ_MESSAGES,
 } from '../../constants/Actions';
+import { decrypt } from '../Encryption';
 
 function LastMessage(message) {
   if (message.isImage) return '📷 Image';
-  else return message.message_body;
+  else return decrypt(message.message_body, message.spk);
 }
 
 function Read(members, userId, length) {

@@ -23,6 +23,7 @@ import {
   promptMemberandRemove,
 } from '../reducers/Socket';
 import { showMessage } from 'react-native-flash-message';
+import { decrypt } from '../Encryption';
 
 export const addMessage = (roomId, message) => {
   return async (dispatch, getState) => {
@@ -177,7 +178,11 @@ export const fillData = () => {
             if (messages[0]) {
               const messageObject = messages.slice(-1)[0];
               if (messageObject.isImage) lastMessage = '📷 Image';
-              else lastMessage = messageObject.message_body;
+              else
+                lastMessage = decrypt(
+                  messageObject.message_body,
+                  messageObject.spk
+                );
 
               lastTime = messages.slice(-1)[0].timestamp;
             }
@@ -321,7 +326,8 @@ export const addRoom = (room) => {
       if (messages[0]) {
         const messageObject = messages.slice(-1)[0];
         if (messageObject.isImage) lastMessage = '📷 Image';
-        else lastMessage = messageObject.message_body;
+        else
+          lastMessage = decrypt(messageObject.message_body, messageObject.spk);
 
         lastTime = messages.slice(-1)[0].timestamp;
       }

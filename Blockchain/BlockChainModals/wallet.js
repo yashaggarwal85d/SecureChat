@@ -47,7 +47,10 @@ class Wallet {
         this.TokenHash = crypto.pbkdf2Sync(`${EncPass}`, this.salt, 1000, 64, `sha512`).toString(`hex`);
         this.privateKey = keypair.privateKey;
         this.publicKey = keypair.publicKey;
-        this.DHprivateKey = Math.floor(Math.random() * (9999999999 - 99999999) + 99999999);
+        this.DHprivateKey = Math.floor(Math.random() * (9999999999 - 99999999) + 9999999999);
+        var base = 1000151;
+        var modulo = 2000303;
+        this.DHpublicKey = KeyGen(base, modulo, this.DHprivateKey);
     }
     sendMoney(Obj, id) {
         var _a;
@@ -67,12 +70,10 @@ class Wallet {
     }
     getPrivate(password) {
         var hash = crypto.pbkdf2Sync(`${password}`, this.salt, 1000, 64, `sha512`).toString(`hex`);
-        var base = 1000151;
-        var modulo = 2000303;
         if (hash === this.TokenHash) {
             return {
                 privateKey: this.DHprivateKey,
-                publicKey: KeyGen(base, modulo, this.DHprivateKey),
+                publicKey: this.DHpublicKey,
             };
         }
     }
