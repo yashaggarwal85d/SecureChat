@@ -1,4 +1,4 @@
-export const LOCALBASEAPI = 'http://172.16.12.22:3000';
+export const LOCALBASEAPI = 'http://192.168.61.236:3000';
 export const SERVERBASEAPI = 'https://ssbackend.azurewebsites.net';
 export const BASEAPI = SERVERBASEAPI;
 export const USERBASEAPI = BASEAPI + '/users';

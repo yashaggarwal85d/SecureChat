@@ -1,4 +1,4 @@
-const BASEAPI = 'http://172.16.12.22:8000/wallet';
+const BASEAPI = 'https://scblockchain.netlify.app/.netlify/functions/api';
 module.exports = {
   PUSH: BASEAPI + '/PushMessages',
   PULL: BASEAPI + '/PullMessages',
