@@ -183,6 +183,8 @@ export const fillData = () => {
             if (messages[0]) {
               const messageObject = messages.slice(-1)[0];
               if (messageObject.isImage) lastMessage = '📷 Image';
+              else if (messageObject.isPrompt)
+                return messageObject.message_body;
               else {
                 if (isGroup)
                   lastMessage = decryptGroup(
@@ -358,6 +360,7 @@ export const addRoom = (room) => {
       if (messages[0]) {
         const messageObject = messages.slice(-1)[0];
         if (messageObject.isImage) lastMessage = '📷 Image';
+        else if (messageObject.isPrompt) return messageObject.message_body;
         else {
           if (isGroup)
             lastMessage = decryptGroup(

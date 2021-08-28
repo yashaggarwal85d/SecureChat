@@ -907,16 +907,18 @@ module.exports = (io) => {
           if (ConnectedUsers[key] === socket.id) {
             delete ConnectedUsers[key];
             const user = await User.findById(key);
-            user.rooms_id.forEach(async (roomId) => {
-              const room = await Room.findById(roomId);
-              if (room.members.length === 2) {
-                room.members.forEach((mem) => {
-                  if (ConnectedUsers[mem.id]) {
-                    socket.to(ConnectedUsers[mem.id]).emit('offline', key);
-                  }
-                });
-              }
-            });
+            if (user) {
+              user.rooms_id.forEach(async (roomId) => {
+                const room = await Room.findById(roomId);
+                if (room.members.length === 2) {
+                  room.members.forEach((mem) => {
+                    if (ConnectedUsers[mem.id]) {
+                      socket.to(ConnectedUsers[mem.id]).emit('offline', key);
+                    }
+                  });
+                }
+              });
+            }
           }
         }
       } catch (e) {

@@ -1,16 +1,16 @@
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 module.exports = async function (token, title, body) {
-  let response = fetch("https://exp.host/--/api/v2/push/send", {
-    method: "POST",
+  let response = fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       to: String(token),
-      sound: "default",
+      sound: 'default',
       title: String(title),
-      body: String(body),
+      body: String('Send a message'),
     }),
   });
 };

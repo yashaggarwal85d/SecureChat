@@ -55,7 +55,7 @@ class MainApp extends Component {
     }
     this.props.updateActiveRoom(null);
     JoinRooms(this.props.user.token);
-    this.processContacts();
+    // this.processContacts();
     if (!this.props.user.NotificationToken)
       this.registerForPushNotificationsAsync();
   }

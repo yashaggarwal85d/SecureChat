@@ -16,6 +16,7 @@ import { decrypt, decryptGroup } from '../Encryption';
 function LastMessage(message, isGroup, pk, puk, userId) {
   console.log(message, isGroup, pk, puk, userId);
   if (message.isImage) return '📷 Image';
+  else if (message.isPrompt) return message.message_body;
   else {
     if (isGroup) return decryptGroup(message.message_body, message.spk);
     else {

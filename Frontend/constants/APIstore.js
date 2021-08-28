@@ -1,6 +1,6 @@
 export const LOCALBASEAPI = 'http://192.168.61.236:3000';
 export const SERVERBASEAPI = 'https://ssbackend.azurewebsites.net';
-export const BASEAPI = SERVERBASEAPI;
+export const BASEAPI = LOCALBASEAPI;
 export const USERBASEAPI = BASEAPI + '/users';
 export const LOGINAPI = USERBASEAPI + '/login';
 export const SIGNUPAPI = USERBASEAPI + '/register';
