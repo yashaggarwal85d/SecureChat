@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/splash.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.securechat"
     },
     "web": {
       "favicon": "./assets/favicon.png"

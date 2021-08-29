@@ -1,15 +1,15 @@
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { login } from "./actions/LoginActions";
-import { fillData } from "./actions/RoomActions";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { login } from './actions/LoginActions';
+import { fillData } from './actions/RoomActions';
 import {
   AuthMainNavigator,
   ChatMainNavigator,
-} from "../navigation/chatsNavigation";
-import React, { Component } from "react";
-import { Image } from "react-native";
-import { Container } from "native-base";
-import { StatusBar } from "react-native";
+} from '../navigation/chatsNavigation';
+import React, { Component } from 'react';
+import { Image } from 'react-native';
+import { Container } from 'native-base';
+import { StatusBar } from 'react-native';
 
 class Navigation extends Component {
   constructor(props) {
@@ -28,44 +28,38 @@ class Navigation extends Component {
     } else this.setState({ loaded: true, Authstate: AuthMainNavigator });
   }
 
-  async filldatafunc() {
-    await this.props.fillData();
-  }
-
   componentDidMount = async () => {
-    if (
-      !this.props.user ||
-      !this.props.user.password ||
-      !this.props.user.token
-    ) {
+    if (!this.props.user || !this.props.user.token) {
       this.setState({ loaded: true, Authstate: AuthMainNavigator });
     } else if (this.props.user.token) {
+      this.setState({ loaded: false });
       await this.props.fillData();
       this.setState({ loaded: true, Authstate: ChatMainNavigator });
     } else {
-      this.loginUser();
+      await this.loginUser();
     }
   };
+
   render() {
     if (this.state.loaded == false) {
       var image = <></>;
-      if (this.props.user.mode === "light") {
+      if (this.props.user.mode === 'light') {
         image = (
           <Container
             style={{
-              backgroundColor: "white",
-              alignItems: "center",
-              justifyContent: "center",
-              alignContent: "center",
+              backgroundColor: 'white',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignContent: 'center',
             }}
           >
             <Image
               source={require(`../assets/lightLoader.gif`)}
               style={{
-                height: "60%",
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
+                height: '60%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             />
           </Container>
@@ -74,19 +68,19 @@ class Navigation extends Component {
         var image = (
           <Container
             style={{
-              backgroundColor: "black",
-              alignItems: "center",
-              justifyContent: "center",
-              alignContent: "center",
+              backgroundColor: 'black',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignContent: 'center',
             }}
           >
             <Image
               source={require(`../assets/darkLoader.gif`)}
               style={{
-                height: "60%",
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
+                height: '60%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             />
           </Container>

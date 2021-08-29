@@ -5,6 +5,7 @@ import ReduxThunk from 'redux-thunk';
 import { persistReducer, persistStore } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
 
 const rootReducer = combineReducers({
   rooms: RoomReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  stateReconciler: hardSet,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
