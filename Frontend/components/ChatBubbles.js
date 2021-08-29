@@ -220,7 +220,9 @@ class ChatBubble extends Component {
     const indexInit = imagesObj.length - 1;
     const images = [];
     for (const img of imagesObj) {
-      images.push({ url: img.ImageData });
+      images.push({
+        url: this.decryptfunc(img.ImageData, img.spk, img.sender_id),
+      });
     }
     return (
       <>

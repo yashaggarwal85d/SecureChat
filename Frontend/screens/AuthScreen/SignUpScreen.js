@@ -21,6 +21,7 @@ import { StatusBar } from 'react-native';
 import CountryPicker, { DARK_THEME } from 'react-native-country-picker-modal';
 import { Button } from 'native-base';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { showMessage } from 'react-native-flash-message';
 
 class Signup extends React.Component {
   constructor(props) {
@@ -55,6 +56,12 @@ class Signup extends React.Component {
 
   handleSignUp = async () => {
     if (this.CheckValid()) {
+      showMessage({
+        message: `Account creation in process`,
+        description: 'Your account is being created please wait',
+        type: 'warning',
+        floating: true,
+      });
       await this.props.signup();
       if (this.props.user.isauth) {
         this.props.updatePhone('');

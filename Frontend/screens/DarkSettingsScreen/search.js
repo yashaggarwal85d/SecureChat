@@ -7,6 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { AllUsers } from '../../store/actions/LoginActions';
 import { CreateNewRoom } from '../../store/actions/RoomActions';
 import { bindActionCreators } from 'redux';
+import { showMessage } from 'react-native-flash-message';
 
 class SearchScreen extends Component {
   constructor(props) {
@@ -54,6 +55,12 @@ class SearchScreen extends Component {
               },
             ],
           };
+          showMessage({
+            message: `Private message room created`,
+            description: 'Your room is created please wait',
+            type: 'warning',
+            floating: true,
+          });
           await this.props.CreateNewRoom(body);
           this.props.navigation.navigate('MainScreen');
         }}

@@ -18,7 +18,22 @@ import { bindActionCreators } from 'redux';
 import { updatelastMessageReadIndex } from '../store/actions/RoomActions';
 import { updateActiveRoom } from '../store/actions/LoginActions';
 
+function unique(array) {
+  var flags = [],
+    output = [],
+    l = array.length,
+    i;
+  // console.log(l);
+  for (i = 0; i < l; i++) {
+    if (flags[array[i].id]) continue;
+    flags[array[i].id] = true;
+    output.push(array[i]);
+  }
+  return output;
+}
+
 function sorted(arr) {
+  arr = unique(arr);
   const sortedArray = arr.sort(function (a, b) {
     return moment(b.lastTime).unix() - moment(a.lastTime).unix();
   });

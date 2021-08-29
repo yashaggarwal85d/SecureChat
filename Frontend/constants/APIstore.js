@@ -1,6 +1,6 @@
 export const LOCALBASEAPI = 'http://192.168.61.236:3000';
 export const SERVERBASEAPI = 'https://ssbackend.azurewebsites.net';
-export const BASEAPI = LOCALBASEAPI;
+export const BASEAPI = SERVERBASEAPI;
 export const USERBASEAPI = BASEAPI + '/users';
 export const LOGINAPI = USERBASEAPI + '/login';
 export const SIGNUPAPI = USERBASEAPI + '/register';
@@ -18,7 +18,7 @@ export const ADDMEMBER = ROOMBASEAPI + '/AddMember';
 export const UPDATEPROFILEPIC = USERBASEAPI + '/profile_pic';
 export const CHECKUSERCONTACTS = USERBASEAPI + '/CheckContacts';
 
-export const CHAIN = 'https://scblockchain.netlify.app/.netlify/functions/api';
+export const CHAIN = 'https://scblockchain.azurewebsites.net/wallet';
 export const NEWWALLET = CHAIN + '/NewWallet';
 export const GETWALLET = CHAIN + '/getWallet';
 export const ENCRYPT = CHAIN + '/encrypt';
