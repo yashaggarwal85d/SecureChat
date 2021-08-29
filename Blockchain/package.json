@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc -w",
-    "start": "tsc && nodemon ."
+    "start": "tsc && nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Yash Aggarwal",
   "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
