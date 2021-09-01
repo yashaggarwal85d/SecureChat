@@ -126,6 +126,7 @@ router.post('/PullMessages',async(req:any, res:any) => {
         writetoFile();
         res.json(result);
       }
+      else return res.status(400).send("No data exist");
     } else return res.status(400).send("Data Undefined");
   } catch (err) {
     return res.status(400).send(err);
