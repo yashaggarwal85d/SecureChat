@@ -1,10 +1,44 @@
 import * as express from 'express';
-import * as crypto from 'crypto';
 const router = express.Router();
 import Wallet from '../BlockChainModals/wallet';
 import Chains from '../BlockChainModals/multiChain';
+import * as fs from 'fs';
 
 var wallets = new Map<string,Wallet>();
+function jsonReader(path:string){
+  fs.readFile(path,'utf-8',(err,data) => {
+    if(err){
+      console.log(err);
+    }else{
+      try {
+        const object = JSON.parse(data);
+        if(object.length){
+          for(const obj of object){
+            wallets.set(obj.token,Object.assign(new Wallet(''),obj.wallet));
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  })
+}
+jsonReader('./Data/wallets.json');
+
+function writetoFile(){
+  var object = new Array;
+    Chains.instance.chains.forEach((chain,key) => {
+      const obj = {
+        id:key,
+        chain:chain
+      }
+      object.push(obj);
+    })
+    fs.writeFile('./Data/chain.json',JSON.stringify(object,null,2),error =>{
+      if(error)
+        console.log(error);
+    })
+}
 
 router.post('/NewWallet', async (req:any, res:any) => {
   try {
@@ -15,7 +49,25 @@ router.post('/NewWallet', async (req:any, res:any) => {
       if (wallets.has(token)) return res.status(400).send('Wallet already exists');
       const wallet = new Wallet(EncPass);
       wallets.set(token,wallet);
-      console.log(wallets);
+      fs.readFile('./Data/wallets.json','utf-8',(err,data) => {
+        if(err){
+          console.log(err);
+        }else{
+          try {
+            var object = JSON.parse(data);
+            object.push({
+              token:token,
+              wallet:wallet
+            })
+            fs.writeFile('./Data/wallets.json',JSON.stringify(object,null,2),error =>{
+              if(error)
+                console.log(error);
+            })
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      })
       res.json(wallet.DHpublicKey);
     }
     else return res.status(400).send("Undefined data");
@@ -56,6 +108,7 @@ router.post('/PushMessages',async(req:any, res:any) => {
         else return res.status(400).send("Error");
       }
     } else return res.status(400).send("Data Undefined");
+    writetoFile();
     res.json("success");
   } catch (err) {
     return res.status(400).send(err);
@@ -68,10 +121,9 @@ router.post('/PullMessages',async(req:any, res:any) => {
     if(id){
       const ch = Chains.instance.getChainStrict(id);
       if(ch){
-        console.log(Chains.instance);
         const result =ch.show();
         Chains.instance.deleteChain(id);
-        console.log(Chains.instance);
+        writetoFile();
         res.json(result);
       }
     } else return res.status(400).send("Data Undefined");

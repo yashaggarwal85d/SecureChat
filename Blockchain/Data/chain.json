@@ -1,0 +1,19 @@
+[
+  {
+    "id": "Default",
+    "chain": {
+      "chain": [
+        {
+          "prevHash": "",
+          "transaction": {
+            "amount": {},
+            "payer": "genesis",
+            "payee": "satoshi"
+          },
+          "ts": 1630492124140,
+          "nonce": 488688962
+        }
+      ]
+    }
+  }
+]

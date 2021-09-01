@@ -26,7 +26,43 @@ const express = __importStar(require("express"));
 const router = express.Router();
 const wallet_1 = __importDefault(require("../BlockChainModals/wallet"));
 const multiChain_1 = __importDefault(require("../BlockChainModals/multiChain"));
+const fs = __importStar(require("fs"));
 var wallets = new Map();
+function jsonReader(path) {
+    fs.readFile(path, 'utf-8', (err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            try {
+                const object = JSON.parse(data);
+                if (object.length) {
+                    for (const obj of object) {
+                        wallets.set(obj.token, Object.assign(new wallet_1.default(''), obj.wallet));
+                    }
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+    });
+}
+jsonReader('./Data/wallets.json');
+function writetoFile() {
+    var object = new Array;
+    multiChain_1.default.instance.chains.forEach((chain, key) => {
+        const obj = {
+            id: key,
+            chain: chain
+        };
+        object.push(obj);
+    });
+    fs.writeFile('./Data/chain.json', JSON.stringify(object, null, 2), error => {
+        if (error)
+            console.log(error);
+    });
+}
 router.post('/NewWallet', async (req, res) => {
     try {
         const token = req.body.token;
@@ -36,7 +72,27 @@ router.post('/NewWallet', async (req, res) => {
                 return res.status(400).send('Wallet already exists');
             const wallet = new wallet_1.default(EncPass);
             wallets.set(token, wallet);
-            console.log(wallets);
+            fs.readFile('./Data/wallets.json', 'utf-8', (err, data) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    try {
+                        var object = JSON.parse(data);
+                        object.push({
+                            token: token,
+                            wallet: wallet
+                        });
+                        fs.writeFile('./Data/wallets.json', JSON.stringify(object, null, 2), error => {
+                            if (error)
+                                console.log(error);
+                        });
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
+            });
             res.json(wallet.DHpublicKey);
         }
         else
@@ -87,6 +143,7 @@ router.post('/PushMessages', async (req, res) => {
         }
         else
             return res.status(400).send("Data Undefined");
+        writetoFile();
         res.json("success");
     }
     catch (err) {
@@ -99,10 +156,9 @@ router.post('/PullMessages', async (req, res) => {
         if (id) {
             const ch = multiChain_1.default.instance.getChainStrict(id);
             if (ch) {
-                console.log(multiChain_1.default.instance);
                 const result = ch.show();
                 multiChain_1.default.instance.deleteChain(id);
-                console.log(multiChain_1.default.instance);
+                writetoFile();
                 res.json(result);
             }
         }
