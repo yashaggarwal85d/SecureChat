@@ -46,9 +46,11 @@
 
 <br />
 
-![Product Name Screen Shot][product-screenshot]
+<img src="./ReadmeFiles/Screenshot.png" height="850">
 
 <br />
+<br />
+
 This is my second year project in which i worked on react, react native and node to create a full stack application.
 It is a secure messanging app having two visibility modes, private and anonymous.
 Peer to peer and group messanging can be done in both the modes.
@@ -144,17 +146,18 @@ Here are some screenshots of the app.
 <br />
 <br />
 
-![Product Name Screen Shot][product-screenshot1]
-![Product Name Screen Shot][product-screenshot2]
-![Product Name Screen Shot][product-screenshot3]
-![Product Name Screen Shot][product-screenshot4]
-![Product Name Screen Shot][product-screenshot5]
-![Product Name Screen Shot][product-screenshot6]
-![Product Name Screen Shot][product-screenshot7]
-![Product Name Screen Shot][product-screenshot8]
-![Product Name Screen Shot][product-screenshot9]
-![Product Name Screen Shot][product-screenshot10]
+<img src="./ReadmeFiles/Screenshot1.png" height="650">
+<img src="./ReadmeFiles/Screenshot2.png" height="650">
+<img src="./ReadmeFiles/Screenshot3.png" height="650">
+<img src="./ReadmeFiles/Screenshot4.png" height="650">
+<img src="./ReadmeFiles/Screenshot5.png" height="650">
+<img src="./ReadmeFiles/Screenshot6.png" height="650">
+<img src="./ReadmeFiles/Screenshot7.png" height="650">
+<img src="./ReadmeFiles/Screenshot8.png" height="650">
+<img src="./ReadmeFiles/Screenshot9.png" height="650">
+<img src="./ReadmeFiles/Screenshot10.png" height="650">
 
+<br />
 <br />
 
 <!-- ROADMAP -->
@@ -165,17 +168,3 @@ Yash Aggarwal
 
 - LinkedIn - [yashaggarwal85d](https://www.linkedin.com/in/yashaggarwal85d/)
 - Github - [yashaggarwal85d](https://github.com/yashaggarwal85d)
-
-<!-- ACKNOWLEDGEMENTS -->
-
-[product-screenshot]: ./ReadmeFiles/Screenshot.png
-[product-screenshot1]: ./ReadmeFiles/Screenshot1.png
-[product-screenshot2]: ./ReadmeFiles/Screenshot2.png
-[product-screenshot3]: ./ReadmeFiles/Screenshot3.png
-[product-screenshot4]: ./ReadmeFiles/Screenshot4.png
-[product-screenshot5]: ./ReadmeFiles/Screenshot5.png
-[product-screenshot6]: ./ReadmeFiles/Screenshot6.png
-[product-screenshot7]: ./ReadmeFiles/Screenshot7.png
-[product-screenshot8]: ./ReadmeFiles/Screenshot8.png
-[product-screenshot9]: ./ReadmeFiles/Screenshot9.png
-[product-screenshot10]: ./ReadmeFiles/Screenshot10.png
