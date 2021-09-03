@@ -143,14 +143,15 @@ The major features of this application are -
 <br />
 Here are some screenshots of the app.
 
+`Note` - It is not possible to take screenshot of this app from a phone so all the screenshots below are taken using android studio and snipping tool.
 <br />
 <br />
 
-<img src="./ReadmeFiles/Screenshot1.png" height="650"><img src="./ReadmeFiles/Screenshot2.png" height="650">
-<img src="./ReadmeFiles/Screenshot3.png" height="650"><img src="./ReadmeFiles/Screenshot4.png" height="650">
-<img src="./ReadmeFiles/Screenshot5.png" height="650"><img src="./ReadmeFiles/Screenshot6.png" height="650">
-<img src="./ReadmeFiles/Screenshot7.png" height="650"><img src="./ReadmeFiles/Screenshot8.png" height="650">
-<img src="./ReadmeFiles/Screenshot9.png" height="650"><img src="./ReadmeFiles/Screenshot10.png" height="650">
+<img src="./ReadmeFiles/Screenshot1.png" height="650">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./ReadmeFiles/Screenshot2.png" height="650">
+<img src="./ReadmeFiles/Screenshot3.png" height="650">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./ReadmeFiles/Screenshot4.png" height="650">
+<img src="./ReadmeFiles/Screenshot5.png" height="650">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./ReadmeFiles/Screenshot6.png" height="650">
+<img src="./ReadmeFiles/Screenshot7.png" height="650">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./ReadmeFiles/Screenshot8.png" height="650">
+<img src="./ReadmeFiles/Screenshot9.png" height="650">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./ReadmeFiles/Screenshot10.png" height="650">
 
 <br />
 <br />
