@@ -146,16 +146,11 @@ Here are some screenshots of the app.
 <br />
 <br />
 
-<img src="./ReadmeFiles/Screenshot1.png" height="650">
-<img src="./ReadmeFiles/Screenshot2.png" height="650">
-<img src="./ReadmeFiles/Screenshot3.png" height="650">
-<img src="./ReadmeFiles/Screenshot4.png" height="650">
-<img src="./ReadmeFiles/Screenshot5.png" height="650">
-<img src="./ReadmeFiles/Screenshot6.png" height="650">
-<img src="./ReadmeFiles/Screenshot7.png" height="650">
-<img src="./ReadmeFiles/Screenshot8.png" height="650">
-<img src="./ReadmeFiles/Screenshot9.png" height="650">
-<img src="./ReadmeFiles/Screenshot10.png" height="650">
+<img src="./ReadmeFiles/Screenshot1.png" height="650"><img src="./ReadmeFiles/Screenshot2.png" height="650">
+<img src="./ReadmeFiles/Screenshot3.png" height="650"><img src="./ReadmeFiles/Screenshot4.png" height="650">
+<img src="./ReadmeFiles/Screenshot5.png" height="650"><img src="./ReadmeFiles/Screenshot6.png" height="650">
+<img src="./ReadmeFiles/Screenshot7.png" height="650"><img src="./ReadmeFiles/Screenshot8.png" height="650">
+<img src="./ReadmeFiles/Screenshot9.png" height="650"><img src="./ReadmeFiles/Screenshot10.png" height="650">
 
 <br />
 <br />
