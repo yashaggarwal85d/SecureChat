@@ -150,8 +150,8 @@ export const fillData = () => {
         },
       }).then((res) => res.data);
 
+      var rooms = [];
       if (data) {
-        var rooms = [];
         for (const room of data) {
           if (room) {
             var roomName = null;
@@ -184,7 +184,7 @@ export const fillData = () => {
               const messageObject = messages.slice(-1)[0];
               if (messageObject.isImage) lastMessage = '📷 Image';
               else if (messageObject.isPrompt)
-                return messageObject.message_body;
+                lastMessage = messageObject.message_body;
               else {
                 if (isGroup)
                   lastMessage = decryptGroup(
@@ -229,8 +229,9 @@ export const fillData = () => {
             rooms.push(NewRoom);
           }
         }
-        dispatch({ type: FILL_DATA, payload: rooms });
       }
+      console.log('calling');
+      dispatch({ type: FILL_DATA, payload: rooms });
     } catch (error) {
       showMessage({
         message: `Error`,
@@ -360,7 +361,8 @@ export const addRoom = (room) => {
       if (messages[0]) {
         const messageObject = messages.slice(-1)[0];
         if (messageObject.isImage) lastMessage = '📷 Image';
-        else if (messageObject.isPrompt) return messageObject.message_body;
+        else if (messageObject.isPrompt)
+          lastMessage = messageObject.message_body;
         else {
           if (isGroup)
             lastMessage = decryptGroup(

@@ -23,7 +23,6 @@ import {
 import { bindActionCreators } from 'redux';
 import {
   addMessage,
-  fillData,
   addRoom,
   updateRoom,
   removeRoom,
@@ -278,7 +277,6 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       addMessage,
-      fillData,
       addRoom,
       updateRoom,
       removeRoom,
