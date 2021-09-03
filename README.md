@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/yashaggarwal85d/securechat">
-    <img src="ReadmeFiles/logo.png" alt="Logo" width="80" height="80">
+    <img src="ReadmeFiles/logo.png" alt="Logo" height="300">
   </a>
   <h3 align="center">🔒Secure🔑Chat</h3>
 <br/>
