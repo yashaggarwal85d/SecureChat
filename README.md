@@ -11,7 +11,7 @@
     A blockchain based secure backend for decentralisation of the platform and storing sensitive information, another server for centeralized management of the application.
     Users can send one-to-one and group messages, which can include emojis and images.  
     <br /><br/>
-    <a href="https://exp-shell-app-assets.s3.us-west-1.amazonaws.com/android/%40yashagg/SecureChat-553b315019464b819b27b1b6a4da0e36-signed.apk"><strong>Download ⬇️</strong></a>
+    <a href="https://expo.dev/artifacts/ec26bd34-442e-4f89-a019-6e383d4a54d5"><strong>Download ⬇️</strong></a>
     <br />
     <br />
   </p>
