@@ -73,6 +73,7 @@ In case you get curious to try my project or come up with a better version of th
 The frontend is based on `react native`, expo, its libraries and modules.
 The backend is build on `node.js`.
 Database is stored on `mongodb` cloud. (The blockchain database is stored on blockchain locally)
+Both the servers are delpoyed on `Microsoft azure`.
 
 - [React-native](https://reactnative.dev/)
 - [Expo](https://expo.dev/)
