@@ -11,7 +11,6 @@
     A blockchain based secure backend for decentralisation of the platform and storing sensitive information, another server for centeralized management of the application.
     Users can send one-to-one and group messages, which can include emojis and images.  
     <br /><br/>
-    <a href="https://expo.dev/artifacts/ec26bd34-442e-4f89-a019-6e383d4a54d5"><strong>Download ⬇️</strong></a>
     <br />
     <br />
   </p>
